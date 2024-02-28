@@ -1,0 +1,10 @@
+_*.js
+src/constants/*
+next.config.js
+next-env.d.ts
+pages/*.js
+build/*.js
+config/*.js
+public/theme.js
+tailwind.config.js
+postcss.config.js

@@ -1,0 +1,66 @@
+
+@import "./tailwind.css";
+
+:root {
+  --gray-100: #e0e0e0;
+  --gray-dark: #18191B;
+  --gray-dark-active: #252627;
+  --blue-in-gray-active: #596174;
+  --blue-in-gray: #394360;
+
+}
+
+p {
+  margin: 0;
+}
+body {
+  margin:0;
+}
+
+.ant-card-body{
+  width: inherit !important;
+  height: inherit !important;
+}
+
+.w-inherit {
+  width: inherit !important;
+}
+
+.h-inherit {
+  height: inherit !important;
+}
+
+/* Selected node styles */
+.ant-tree-node-selected {
+  background-color: transparent !important;
+}
+
+.ant-tree-treenode-selected {
+  background-color: var(--blue-in-gray-active) !important;
+  width: 100%;
+  padding: 5px !important;
+}
+
+/* Regular tree node styles */
+.ant-tree-treenode {
+  width: 100%;
+  padding: 5px !important;
+}
+
+/* Hover state for tree nodes */
+.ant-tree-treenode:hover {
+  background-color: var(--blue-in-gray) !important; /* Light grey background on hover */
+}
+
+/* Active state for tree nodes */
+.ant-tree-treenode:active {
+  /* background-color: var(--gray-100) !important;  */
+}
+
+/* Focused tree nodes, useful for accessibility */
+.ant-tree-treenode:focus {
+  /* outline: 2px solid var(--gray-100) !important; */
+  outline-offset: 2px;
+}
+
+
