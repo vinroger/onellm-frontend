@@ -1,9 +1,16 @@
 import type { AppProps } from "next/app";
 import "@/styles/globals.css";
-// import '../styles/globals.css';
-import "react-grid-layout/css/styles.css";
-import "react-resizable/css/styles.css";
+import { Inter as FontSans } from "next/font/google";
+
+const fontSans = FontSans({
+  subsets: ["latin"],
+  variable: "--font-sans",
+});
 
 export default function App({ Component, pageProps }: AppProps) {
-  return <Component {...pageProps} />;
+  return (
+    <main className={`${fontSans.variable} font-sans`}>
+      <Component {...pageProps} />
+    </main>
+  );
 }

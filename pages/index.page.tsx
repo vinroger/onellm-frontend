@@ -1,17 +1,9 @@
-import { useRouter } from "next/router";
-import { useEffect } from "react";
-import TopLayout from "@/components/TopLayout";
+import { Button } from "@/components/ui/button";
 
-export default function Home(): JSX.Element {
-  const router = useRouter();
-
-  useEffect(() => {
-    router.push("/dashboard");
-  }, [router]);
-
+export default function Home() {
   return (
-    <TopLayout>
-      <div className="font-bold">Welcome to Startup!</div>
-    </TopLayout>
+    <div>
+      <Button variant="default">Click me</Button>
+    </div>
   );
 }

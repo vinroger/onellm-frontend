@@ -8,3 +8,4 @@ config/*.js
 public/theme.js
 tailwind.config.js
 postcss.config.js
+components/ui/*
