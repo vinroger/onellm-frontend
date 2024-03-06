@@ -9,7 +9,6 @@ module.exports = {
     "./app/**/*.{ts,tsx}",
     "./src/**/*.{ts,tsx}",
   ],
-  important: true,
   prefix: "",
   theme: {
     container: {
