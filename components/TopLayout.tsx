@@ -1,10 +1,14 @@
-import React from "react";
-import { useRouter } from "next/router";
+import { Navbar } from "./navbar";
 
-const TopLayout = ({ children }: { children: React.ReactNode }) => {
-  const router = useRouter();
+const NAVBAR_WIDTH = "250px";
 
-  return <div>hello</div>;
-};
-
-export default TopLayout;
+export default function Layout({ children }: { children: React.ReactNode }) {
+  return (
+    <div className="flex flex-row w-screen min-h-screen">
+      <div style={{ width: NAVBAR_WIDTH }}>
+        <Navbar />
+      </div>
+      {children}
+    </div>
+  );
+}
