@@ -1,6 +1,12 @@
 /* eslint-disable react/jsx-curly-newline */
-import { ColumnDef } from "@tanstack/react-table";
-import * as React from "react";
+import {
+  ColumnDef,
+  Row,
+  getCoreRowModel,
+  getPaginationRowModel,
+  useReactTable,
+} from "@tanstack/react-table";
+import { useEffect, useState } from "react";
 import Layout from "@/components/TopLayout";
 import { Button } from "@/components/ui/button";
 import {
@@ -8,50 +14,76 @@ import {
   usePaginatedDataTable,
 } from "@/components/ui/data-table";
 import { Card } from "@/components/ui/card";
+import { Log } from "@/utils/table";
+import { useSupabase } from "@/utils/supabase";
+import useAsync from "@/utils/hooks/useAsync";
 
-export type Payment = {
-  id: string;
-  amount: number;
-  status: "pending" | "processing" | "success" | "failed";
-  email: string;
-};
-
-const columns: ColumnDef<Payment>[] = [
+const columns: ColumnDef<Log>[] = [
   {
-    accessorKey: "status",
-    header: "Status",
+    accessorKey: "id",
+    header: "API",
   },
   {
-    accessorKey: "email",
-    header: "Email",
+    accessorKey: "created_at",
+    header: "timestamp",
+    // Example of using a cell to format the date, if desired
+    cell: (info) =>
+      info.getValue() ? new Date(info.getValue()).toLocaleString() : "",
   },
   {
-    accessorKey: "amount",
-    header: "Amount",
+    accessorKey: "ip_address",
+    header: "IP Address",
+  },
+  {
+    accessorKey: "prompt_tokens",
+    header: "Prompt Tokens",
+    // Assuming you want to display a default value or some formatting
+    cell: (info) => info.getValue() ?? "N/A",
+  },
+  {
+    accessorKey: "completion_token",
+    header: "Completion Token",
+    cell: (info) => info.getValue() ?? "N/A",
+  },
+  {
+    accessorKey: "provider",
+    header: "Provider",
+  },
+  {
+    accessorKey: "type",
+    header: "Type",
+  },
+  {
+    accessorKey: "chat",
+    header: "Chat",
+    cell: (info) => JSON.stringify(info.getValue()) ?? "N/A",
   },
 ];
-
-const data: Payment[] = [
-  {
-    id: "1",
-    amount: 100,
-    status: "pending",
-    email: "test",
-  },
-];
-
-const data2: Payment[] = Array.from({ length: 100 }, (_, i) => ({
-  id: i.toString(),
-  amount: 30,
-  status: "pending",
-  email: "test",
-}));
 
 export default function Home() {
+  const supabase = useSupabase();
+
+  const { execute, value, error } = useAsync(async () => {
+    if (!supabase) {
+      return [];
+    }
+    const { data } = await supabase.from("logs").select();
+    return data;
+  });
+
   const { PaginatedDataTable, table } = usePaginatedDataTable({
-    data: data2,
+    data: value,
     columns,
   });
+
+  useEffect(() => {
+    execute();
+  }, [execute, supabase]);
+
+  if (!supabase || !table) {
+    return <div>Loading...</div>;
+  }
+
   return (
     <Layout>
       <div className="flex flex-col flex-1 p-5 space-y-2">
@@ -62,7 +94,15 @@ export default function Home() {
               See your usage of LLM here!
             </p>
           </div>
-          <PaginatedDataTable />
+          <PaginatedDataTable
+            onRowClick={(row: Row<any>) => {
+              console.log(
+                "%cpages/logs/index.page.tsx:97 row",
+                "color: #007acc;",
+                row
+              );
+            }}
+          />
           <DataTablePagination table={table} />
         </Card>
         {/* </div> */}
