@@ -257,6 +257,7 @@ export type Database = {
           prompt_tokens: number | null;
           provider: string | null;
           type: string | null;
+          user_id: string | null;
         };
         Insert: {
           api?: string | null;
@@ -269,6 +270,7 @@ export type Database = {
           prompt_tokens?: number | null;
           provider?: string | null;
           type?: string | null;
+          user_id?: string | null;
         };
         Update: {
           api?: string | null;
@@ -281,6 +283,7 @@ export type Database = {
           prompt_tokens?: number | null;
           provider?: string | null;
           type?: string | null;
+          user_id?: string | null;
         };
         Relationships: [];
       };

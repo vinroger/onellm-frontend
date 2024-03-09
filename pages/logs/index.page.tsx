@@ -1,34 +1,56 @@
 /* eslint-disable react/jsx-curly-newline */
-import {
-  ColumnDef,
-  Row,
-  getCoreRowModel,
-  getPaginationRowModel,
-  useReactTable,
-} from "@tanstack/react-table";
+import { ColumnDef, Row } from "@tanstack/react-table";
 import { useEffect, useState } from "react";
 import Layout from "@/components/TopLayout";
-import { Button } from "@/components/ui/button";
 import {
   DataTablePagination,
   usePaginatedDataTable,
 } from "@/components/ui/data-table";
 import { Card } from "@/components/ui/card";
-import { Log } from "@/utils/table";
+import { Log } from "@/types/table";
 import { useSupabase } from "@/utils/supabase";
 import useAsync from "@/utils/hooks/useAsync";
+import { toHumanDateString } from "@/utils/functions/date";
+
+import { DetailDialog } from "./dialog";
 
 const columns: ColumnDef<Log>[] = [
+  {
+    accessorKey: "created_at",
+    header: "Timestamp",
+    // Example of using a cell to format the date, if desired
+    cell: (info) =>
+      info.getValue()
+        ? toHumanDateString(new Date(String(info.getValue())))
+        : "",
+  },
   {
     accessorKey: "id",
     header: "API",
   },
   {
-    accessorKey: "created_at",
-    header: "timestamp",
-    // Example of using a cell to format the date, if desired
-    cell: (info) =>
-      info.getValue() ? new Date(info.getValue()).toLocaleString() : "",
+    accessorKey: "prompt",
+    header: "Prompt",
+    cell: (info) => {
+      const maxLength = 50; // Maximum characters length
+      const { chat } = info.row.original as any;
+      const { content: prompt } = chat.find((c: any) => c.role === "user");
+      return prompt.length > maxLength
+        ? `${prompt.substring(0, maxLength - 3)}...`
+        : prompt;
+    },
+  },
+  {
+    accessorKey: "completion",
+    header: "Completion",
+    cell: (info) => {
+      const maxLength = 50; // Maximum characters length
+      const { chat } = info.row.original as any;
+      const { content: prompt } = chat.find((c: any) => c.role === "assistant");
+      return prompt.length > maxLength
+        ? `${prompt.substring(0, maxLength - 3)}...`
+        : prompt;
+    },
   },
   {
     accessorKey: "ip_address",
@@ -54,16 +76,17 @@ const columns: ColumnDef<Log>[] = [
     header: "Type",
   },
   {
-    accessorKey: "chat",
-    header: "Chat",
-    cell: (info) => JSON.stringify(info.getValue()) ?? "N/A",
+    accessorKey: "user_id",
+    header: "User ID",
   },
 ];
 
 export default function Home() {
   const supabase = useSupabase();
+  const [selectedLog, setSelectedLog] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const { execute, value, error } = useAsync(async () => {
+  const { execute, value } = useAsync(async () => {
     if (!supabase) {
       return [];
     }
@@ -96,16 +119,17 @@ export default function Home() {
           </div>
           <PaginatedDataTable
             onRowClick={(row: Row<any>) => {
-              console.log(
-                "%cpages/logs/index.page.tsx:97 row",
-                "color: #007acc;",
-                row
-              );
+              setSelectedLog(row.original);
+              setIsModalOpen(true);
             }}
           />
           <DataTablePagination table={table} />
         </Card>
-        {/* </div> */}
+        <DetailDialog
+          isOpen={isModalOpen}
+          onClose={() => setIsModalOpen(false)}
+          log={selectedLog}
+        />
       </div>
     </Layout>
   );
