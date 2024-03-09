@@ -3,6 +3,7 @@
 import type { AppProps } from "next/app";
 import "@/styles/globals.css";
 import { Inter as FontSans } from "next/font/google";
+import { ClerkProvider } from "@clerk/nextjs";
 
 const fontSans = FontSans({
   subsets: ["latin"],
@@ -11,13 +12,15 @@ const fontSans = FontSans({
 
 export default function App({ Component, pageProps }: AppProps) {
   return (
-    <main className={`${fontSans.variable} font-sans`}>
-      <style jsx global>{`
-        html {
-          font-family: ${fontSans.style.fontFamily};
-        }
-      `}</style>
-      <Component {...pageProps} />
-    </main>
+    <ClerkProvider>
+      <main className={`${fontSans.variable} font-sans`}>
+        <style jsx global>{`
+          html {
+            font-family: ${fontSans.style.fontFamily};
+          }
+        `}</style>
+        <Component {...pageProps} />
+      </main>{" "}
+    </ClerkProvider>
   );
 }

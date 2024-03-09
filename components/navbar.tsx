@@ -1,6 +1,7 @@
 import { FaHome, FaTable } from "react-icons/fa";
 import { IoMdSettings } from "react-icons/io";
 import { useRouter } from "next/router";
+import { UserButton } from "@clerk/nextjs";
 import {
   NavigationMenu,
   NavigationMenuLink,
@@ -41,7 +42,7 @@ export function Navbar() {
   return (
     <div className="flex flex-col border-neutral-300 border-e-[1px] min-h-full justify-start">
       <div className="p-5 text-xl font-bold">OneGPT</div>
-      <NavigationMenu className="flex-none w-full max-w-full p-3 max-h-fit">
+      <NavigationMenu className="flex-col items-start justify-between flex-1 w-full max-w-full p-3 max-h-fit">
         <div className="flex flex-col w-full list-none">
           <NavItem
             item={
@@ -79,6 +80,9 @@ export function Navbar() {
             }}
             itemKey={"settings"}
           />
+        </div>
+        <div>
+          <UserButton showName={true} />
         </div>
       </NavigationMenu>
     </div>
