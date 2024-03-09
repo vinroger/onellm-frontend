@@ -7,6 +7,7 @@ import {
   DataTablePagination,
   usePaginatedDataTable,
 } from "@/components/ui/data-table";
+import { Card } from "@/components/ui/card";
 
 export type Payment = {
   id: string;
@@ -43,7 +44,7 @@ const data2: Payment[] = Array.from({ length: 100 }, (_, i) => ({
   id: i.toString(),
   amount: 30,
   status: "pending",
-  email: `test`,
+  email: "test",
 }));
 
 export default function Home() {
@@ -53,14 +54,14 @@ export default function Home() {
   });
   return (
     <Layout>
-      <div className="flex flex-col w-full">
-        logss
-        <div className="w-full">
+      <div className="flex flex-col flex-1 p-5 space-y-2">
+        {/* <div className="w-full bg-white"> */}
+        <Card className="space-y-4 p-7">
+          <h1 className="mb-2 text-lg font-bold">Logs</h1>
           <PaginatedDataTable />
-        </div>
-        <div className="w-full">
           <DataTablePagination table={table} />
-        </div>
+        </Card>
+        {/* </div> */}
       </div>
     </Layout>
   );
