@@ -55,9 +55,13 @@ export default function Home() {
   return (
     <Layout>
       <div className="flex flex-col flex-1 p-5 space-y-2">
-        {/* <div className="w-full bg-white"> */}
         <Card className="space-y-4 p-7">
-          <h1 className="mb-2 text-lg font-bold">Logs</h1>
+          <div>
+            <h1 className="p-0 m-0 text-lg font-bold">Prompt Logs</h1>
+            <p className="p-0 m-0 mb-4 text-sm text-neutral-600">
+              See your usage of LLM here!
+            </p>
+          </div>
           <PaginatedDataTable />
           <DataTablePagination table={table} />
         </Card>
