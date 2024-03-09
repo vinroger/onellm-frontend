@@ -8,7 +8,6 @@ import {
 } from "@/components/ui/navigation-menu";
 import { cn } from "@/lib/utils";
 
-const NAVBAR_WIDTH = "250px";
 const ICON_SIZE = 19;
 
 function NavItem({
@@ -21,11 +20,7 @@ function NavItem({
   itemKey: string;
 }) {
   const { pathname } = useRouter();
-  console.log(
-    "%ccomponents/navbar.tsx:22 pathname",
-    "color: #007acc;",
-    pathname
-  );
+
   return (
     <NavigationMenuLink
       className={cn(
