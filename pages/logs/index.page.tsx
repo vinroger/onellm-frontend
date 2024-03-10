@@ -1,6 +1,8 @@
 /* eslint-disable react/jsx-curly-newline */
 import { ColumnDef, Row } from "@tanstack/react-table";
 import { useEffect, useState } from "react";
+import axios from "axios";
+import { LoaderIcon } from "lucide-react";
 import Layout from "@/components/TopLayout";
 import {
   DataTablePagination,
@@ -34,6 +36,9 @@ const columns: ColumnDef<Log>[] = [
     cell: (info) => {
       const maxLength = 50; // Maximum characters length
       const { chat } = info.row.original as any;
+      if (!chat) return "N/A";
+      const content = chat.find((c: any) => c.role === "assistant");
+      if (!content) return "N/A";
       const { content: prompt } = chat.find((c: any) => c.role === "user");
       return prompt.length > maxLength
         ? `${prompt.substring(0, maxLength - 3)}...`
@@ -46,7 +51,10 @@ const columns: ColumnDef<Log>[] = [
     cell: (info) => {
       const maxLength = 50; // Maximum characters length
       const { chat } = info.row.original as any;
-      const { content: prompt } = chat.find((c: any) => c.role === "assistant");
+      if (!chat) return "N/A";
+      const content = chat.find((c: any) => c.role === "assistant");
+      if (!content) return "N/A";
+      const prompt = content?.content;
       return prompt.length > maxLength
         ? `${prompt.substring(0, maxLength - 3)}...`
         : prompt;
@@ -81,30 +89,39 @@ const columns: ColumnDef<Log>[] = [
   },
 ];
 
+const fetchLogs = async () => {
+  const response = await axios.get("/api/v1/logs");
+  return response.data.logs;
+};
+
 export default function Home() {
-  const supabase = useSupabase();
   const [selectedLog, setSelectedLog] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [logs, setLogs] = useState<Log[]>([]);
 
-  const { execute, value } = useAsync(async () => {
-    if (!supabase) {
-      return [];
-    }
-    const { data } = await supabase.from("logs").select();
-    return data;
-  });
+  const loadLogs = async () => {
+    setLoading(true);
+    const fetchedKeys = await fetchLogs();
+    setLogs(fetchedKeys);
+    setLoading(false);
+  };
 
   const { PaginatedDataTable, table } = usePaginatedDataTable({
-    data: value,
+    data: logs,
     columns,
   });
 
   useEffect(() => {
-    execute();
-  }, [execute, supabase]);
+    loadLogs();
+  }, []);
 
-  if (!supabase || !table) {
-    return <div>Loading...</div>;
+  if (!table || loading) {
+    return (
+      <Layout>
+        <LoaderIcon className="animate-spin" />
+      </Layout>
+    );
   }
 
   return (

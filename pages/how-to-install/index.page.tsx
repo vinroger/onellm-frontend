@@ -52,6 +52,17 @@ const TableComponent = ({
     await deleteKey(keyId);
     onDeleteKey();
   };
+  const hasKey = keys.length > 0;
+
+  if (!hasKey) {
+    return (
+      <div className="flex flex-col items-center justify-center p-8">
+        <p className="text-lg font-medium text-neutral-600">
+          You have not created any API keys yet.
+        </p>
+      </div>
+    );
+  }
   return (
     <Table className="mt-2">
       <TableHeader>
@@ -144,6 +155,7 @@ function KeysTable() {
             </DialogHeader>
             <p>Enter a name for your new API key.</p>
             <Input
+              placeholder="My New AI Application Key"
               autoFocus
               type="text"
               value={newKeyName}
