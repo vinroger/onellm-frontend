@@ -7,7 +7,7 @@ import {
   usePaginatedDataTable,
 } from "@/components/ui/data-table";
 import { Card } from "@/components/ui/card";
-import { Log } from "@/types/table";
+import { Log } from "@/utils/table";
 import { useSupabase } from "@/utils/supabase";
 import useAsync from "@/utils/hooks/useAsync";
 import { toHumanDateString } from "@/utils/functions/date";

@@ -1,8 +1,8 @@
 import { FaHome, FaTable } from "react-icons/fa";
 import { IoMdSettings } from "react-icons/io";
 import { useRouter } from "next/router";
-import { UserButton } from "@clerk/nextjs";
-import { Boxes, Database, AreaChart } from "lucide-react";
+import { UserButton, useAuth, useUser } from "@clerk/nextjs";
+import { Boxes, Database, AreaChart, MonitorDown } from "lucide-react";
 import {
   NavigationMenu,
   NavigationMenuLink,
@@ -85,9 +85,14 @@ const navItems = [
     name: "settings",
     icon: <IoMdSettings className={"mr-2 w-3.5 "} />,
   },
+  {
+    name: "how-to-install",
+    icon: <MonitorDown className={"mr-2 w-3.5 "} />,
+  },
 ];
 
 export function Navbar() {
+  const { user } = useUser();
   return (
     <div className="flex flex-col border-neutral-300 border-e-[1px] min-h-full justify-start">
       <div className="p-5 text-xl font-bold">OneGPT</div>
@@ -101,8 +106,16 @@ export function Navbar() {
             />
           ))}
         </div>
-        <div>
-          <UserButton showName={true} />
+        <div className="flex flex-row items-center w-full space-x-2">
+          <UserButton />
+          <div className="flex flex-col max-w-full overflow-scroll">
+            <p className="overflow-scroll text-sm font-semibold text-wrap">
+              {user?.fullName}
+            </p>
+            <p className="text-xs text-neutral-500">
+              {user?.primaryEmailAddress?.emailAddress}
+            </p>
+          </div>
         </div>
       </NavigationMenu>
     </div>
