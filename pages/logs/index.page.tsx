@@ -7,12 +7,12 @@ import {
   usePaginatedDataTable,
 } from "@/components/ui/data-table";
 import { Card } from "@/components/ui/card";
-import { Log } from "@/utils/table";
-import { useSupabase } from "@/utils/supabase";
 import useAsync from "@/utils/hooks/useAsync";
 import { toHumanDateString } from "@/utils/functions/date";
 
 import { DetailDialog } from "./dialog";
+import { useSupabase } from "@/utils/hooks/supabase";
+import { Log } from "@/types/table";
 
 const columns: ColumnDef<Log>[] = [
   {

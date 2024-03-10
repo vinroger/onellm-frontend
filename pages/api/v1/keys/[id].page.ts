@@ -1,6 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { getAuth } from "@clerk/nextjs/server";
 import { v4 as uuidv4 } from "uuid";
+import { useRouter } from "next/router";
 import { generateJwtToken } from "@/utils/functions/jwt";
 import supabase from "../../supabase-server";
 
@@ -14,38 +15,17 @@ export default async function handler(
     return res.status(401).json({ error: "Unauthorized" });
   }
 
-  if (req.method === "GET") {
+  const { id } = req.query as { id: string };
+
+  if (req.method === "DELETE") {
     const { data: keys, error } = await supabase
       .from("keys")
-      .select("*")
-      .eq("owner_id", userId);
+      .delete()
+      .eq("id", id);
     if (error) {
       return res.status(500).json({ error: error.message });
     }
     return res.status(200).json({ keys });
-  }
-
-  if (req.method === "POST") {
-    const { name } = req.body;
-
-    const key = generateJwtToken({ ownerId: userId });
-
-    const { data, error } = await supabase.from("keys").insert([
-      {
-        owner_id: userId,
-        key,
-        name,
-        id: uuidv4(),
-        created_at: new Date().toISOString(),
-        last_used: new Date().toISOString(),
-      },
-    ]);
-
-    if (error) {
-      return res.status(500).json({ error: error.message });
-    }
-
-    return res.status(201).json(data);
   }
 
   return res.status(405).end(`Method ${req.method} Not Allowed`);

@@ -65,6 +65,10 @@ export type User = Database["public"]["Tables"]["users"]["Row"];
 export type UserInsert = Database["public"]["Tables"]["users"]["Insert"];
 export type UserUpdate = Database["public"]["Tables"]["users"]["Update"];
 
+export type Key = Database["public"]["Tables"]["keys"]["Row"];
+export type KeyInsert = Database["public"]["Tables"]["keys"]["Insert"];
+export type KeyUpdate = Database["public"]["Tables"]["keys"]["Update"];
+
 export type Chat = {
   role: string;
   content: string;

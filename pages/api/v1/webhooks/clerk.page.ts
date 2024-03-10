@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 /* eslint-disable camelcase */
 import { Webhook } from "svix";
 import { UserJSON, WebhookEvent } from "@clerk/nextjs/server";
@@ -16,10 +17,6 @@ export default async function handler(
   res: NextApiResponse
 ) {
   try {
-    console.log(
-      "%cpages/api/v1/webhooks/clerk.page.ts:19 Webhook Triggered",
-      "color: #007acc;"
-    );
     if (req.method !== "POST") {
       return res.status(405);
     }
@@ -91,8 +88,8 @@ export default async function handler(
         .select();
 
       if (error) {
-        console.error("Error updating user:", error);
-        throw new Error("Error updating user");
+        console.error("Error creating user:", error);
+        throw new Error("Error creating user");
       }
       console.log("User created:", supabaseResponse);
       return res.status(200).json({ response: supabaseResponse });
@@ -119,6 +116,7 @@ export default async function handler(
         console.error("Error updating user:", error);
         throw new Error("Error updating user");
       }
+      console.log("User updated:", supabaseResponse);
       return res.status(200).json({ response: supabaseResponse });
     }
 
