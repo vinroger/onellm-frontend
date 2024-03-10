@@ -2,12 +2,14 @@ import { FaHome, FaTable } from "react-icons/fa";
 import { IoMdSettings } from "react-icons/io";
 import { useRouter } from "next/router";
 import { UserButton } from "@clerk/nextjs";
+import { Boxes, Database, AreaChart } from "lucide-react";
 import {
   NavigationMenu,
   NavigationMenuLink,
   navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu";
 import { cn } from "@/lib/utils";
+import { toTitleCase } from "@/utils/functions/string";
 
 const ICON_SIZE = 19;
 
@@ -36,6 +38,57 @@ function NavItem({
   );
 }
 
+function NavItemRenderer({
+  itemName,
+  icon,
+}: {
+  itemName: string;
+  icon: React.ReactNode;
+}) {
+  const router = useRouter();
+  return (
+    <NavItem
+      item={
+        <div className="flex flex-row items-center">
+          {icon}
+          {toTitleCase(itemName)}
+        </div>
+      }
+      onClick={() => {
+        router.push(`/${itemName.toLowerCase()}`);
+      }}
+      itemKey={itemName.toLowerCase()}
+    />
+  );
+}
+
+const navItems = [
+  {
+    name: "dashboard",
+    icon: <FaHome className={"mr-2 w-3.5 "} />,
+  },
+  {
+    name: "logs",
+    icon: <FaTable className={"mr-2.5 w-3.5 "} />,
+  },
+  {
+    name: "dataset",
+    icon: <Database strokeWidth="2.8px" className={"mr-2 w-3.5 "} />,
+  },
+  {
+    name: "training",
+    icon: <AreaChart strokeWidth="2.8px" className={"mr-2 w-3.5 "} />,
+  },
+  {
+    name: "model",
+    icon: <Boxes className={"mr-2.5 w-3.5 "} />,
+  },
+  {
+    name: "settings",
+    icon: <IoMdSettings className={"mr-2 w-3.5 "} />,
+  },
+];
+
 export function Navbar() {
   const router = useRouter();
 
@@ -44,42 +97,13 @@ export function Navbar() {
       <div className="p-5 text-xl font-bold">OneGPT</div>
       <NavigationMenu className="flex-col items-start justify-between flex-1 w-full max-w-full p-3 max-h-fit">
         <div className="flex flex-col w-full list-none">
-          <NavItem
-            item={
-              <div className="flex flex-row items-center">
-                <FaHome className={`h-6 mr-1.5 text-[${ICON_SIZE}px]`} />
-                Dashboard
-              </div>
-            }
-            onClick={() => {
-              router.push("/dashboard");
-            }}
-            itemKey="dashboard"
-          />
-          <NavItem
-            item={
-              <div className="flex flex-row items-center">
-                <FaTable className={`h-6 mr-1.5 text-[${ICON_SIZE}px]`} />
-                Logs Table
-              </div>
-            }
-            onClick={() => {
-              router.push("/logs");
-            }}
-            itemKey={"logs"}
-          />
-          <NavItem
-            item={
-              <div className="flex flex-row items-center">
-                <IoMdSettings className={`h-6 mr-1.5 text-[${ICON_SIZE}px]`} />
-                Settings
-              </div>
-            }
-            onClick={() => {
-              router.push("/settings");
-            }}
-            itemKey={"settings"}
-          />
+          {navItems.map((item) => (
+            <NavItemRenderer
+              key={item.name}
+              itemName={item.name}
+              icon={item.icon}
+            />
+          ))}
         </div>
         <div>
           <UserButton showName={true} />
