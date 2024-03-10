@@ -11,8 +11,6 @@ import {
 import { cn } from "@/lib/utils";
 import { toTitleCase } from "@/utils/functions/string";
 
-const ICON_SIZE = 19;
-
 function NavItem({
   item,
   onClick,
@@ -90,8 +88,6 @@ const navItems = [
 ];
 
 export function Navbar() {
-  const router = useRouter();
-
   return (
     <div className="flex flex-col border-neutral-300 border-e-[1px] min-h-full justify-start">
       <div className="p-5 text-xl font-bold">OneGPT</div>

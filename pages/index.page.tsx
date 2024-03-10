@@ -1,7 +1,5 @@
 import Layout from "@/components/TopLayout";
 
-const NAVBAR_WIDTH = "250px";
-
 export default function Home() {
   return <Layout>Welcome to OneGPT.</Layout>;
 }

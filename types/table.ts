@@ -1,6 +1,6 @@
 import { Database } from "@/types/supabase";
 
-type Json = any; // Assuming Json is defined globally or as needed
+// type Json = any; // Assuming Json is defined globally or as needed
 
 export type DataPoint = Database["public"]["Tables"]["data_points"]["Row"];
 export type DataPointInsert =

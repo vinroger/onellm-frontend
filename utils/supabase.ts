@@ -1,5 +1,5 @@
 // useSupabase.ts
-import { use, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { createClient, SupabaseClient } from "@supabase/supabase-js";
 import { useAuth } from "@clerk/nextjs";
 import { Database } from "@/types/supabase";
