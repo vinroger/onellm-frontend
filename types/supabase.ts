@@ -215,6 +215,44 @@ export type Database = {
         };
         Relationships: [];
       };
+      keys: {
+        Row: {
+          created_at: string;
+          id: string;
+          key: string | null;
+          last_used: string | null;
+          name: string | null;
+          owner_id: string | null;
+          updated_at: string | null;
+        };
+        Insert: {
+          created_at?: string;
+          id: string;
+          key?: string | null;
+          last_used?: string | null;
+          name?: string | null;
+          owner_id?: string | null;
+          updated_at?: string | null;
+        };
+        Update: {
+          created_at?: string;
+          id?: string;
+          key?: string | null;
+          last_used?: string | null;
+          name?: string | null;
+          owner_id?: string | null;
+          updated_at?: string | null;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "public_keys_owner_id_fkey";
+            columns: ["owner_id"];
+            isOneToOne: false;
+            referencedRelation: "users";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
       log_tags: {
         Row: {
           log_id: number;
@@ -248,6 +286,7 @@ export type Database = {
       logs: {
         Row: {
           api: string | null;
+          api_key_id: string | null;
           chat: Json | null;
           completion_token: number | null;
           created_at: string | null;
@@ -257,10 +296,11 @@ export type Database = {
           prompt_tokens: number | null;
           provider: string | null;
           type: string | null;
-          user_id: string | null;
+          user_id: string;
         };
         Insert: {
           api?: string | null;
+          api_key_id?: string | null;
           chat?: Json | null;
           completion_token?: number | null;
           created_at?: string | null;
@@ -270,10 +310,11 @@ export type Database = {
           prompt_tokens?: number | null;
           provider?: string | null;
           type?: string | null;
-          user_id?: string | null;
+          user_id: string;
         };
         Update: {
           api?: string | null;
+          api_key_id?: string | null;
           chat?: Json | null;
           completion_token?: number | null;
           created_at?: string | null;
@@ -283,9 +324,24 @@ export type Database = {
           prompt_tokens?: number | null;
           provider?: string | null;
           type?: string | null;
-          user_id?: string | null;
+          user_id?: string;
         };
-        Relationships: [];
+        Relationships: [
+          {
+            foreignKeyName: "public_logs_api_key_id_fkey";
+            columns: ["api_key_id"];
+            isOneToOne: false;
+            referencedRelation: "keys";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "public_logs_user_id_fkey";
+            columns: ["user_id"];
+            isOneToOne: false;
+            referencedRelation: "users";
+            referencedColumns: ["id"];
+          },
+        ];
       };
       models: {
         Row: {
@@ -430,23 +486,20 @@ export type Database = {
         Row: {
           created_at: string;
           email: string;
-          id: number;
+          id: string;
           updated_at: string;
-          user_id: string | null;
         };
         Insert: {
           created_at?: string;
           email: string;
-          id?: number;
+          id: string;
           updated_at?: string;
-          user_id?: string | null;
         };
         Update: {
           created_at?: string;
           email?: string;
-          id?: number;
+          id?: string;
           updated_at?: string;
-          user_id?: string | null;
         };
         Relationships: [];
       };
