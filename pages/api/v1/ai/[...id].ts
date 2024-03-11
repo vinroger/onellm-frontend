@@ -1,16 +1,10 @@
 /* eslint-disable no-underscore-dangle */
 import type { NextApiRequest, NextApiResponse } from "next";
-import { getAuth } from "@clerk/nextjs/server";
-import axios from "axios";
-import {
-  Options,
-  createProxyMiddleware,
-  responseInterceptor,
-} from "http-proxy-middleware";
-import { Request, Response } from "http-proxy-middleware/dist/types";
-import type * as http from "http";
-import { writeFile } from "fs";
-import { parse, stringify, toJSON, fromJSON } from "flatted";
+
+import { verifyJwtToken } from "@/utils/functions/jwt";
+import { Log } from "@/types/table";
+import requestIp from "request-ip";
+import { v4 as uuidv4 } from "uuid";
 import supabase from "../../supabase-server.component";
 
 // Function to construct the OpenAI URL by replacing the domain
@@ -20,48 +14,97 @@ const constructOpenAIUrl = (req: NextApiRequest): string => {
   return `${baseUrl}${path}`;
 };
 
-const processInterceptedResponse = async () => {};
-
-/** @type {import('http-proxy-middleware/dist/types').Options} */
-const APIProxyOptions: Options = {
-  target: "https://api.openai.com/v1/",
-  changeOrigin: true,
-  pathRewrite: {
-    "/api/v1/ai": "", // this will remove '/api' from the request path
-  },
-  onProxyReq: (proxyReq: any, req: Request, res: Response) => {
-    // console.log("oi ini gw send ya", proxyReq)
-  },
-  onError: (err: Error, req: Request, res: Response) => {
-    res.status(500).json({ message: "Something went wrong.", error: err });
-  },
-  selfHandleResponse: true,
-  onProxyRes: responseInterceptor(
-    async (responseBuffer, proxyRes, req, res) => {
-      const response = responseBuffer.toString("utf8"); // convert buffer to string
-      console.log(
-        "%cpages/api/v1/ai/[...ID].ts:40 response",
-        "color: #007acc;",
-        response
-      );
-      return response;
-    }
-  ),
-  secure: false,
+type LogCpy = {
+  api: string | null;
+  api_key_id: string | null;
+  chat: any;
+  completion_token: number | null;
+  created_at: string | null;
+  id: number;
+  ip_address: string | null;
+  owner_id: string;
+  prompt_tokens: number | null;
+  provider: string | null;
+  type: string | null;
+  user_id: string;
 };
-
-export const config = {
-  api: {
-    bodyParser: false,
-    externalResolver: true,
-  },
-};
-
-const proxyMiddleware: any = createProxyMiddleware(APIProxyOptions as Options);
 
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  return proxyMiddleware(req, res);
+  /* STEP ONE:  VERIFY ONELLM TOKEN */
+
+  const {
+    "x-onellm-api-key": OneLLMApiKey,
+    "x-onellm-user-id": OneLLMUserId,
+    "x-onellm-tags": OneLLMTags,
+  } = req.headers;
+
+  // Decode token
+  const payload: any = verifyJwtToken(OneLLMApiKey as string);
+
+  const { ownerId } = payload;
+
+  const ipAddress =
+    requestIp.getClientIp(req) && requestIp.getClientIp(req) !== "::1"
+      ? requestIp.getClientIp(req)
+      : "Unknown";
+
+  // Proxy the request to OpenAI
+  try {
+    const openAIUrl = constructOpenAIUrl(req);
+    const requestBody = JSON.stringify(req.body);
+
+    const headers: HeadersInit = {
+      "Content-Type": "application/json",
+    };
+
+    if (req.headers.authorization) {
+      headers.Authorization = req.headers.authorization;
+    }
+
+    const openAIResponse = await fetch(openAIUrl, {
+      method: req.method,
+      headers,
+      body: requestBody,
+    });
+
+    const openAIData = await openAIResponse.json();
+
+    // Log the incoming request and openai response details
+    if (openAIUrl === "https://api.openai.com/v1/chat/completions") {
+      const chatData = openAIData.choices
+        ? [...req.body.messages, openAIData.choices[0].message]
+        : null;
+      const logData: Log = {
+        id: openAIData.id ?? uuidv4(),
+        owner_id: ownerId,
+        onellm_api_key: OneLLMApiKey as string,
+        api: openAIUrl,
+        type: "chat.completion",
+        created_at: new Date().toISOString(),
+        ip_address: ipAddress,
+        provider: "openai",
+        chat: chatData,
+        user_id: OneLLMUserId as string,
+        prompt_tokens: openAIData.usage?.prompt_tokens ?? 0,
+        completion_token: openAIData.usage?.completion_tokens ?? 0,
+        status: openAIResponse.status === 200 ? "success" : "error",
+      };
+
+      const { data: supabaseResponse, error } = await supabase
+        .from("logs")
+        .insert([logData])
+        .select();
+    }
+
+    return res.status(openAIResponse.status).json(openAIData);
+  } catch (error) {
+    console.error("Error proxying request:", error);
+
+    return res
+      .status(500)
+      .json({ error: `Error processing your request: ${error}` });
+  }
 }

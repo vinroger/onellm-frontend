@@ -77,6 +77,7 @@ export const DetailDialog = ({
                 {log !== null &&
                   Object.entries(log).map(([key, value]) => {
                     if (key === "chat") return <div />;
+                    if (key === "onellm_api_key") return <div />;
                     return (
                       <tr key={key}>
                         <th className="pr-5 detail-key text-start">

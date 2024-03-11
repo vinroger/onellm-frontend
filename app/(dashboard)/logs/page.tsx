@@ -18,6 +18,18 @@ import { DetailDialog } from "./dialog";
 
 const columns: ColumnDef<Log>[] = [
   {
+    accessorKey: "status",
+    header: "Status",
+    cell: (info) => {
+      const status = info.getValue();
+
+      if (status !== "error") {
+        return <span className="font-bold text-green-600">Successful</span>;
+      }
+      return <span className="font-bold text-red-600">Error</span>;
+    },
+  },
+  {
     accessorKey: "created_at",
     header: "Timestamp",
     // Example of using a cell to format the date, if desired
@@ -27,7 +39,7 @@ const columns: ColumnDef<Log>[] = [
         : "",
   },
   {
-    accessorKey: "id",
+    accessorKey: "api",
     header: "API",
   },
   {
@@ -39,7 +51,10 @@ const columns: ColumnDef<Log>[] = [
       if (!chat) return "N/A";
       const content = chat.find((c: any) => c.role === "assistant");
       if (!content) return "N/A";
-      const { content: prompt } = chat.find((c: any) => c.role === "user");
+      const chatcontent = chat.find((c: any) => c.role === "user");
+      if (!chatcontent) return "N/A";
+      const { prompt } = chatcontent;
+      if (!prompt) return "N/A";
       return prompt.length > maxLength
         ? `${prompt.substring(0, maxLength - 3)}...`
         : prompt;
@@ -54,7 +69,10 @@ const columns: ColumnDef<Log>[] = [
       if (!chat) return "N/A";
       const content = chat.find((c: any) => c.role === "assistant");
       if (!content) return "N/A";
-      const prompt = content?.content;
+      const chatcontent = chat.find((c: any) => c.role === "user");
+      if (!chatcontent) return "N/A";
+      const { prompt } = chatcontent;
+      if (!prompt) return "N/A";
       return prompt.length > maxLength
         ? `${prompt.substring(0, maxLength - 3)}...`
         : prompt;
