@@ -4,7 +4,7 @@ import { Webhook } from "svix";
 import { UserJSON, WebhookEvent } from "@clerk/nextjs/server";
 import { NextApiRequest, NextApiResponse } from "next";
 import { buffer } from "micro";
-import supabase from "../../supabase-server";
+import supabase from "../../supabase-server.component";
 
 export const config = {
   api: {

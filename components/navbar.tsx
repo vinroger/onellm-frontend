@@ -1,6 +1,6 @@
 import { FaHome, FaTable } from "react-icons/fa";
 import { IoMdSettings } from "react-icons/io";
-import { useRouter } from "next/router";
+import { useRouter, usePathname } from "next/navigation";
 import { UserButton, useAuth, useUser } from "@clerk/nextjs";
 import { Boxes, Database, AreaChart, MonitorDown } from "lucide-react";
 import {
@@ -20,7 +20,7 @@ function NavItem({
   onClick: () => void;
   itemKey: string;
 }) {
-  const { pathname } = useRouter();
+  const pathname = usePathname();
 
   return (
     <NavigationMenuLink
@@ -29,7 +29,7 @@ function NavItem({
         "w-full justify-start items-center cursor-pointer font-normal"
       )}
       onClick={onClick}
-      active={pathname.split("/")[1] === itemKey.toLowerCase()}
+      active={!!pathname && pathname.split("/")[1] === itemKey.toLowerCase()}
     >
       {item}
     </NavigationMenuLink>

@@ -1,7 +1,7 @@
 import { Copy } from "lucide-react";
 import useCopyToClipboard from "@/utils/hooks/useCopyPaste";
-import { Badge } from "./ui/badge";
 import { cn } from "@/lib/utils";
+import { Badge } from "./ui/badge";
 
 type AbsolutePosition =
   | "TOP_LEFT"

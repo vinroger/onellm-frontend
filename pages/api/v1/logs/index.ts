@@ -1,8 +1,22 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { getAuth } from "@clerk/nextjs/server";
-import { v4 as uuidv4 } from "uuid";
-import { generateJwtToken } from "@/utils/functions/jwt";
-import supabase from "../../supabase-server";
+
+import supabase from "../../supabase-server.component";
+
+export type Log = {
+  api: string | null;
+  api_key_id: string | null;
+  chat: any;
+  completion_token: number | null;
+  created_at: string | null;
+  id: number;
+  ip_address: string | null;
+  owner_id: string;
+  prompt_tokens: number | null;
+  provider: string | null;
+  type: string | null;
+  user_id: string;
+};
 
 export default async function handler(
   req: NextApiRequest,
@@ -15,33 +29,31 @@ export default async function handler(
   }
 
   if (req.method === "GET") {
-    const { data: keys, error } = await supabase
-      .from("keys")
+    const { data: logs, error } = await supabase
+      .from("logs")
       .select("*")
       .eq("owner_id", userId);
     if (error) {
+      console.error("Error getting logs:", error);
       return res.status(500).json({ error: error.message });
     }
-    return res.status(200).json({ keys });
+
+    return res.status(200).json({ logs });
   }
 
   if (req.method === "POST") {
-    const { name } = req.body;
+    const reqData = req.body as Log;
 
-    const key = generateJwtToken({ ownerId: userId });
-
-    const { data, error } = await supabase.from("keys").insert([
+    const { data, error } = await supabase.from("logs").insert([
       {
         owner_id: userId,
-        key,
         name,
-        id: uuidv4(),
-        created_at: new Date().toISOString(),
-        last_used: new Date().toISOString(),
+        description,
       },
     ]);
 
     if (error) {
+      console.error("Error creating log:", error);
       return res.status(500).json({ error: error.message });
     }
 

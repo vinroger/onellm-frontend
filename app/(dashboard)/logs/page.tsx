@@ -1,3 +1,5 @@
+"use client";
+
 /* eslint-disable react/jsx-curly-newline */
 import { ColumnDef, Row } from "@tanstack/react-table";
 import { useEffect, useState } from "react";
@@ -9,14 +11,24 @@ import {
   usePaginatedDataTable,
 } from "@/components/ui/data-table";
 import { Card } from "@/components/ui/card";
-import useAsync from "@/utils/hooks/useAsync";
 import { toHumanDateString } from "@/utils/functions/date";
 
-import { DetailDialog } from "./dialog";
-import { useSupabase } from "@/utils/hooks/supabase";
 import { Log } from "@/types/table";
+import { DetailDialog } from "./dialog";
 
 const columns: ColumnDef<Log>[] = [
+  {
+    accessorKey: "status",
+    header: "Status",
+    cell: (info) => {
+      const status = info.getValue();
+
+      if (status !== "error") {
+        return <span className="font-bold text-green-600">Successful</span>;
+      }
+      return <span className="font-bold text-red-600">Error</span>;
+    },
+  },
   {
     accessorKey: "created_at",
     header: "Timestamp",
@@ -27,7 +39,7 @@ const columns: ColumnDef<Log>[] = [
         : "",
   },
   {
-    accessorKey: "id",
+    accessorKey: "api",
     header: "API",
   },
   {
@@ -39,7 +51,10 @@ const columns: ColumnDef<Log>[] = [
       if (!chat) return "N/A";
       const content = chat.find((c: any) => c.role === "assistant");
       if (!content) return "N/A";
-      const { content: prompt } = chat.find((c: any) => c.role === "user");
+      const chatcontent = chat.find((c: any) => c.role === "user");
+      if (!chatcontent) return "N/A";
+      const { prompt } = chatcontent;
+      if (!prompt) return "N/A";
       return prompt.length > maxLength
         ? `${prompt.substring(0, maxLength - 3)}...`
         : prompt;
@@ -54,7 +69,10 @@ const columns: ColumnDef<Log>[] = [
       if (!chat) return "N/A";
       const content = chat.find((c: any) => c.role === "assistant");
       if (!content) return "N/A";
-      const prompt = content?.content;
+      const chatcontent = chat.find((c: any) => c.role === "user");
+      if (!chatcontent) return "N/A";
+      const { prompt } = chatcontent;
+      if (!prompt) return "N/A";
       return prompt.length > maxLength
         ? `${prompt.substring(0, maxLength - 3)}...`
         : prompt;
@@ -117,37 +135,31 @@ export default function Home() {
   }, []);
 
   if (!table || loading) {
-    return (
-      <Layout>
-        <LoaderIcon className="animate-spin" />
-      </Layout>
-    );
+    return <LoaderIcon className="animate-spin" />;
   }
 
   return (
-    <Layout>
-      <div className="flex flex-col flex-1 p-5 space-y-2">
-        <Card className="space-y-4 p-7">
-          <div>
-            <h1 className="p-0 m-0 text-lg font-bold">Prompt Logs</h1>
-            <p className="p-0 m-0 mb-4 text-sm text-neutral-600">
-              See your usage of LLM here!
-            </p>
-          </div>
-          <PaginatedDataTable
-            onRowClick={(row: Row<any>) => {
-              setSelectedLog(row.original);
-              setIsModalOpen(true);
-            }}
-          />
-          <DataTablePagination table={table} />
-        </Card>
-        <DetailDialog
-          isOpen={isModalOpen}
-          onClose={() => setIsModalOpen(false)}
-          log={selectedLog}
+    <div className="flex flex-col flex-1 p-5 space-y-2">
+      <Card className="space-y-4 p-7">
+        <div>
+          <h1 className="p-0 m-0 text-lg font-bold">Prompt Logs</h1>
+          <p className="p-0 m-0 mb-4 text-sm text-neutral-600">
+            See your usage of LLM here!
+          </p>
+        </div>
+        <PaginatedDataTable
+          onRowClick={(row: Row<any>) => {
+            setSelectedLog(row.original);
+            setIsModalOpen(true);
+          }}
         />
-      </div>
-    </Layout>
+        <DataTablePagination table={table} />
+      </Card>
+      <DetailDialog
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        log={selectedLog}
+      />
+    </div>
   );
 }

@@ -24,3 +24,7 @@ export function generateJwtToken(options: TokenOptions): string {
 
   return token;
 }
+
+export function verifyJwtToken(token: string): string | jwt.JwtPayload {
+  return jwt.verify(token, process.env.JWT_SECRET_KEY!);
+}

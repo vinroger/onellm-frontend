@@ -1,3 +1,5 @@
+"use client";
+
 /* eslint-disable react/no-array-index-key */
 import { Braces } from "lucide-react";
 import { Chat, Log } from "@/types/table";
@@ -75,6 +77,7 @@ export const DetailDialog = ({
                 {log !== null &&
                   Object.entries(log).map(([key, value]) => {
                     if (key === "chat") return <div />;
+                    if (key === "onellm_api_key") return <div />;
                     return (
                       <tr key={key}>
                         <th className="pr-5 detail-key text-start">

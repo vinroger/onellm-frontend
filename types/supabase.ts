@@ -255,27 +255,27 @@ export type Database = {
       }
       log_tags: {
         Row: {
-          log_id: number
+          log_id: string
           tag_id: number
         }
         Insert: {
-          log_id: number
-          tag_id: number
+          log_id: string
+          tag_id?: number
         }
         Update: {
-          log_id?: number
+          log_id?: string
           tag_id?: number
         }
         Relationships: [
           {
-            foreignKeyName: "log_tags_log_id_fkey"
+            foreignKeyName: "public_log_tags_log_id_fkey"
             columns: ["log_id"]
             isOneToOne: false
             referencedRelation: "logs"
             referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "log_tags_tag_id_fkey"
+            foreignKeyName: "public_log_tags_tag_id_fkey"
             columns: ["tag_id"]
             isOneToOne: false
             referencedRelation: "tags"
@@ -286,57 +286,60 @@ export type Database = {
       logs: {
         Row: {
           api: string | null
-          api_key_id: string | null
           chat: Json | null
           completion_token: number | null
           created_at: string | null
-          id: number
+          id: string
           ip_address: string | null
+          onellm_api_key: string | null
           owner_id: string
           prompt_tokens: number | null
           provider: string | null
+          status: string | null
           type: string | null
-          user_id: string
+          user_id: string | null
         }
         Insert: {
           api?: string | null
-          api_key_id?: string | null
           chat?: Json | null
           completion_token?: number | null
           created_at?: string | null
-          id?: number
+          id: string
           ip_address?: string | null
+          onellm_api_key?: string | null
           owner_id: string
           prompt_tokens?: number | null
           provider?: string | null
+          status?: string | null
           type?: string | null
-          user_id: string
+          user_id?: string | null
         }
         Update: {
           api?: string | null
-          api_key_id?: string | null
           chat?: Json | null
           completion_token?: number | null
           created_at?: string | null
-          id?: number
+          id?: string
           ip_address?: string | null
+          onellm_api_key?: string | null
           owner_id?: string
           prompt_tokens?: number | null
           provider?: string | null
+          status?: string | null
           type?: string | null
-          user_id?: string
+          user_id?: string | null
         }
         Relationships: [
           {
-            foreignKeyName: "public_logs_api_key_id_fkey"
-            columns: ["api_key_id"]
+            foreignKeyName: "public_logs_onellm_api_key_fkey"
+            columns: ["onellm_api_key"]
             isOneToOne: false
             referencedRelation: "keys"
-            referencedColumns: ["id"]
+            referencedColumns: ["key"]
           },
           {
-            foreignKeyName: "public_logs_user_id_fkey"
-            columns: ["user_id"]
+            foreignKeyName: "public_logs_owner_id_fkey"
+            columns: ["owner_id"]
             isOneToOne: false
             referencedRelation: "users"
             referencedColumns: ["id"]
