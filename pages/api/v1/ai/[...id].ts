@@ -1,3 +1,8 @@
+/* eslint-disable prefer-const */
+/* eslint-disable no-continue */
+/* eslint-disable no-await-in-loop */
+/* eslint-disable no-restricted-syntax */
+/* eslint-disable camelcase */
 /* eslint-disable no-underscore-dangle */
 import type { NextApiRequest, NextApiResponse } from "next";
 
@@ -14,20 +19,79 @@ const constructOpenAIUrl = (req: NextApiRequest): string => {
   return `${baseUrl}${path}`;
 };
 
-type LogCpy = {
-  api: string | null;
-  api_key_id: string | null;
-  chat: any;
-  completion_token: number | null;
-  created_at: string | null;
-  id: number;
-  ip_address: string | null;
-  owner_id: string;
-  prompt_tokens: number | null;
-  provider: string | null;
-  type: string | null;
-  user_id: string;
-};
+async function processTags(
+  tagsString: string,
+  owner_id: string,
+  log_id: string
+) {
+  try {
+    /* 
+  1. Evaluate wherther tagsString is a string or array of string
+  2. Extract all tags from the string
+  3. Check in database (supabase.tags) where owner_id = user_id and tag.name = tag
+  4. If tag does not exist, create it -> get the array of tag_id
+  5. update log_tags junction table with tag_id and log_id
+  */
+    // Check if tagsString is actually an array or a single string, convert to array if the latter
+    let tags;
+    try {
+      // Attempt to parse tagsString in case it's JSON-encoded
+      tags = JSON.parse(tagsString);
+      // Ensure tags is an array even if tagsString is a single tag
+      if (!Array.isArray(tags)) {
+        tags = [tags];
+      }
+    } catch (error) {
+      // If JSON.parse fails, assume tagsString is a single, non-JSON-encoded tag
+      tags = [tagsString];
+    }
+
+    const tagIds = [];
+
+    for (const tagName of tags) {
+      // Check if the tag already exists in the database
+      let { data: tag, error } = await supabase
+        .from("tags")
+        .select("id")
+        .eq("name", tagName)
+        .eq("owner_id", owner_id)
+        .single();
+
+      // If the tag doesn't exist, create it
+      if (!tag) {
+        const { data: newTag, error: createError } = await supabase
+          .from("tags")
+          .insert([{ name: tagName, owner_id }])
+          .select();
+
+        if (createError || !newTag) {
+          console.error("Error creating tag:", createError);
+          continue; // Skip to the next tag if there's an error
+        }
+
+        // eslint-disable-next-line prefer-destructuring
+        tag = newTag[0];
+      }
+
+      // Assuming tag creation or retrieval was successful, add tag id to the list
+      tagIds.push(tag.id);
+    }
+
+    // Now, with all the tag IDs, we can update the log_tags junction table
+    // This assumes you might want to link multiple tags to a single log entry
+    for (const tagId of tagIds) {
+      const { error } = await supabase
+        .from("log_tags")
+        .insert([{ log_id, tag_id: tagId }]);
+
+      if (error) {
+        console.error("Error linking tag to log:", error);
+      }
+    }
+  } catch (error) {
+    console.error("Error processing tags:", error);
+  }
+}
 
 export default async function handler(
   req: NextApiRequest,
@@ -97,6 +161,13 @@ export default async function handler(
         .from("logs")
         .insert([logData])
         .select();
+
+      if (error) {
+        throw new Error("Error creating log");
+      }
+
+      const { id: newlogId } = supabaseResponse[0];
+      processTags(OneLLMTags as string, ownerId, newlogId);
     }
 
     return res.status(openAIResponse.status).json(openAIData);
