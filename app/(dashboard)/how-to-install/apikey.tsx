@@ -1,3 +1,5 @@
+"use client";
+
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { Copy, DeleteIcon, LoaderIcon, Trash2 } from "lucide-react";
@@ -177,12 +179,4 @@ function KeysTable() {
   );
 }
 
-const Index = () => {
-  return (
-    <Layout>
-      <KeysTable />
-    </Layout>
-  );
-};
-
-export default Index;
+export default KeysTable;

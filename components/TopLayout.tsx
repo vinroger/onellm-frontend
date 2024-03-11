@@ -1,3 +1,4 @@
+"use client";
 import { Navbar } from "./navbar";
 
 const NAVBAR_WIDTH = "220px";

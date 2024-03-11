@@ -1,3 +1,5 @@
+"use client";
+
 /* eslint-disable react/no-array-index-key */
 import { Braces } from "lucide-react";
 import { Chat, Log } from "@/types/table";

@@ -1,3 +1,5 @@
+"use client";
+
 /* eslint-disable react/jsx-curly-newline */
 import { ColumnDef, Row } from "@tanstack/react-table";
 import { useEffect, useState } from "react";
@@ -9,12 +11,10 @@ import {
   usePaginatedDataTable,
 } from "@/components/ui/data-table";
 import { Card } from "@/components/ui/card";
-import useAsync from "@/utils/hooks/useAsync";
 import { toHumanDateString } from "@/utils/functions/date";
 
-import { DetailDialog } from "./dialog";
-import { useSupabase } from "@/utils/hooks/supabase";
 import { Log } from "@/types/table";
+import { DetailDialog } from "./dialog";
 
 const columns: ColumnDef<Log>[] = [
   {
@@ -117,37 +117,31 @@ export default function Home() {
   }, []);
 
   if (!table || loading) {
-    return (
-      <Layout>
-        <LoaderIcon className="animate-spin" />
-      </Layout>
-    );
+    return <LoaderIcon className="animate-spin" />;
   }
 
   return (
-    <Layout>
-      <div className="flex flex-col flex-1 p-5 space-y-2">
-        <Card className="space-y-4 p-7">
-          <div>
-            <h1 className="p-0 m-0 text-lg font-bold">Prompt Logs</h1>
-            <p className="p-0 m-0 mb-4 text-sm text-neutral-600">
-              See your usage of LLM here!
-            </p>
-          </div>
-          <PaginatedDataTable
-            onRowClick={(row: Row<any>) => {
-              setSelectedLog(row.original);
-              setIsModalOpen(true);
-            }}
-          />
-          <DataTablePagination table={table} />
-        </Card>
-        <DetailDialog
-          isOpen={isModalOpen}
-          onClose={() => setIsModalOpen(false)}
-          log={selectedLog}
+    <div className="flex flex-col flex-1 p-5 space-y-2">
+      <Card className="space-y-4 p-7">
+        <div>
+          <h1 className="p-0 m-0 text-lg font-bold">Prompt Logs</h1>
+          <p className="p-0 m-0 mb-4 text-sm text-neutral-600">
+            See your usage of LLM here!
+          </p>
+        </div>
+        <PaginatedDataTable
+          onRowClick={(row: Row<any>) => {
+            setSelectedLog(row.original);
+            setIsModalOpen(true);
+          }}
         />
-      </div>
-    </Layout>
+        <DataTablePagination table={table} />
+      </Card>
+      <DetailDialog
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        log={selectedLog}
+      />
+    </div>
   );
 }
