@@ -29,5 +29,21 @@ export default async function handler(
     return res.status(200).json(datasets);
   }
 
+  if (req.method === "PUT") {
+    const fields = req.body;
+    const { data: updatedDataset, error } = await supabase
+      .from("datasets")
+      .update(fields)
+      .eq("id", datasetId)
+      .eq("owner_id", userId)
+      .select();
+    if (error) {
+      console.error("Error updating dataset:", error);
+      return res.status(500).json({ error: error.message });
+    }
+
+    return res.status(200).json(updatedDataset);
+  }
+
   return res.status(405).end(`Method ${req.method} Not Allowed`);
 }

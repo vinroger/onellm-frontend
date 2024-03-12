@@ -13,6 +13,11 @@ const fetchDataset = async (id: string) => {
   return response.data[0];
 };
 
+const updateDatasetName = async (id: string, name: string) => {
+  const response = await axios.put(`/api/v1/datasets/${id}`, { name });
+  return response.data;
+};
+
 export default function Layout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const id = pathname?.split("/dataset/")[1];
@@ -34,9 +39,15 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   }, []);
 
   const breadcrumbs = [
-    { link: "/dashboard", title: "Home" },
-    { link: "/dataset", title: "Dataset" },
-    { title: dataset?.name ?? "" },
+    { link: "/dashboard", title: "Home", type: "link" },
+    { link: "/dataset", title: "Dataset", type: "link" },
+    {
+      title: dataset?.name ?? "",
+      type: "editable",
+      onEdit: (text: string) => {
+        updateDatasetName(id, text);
+      },
+    },
   ];
 
   return (
