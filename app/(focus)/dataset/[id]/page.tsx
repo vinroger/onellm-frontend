@@ -38,6 +38,10 @@ function Index() {
   // Context stuff
   const [activeDatapointId, setActiveDatapointId] = React.useState<string>("");
 
+  const activeDatapoint = datapoints.find(
+    (datapoint) => datapoint.id === activeDatapointId
+  );
+
   return (
     <div className="flex flex-row min-w-full min-h-full space-x-2 p-7">
       <div className="flex overflow-scroll max-h-full w-[300px] bg-white rounded-lg ">
@@ -50,7 +54,7 @@ function Index() {
         />
       </div>
       <div className="flex flex-1 max-h-full overflow-scroll bg-white rounded-lg">
-        <Details />
+        <Details datapoint={activeDatapoint} refetch={loadDatapoints} />
       </div>
     </div>
   );
