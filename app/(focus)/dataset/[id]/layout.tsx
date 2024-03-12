@@ -5,6 +5,7 @@ import { DataSet } from "@/types/table";
 import axios from "axios";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
+import { Toaster } from "@/components/ui/sonner";
 
 // const NAVBAR_WIDTH = "220px";
 
@@ -56,6 +57,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       <div className="flex flex-1 overflow-scroll bg-neutral-50">
         {children}
       </div>
+      <Toaster />
     </div>
   );
 }

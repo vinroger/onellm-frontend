@@ -45,5 +45,18 @@ export default async function handler(
     return res.status(200).json(updatedDataset);
   }
 
+  if (req.method === "DELETE") {
+    const { data: datasets, error } = await supabase
+      .from("datasets")
+      .delete()
+      .eq("id", datasetId)
+      .eq("owner_id", userId)
+      .select("*");
+    if (error) {
+      return res.status(500).json({ error: error.message });
+    }
+    return res.status(200).json({ datasets });
+  }
+
   return res.status(405).end(`Method ${req.method} Not Allowed`);
 }
