@@ -1,3 +1,5 @@
+"use client";
+
 import { FaHome, FaTable } from "react-icons/fa";
 import { IoMdSettings } from "react-icons/io";
 import { useRouter, usePathname } from "next/navigation";

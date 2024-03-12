@@ -1,10 +1,11 @@
 import React from "react";
-import Dataset from "./dataset";
+import Details from "./details";
 
 function Index() {
   return (
     <div>
-      <Dataset />
+      <Details />
+      hello
     </div>
   );
 }
