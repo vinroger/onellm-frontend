@@ -75,7 +75,15 @@ export type Database = {
           owner_id?: string;
           updated_at?: string | null;
         };
-        Relationships: [];
+        Relationships: [
+          {
+            foreignKeyName: "public_datasets_owner_id_fkey";
+            columns: ["owner_id"];
+            isOneToOne: false;
+            referencedRelation: "users";
+            referencedColumns: ["id"];
+          },
+        ];
       };
       evaluation_models: {
         Row: {
@@ -99,7 +107,7 @@ export type Database = {
             referencedColumns: ["id"];
           },
           {
-            foreignKeyName: "evaluation_models_model_id_fkey";
+            foreignKeyName: "public_evaluation_models_model_id_fkey";
             columns: ["model_id"];
             isOneToOne: false;
             referencedRelation: "models";

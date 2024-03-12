@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/navigation-menu";
 import { cn } from "@/lib/utils";
 import { toTitleCase } from "@/utils/functions/string";
+import Image from "next/image";
 
 function NavItem({
   item,
@@ -97,7 +98,20 @@ export function Navbar() {
   const { user } = useUser();
   return (
     <div className="flex flex-col border-neutral-300 border-e-[1px] min-h-full justify-start">
-      <div className="p-5 text-xl font-bold">OneGPT</div>
+      <a
+        className="flex flex-row items-center p-5 ml-2 space-x-3 text-xl font-bold cursor-pointer hover:opacity-50"
+        href="/dashboard"
+      >
+        <Image
+          src="/onellmlogocropped.png"
+          alt="onellm logo"
+          className="w-6"
+          width={50}
+          height={50}
+        />
+
+        <p>OneLLM</p>
+      </a>
       <NavigationMenu className="flex-col items-start justify-between flex-1 w-full max-w-full p-3 max-h-fit">
         <div className="flex flex-col w-full list-none">
           {navItems.map((item) => (

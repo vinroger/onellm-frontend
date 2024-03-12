@@ -53,7 +53,9 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   return (
     <div className="flex flex-col w-screen max-h-screen min-h-screen">
       <TopNavbar breadcrumbs={breadcrumbs} />
-      <div className="flex-1 overflow-scroll bg-neutral-50">{children}</div>
+      <div className="flex flex-1 overflow-scroll bg-neutral-50">
+        {children}
+      </div>
     </div>
   );
 }
