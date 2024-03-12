@@ -213,7 +213,7 @@ function Details({
   if (!datapoint) {
     return (
       <div className="flex items-center justify-center min-w-full min-h-full p-7">
-        Please select a file from the left to continue.
+        Please select a datapoint from the left to continue.
       </div>
     );
   }

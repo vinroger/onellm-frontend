@@ -14,7 +14,7 @@ import { v4 as uuidv4 } from "uuid";
 const postNewDatapoint = async (ownerId: string, datasetId: string) => {
   const newDatapoint: DataPoint = {
     id: uuidv4(),
-    title: "New file",
+    title: "New datapoint",
     data: [],
     dataset_id: datasetId,
     owner_id: ownerId,
@@ -154,7 +154,7 @@ function Files({
   return (
     <div className="flex flex-col min-w-full p-4">
       <div className="flex flex-row items-center mb-4 ">
-        <h1 className="p-0 m-0 font-bold text-md">Files</h1>
+        <h1 className="p-0 m-0 font-bold text-md">Datapoints</h1>
         {loading && (
           <LoaderIcon className="w-4 h-4 ml-2 animate-spin text-neutral-500" />
         )}
@@ -166,7 +166,7 @@ function Files({
           handleNewFile();
         }}
       >
-        + New file
+        + New datapoint
       </Button>
       {datapoints &&
         datapoints.map((datapoint, index) => {
