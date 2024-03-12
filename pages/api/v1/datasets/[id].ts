@@ -33,7 +33,7 @@ export default async function handler(
     const fields = req.body;
     const { data: updatedDataset, error } = await supabase
       .from("datasets")
-      .update(fields)
+      .update({ ...fields, updated_at: new Date().toISOString() })
       .eq("id", datasetId)
       .eq("owner_id", userId)
       .select();

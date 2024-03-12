@@ -49,15 +49,13 @@ const columns: ColumnDef<Log>[] = [
       const maxLength = 50; // Maximum characters length
       const { chat } = info.row.original as any;
       if (!chat) return "N/A";
-      const content = chat.find((c: any) => c.role === "assistant");
-      if (!content) return "N/A";
-      const chatcontent = chat.find((c: any) => c.role === "user");
-      if (!chatcontent) return "N/A";
-      const { prompt } = chatcontent;
+      const prompt = chat.find((c: any) => c.role === "user");
       if (!prompt) return "N/A";
-      return prompt.length > maxLength
-        ? `${prompt.substring(0, maxLength - 3)}...`
-        : prompt;
+      const { content } = prompt;
+      if (!content) return "N/A";
+      return content.length > maxLength
+        ? `${content.substring(0, maxLength - 3)}...`
+        : content;
     },
   },
   {
@@ -67,15 +65,13 @@ const columns: ColumnDef<Log>[] = [
       const maxLength = 50; // Maximum characters length
       const { chat } = info.row.original as any;
       if (!chat) return "N/A";
-      const content = chat.find((c: any) => c.role === "assistant");
-      if (!content) return "N/A";
-      const chatcontent = chat.find((c: any) => c.role === "user");
-      if (!chatcontent) return "N/A";
-      const { prompt } = chatcontent;
+      const prompt = chat.find((c: any) => c.role === "assistant");
       if (!prompt) return "N/A";
-      return prompt.length > maxLength
-        ? `${prompt.substring(0, maxLength - 3)}...`
-        : prompt;
+      const { content } = prompt;
+      if (!content) return "N/A";
+      return content.length > maxLength
+        ? `${content.substring(0, maxLength - 3)}...`
+        : content;
     },
   },
   {

@@ -80,6 +80,8 @@ export function BreadcrumbDemo({ breadcrumbs }: { breadcrumbs: Breadcrumb[] }) {
                   type="text"
                   value={editableValues[index]}
                   onChange={(event) => handleChange(index, event)}
+                  style={{ maxWidth: "500px" }}
+                  size={editableValues[index].length || 1}
                 />
               ) : (
                 <BreadcrumbLink

@@ -36,6 +36,14 @@ export default async function handler(
       .eq("owner_id", userId)
       .select();
 
+    // update dataset updated_date
+    await supabase
+      .from("datasets")
+      .update({ updated_at: new Date().toISOString() })
+      .eq("id", datasetId)
+      .eq("owner_id", userId)
+      .select();
+
     if (error) {
       return res.status(500).json({ error: error.message });
     }

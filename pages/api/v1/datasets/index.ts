@@ -19,7 +19,7 @@ export default async function handler(
       .from("datasets")
       .select("*")
       .eq("owner_id", userId)
-      .order("created_at", { ascending: false });
+      .order("updated_at", { ascending: false });
     if (error) {
       console.error("Error getting logs:", error);
       return res.status(500).json({ error: error.message });
