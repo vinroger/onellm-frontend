@@ -18,6 +18,9 @@ export function sensitizeKey(
   behind: number,
   maxMask?: number
 ): string {
+  if (!key) {
+    return "";
+  }
   if (key.length <= front + behind) {
     return key;
   }

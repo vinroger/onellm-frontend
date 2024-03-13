@@ -5,6 +5,15 @@ import { v4 as uuidv4 } from "uuid";
 import { generateJwtToken } from "@/utils/functions/jwt";
 import supabase from "../../supabase-server.component";
 
+type model_provider_api_key = {
+  owner_id: string;
+  key: any;
+  name: void;
+  id: string;
+  created_at: string;
+  last_used: string;
+};
+
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
@@ -26,28 +35,46 @@ export default async function handler(
     return res.status(200).json(api_keys);
   }
 
-  //   if (req.method === "POST") {
-  //     const { name } = req.body;
+  if (req.method === "POST") {
+    const { data, error } = await supabase
+      .from("model_provider_api_keys")
+      .insert([
+        {
+          owner_id: userId,
+          api_key: req.body.api_key,
+          id: uuidv4(),
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString(),
+          model_provider: req.body.model_provider,
+        },
+      ])
+      .eq("owner_id", userId)
+      .select("*");
 
-  //     const key = generateJwtToken({ ownerId: userId });
+    if (error) {
+      return res.status(500).json({ error: error.message });
+    }
 
-  //     const { data, error } = await supabase.from("keys").insert([
-  //       {
-  //         owner_id: userId,
-  //         key,
-  //         name,
-  //         id: uuidv4(),
-  //         created_at: new Date().toISOString(),
-  //         last_used: new Date().toISOString(),
-  //       },
-  //     ]);
+    return res.status(201).json(data);
+  }
 
-  //     if (error) {
-  //       return res.status(500).json({ error: error.message });
-  //     }
+  if (req.method === "PUT") {
+    const { data, error } = await supabase
+      .from("model_provider_api_keys")
+      .update({
+        api_key: req.body.api_key,
+        updated_at: new Date().toISOString(),
+      })
+      .eq("owner_id", userId)
+      .eq("model_provider", req.body.model_provider)
+      // .eq("id", req.body.id) TODO
+      .select("*");
 
-  //     return res.status(201).json(data);
-  //   }
+    if (error) {
+      return res.status(500).json({ error: error.message });
+    }
+    return res.status(200).json(data);
+  }
 
   return res.status(405).end(`Method ${req.method} Not Allowed`);
 }

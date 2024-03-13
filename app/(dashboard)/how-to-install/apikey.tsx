@@ -153,9 +153,9 @@ function KeysTable() {
         <Dialog open={open} onOpenChange={() => setOpen(false)}>
           <DialogContent className="w-[850px]">
             <DialogHeader>
-              <DialogTitle>Log Details</DialogTitle>
+              <DialogTitle>Analytics Key</DialogTitle>
             </DialogHeader>
-            <p>Enter a name for your new API key.</p>
+            <p>Enter a name for your new OneLLM analytics API key.</p>
             <Input
               placeholder="My New AI Application Key"
               autoFocus

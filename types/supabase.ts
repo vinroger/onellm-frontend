@@ -399,6 +399,41 @@ export type Database = {
           },
         ];
       };
+      model_repos: {
+        Row: {
+          data: Json | null;
+          description: string | null;
+          id: string;
+          name: string;
+          owner_id: string | null;
+          type: string | null;
+        };
+        Insert: {
+          data?: Json | null;
+          description?: string | null;
+          id: string;
+          name: string;
+          owner_id?: string | null;
+          type?: string | null;
+        };
+        Update: {
+          data?: Json | null;
+          description?: string | null;
+          id?: string;
+          name?: string;
+          owner_id?: string | null;
+          type?: string | null;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "public_models_repo_owner_id_fkey";
+            columns: ["owner_id"];
+            isOneToOne: false;
+            referencedRelation: "users";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
       models: {
         Row: {
           created_at: string | null;
@@ -445,7 +480,7 @@ export type Database = {
             foreignKeyName: "models_models_repo_id_fkey";
             columns: ["models_repo_id"];
             isOneToOne: false;
-            referencedRelation: "models_repo";
+            referencedRelation: "model_repos";
             referencedColumns: ["id"];
           },
           {
@@ -456,30 +491,6 @@ export type Database = {
             referencedColumns: ["id"];
           },
         ];
-      };
-      models_repo: {
-        Row: {
-          data: Json | null;
-          description: string | null;
-          id: string;
-          name: string;
-          type: string | null;
-        };
-        Insert: {
-          data?: Json | null;
-          description?: string | null;
-          id: string;
-          name: string;
-          type?: string | null;
-        };
-        Update: {
-          data?: Json | null;
-          description?: string | null;
-          id?: string;
-          name?: string;
-          type?: string | null;
-        };
-        Relationships: [];
       };
       tags: {
         Row: {

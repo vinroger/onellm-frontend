@@ -1,7 +1,8 @@
 import React from "react";
+import Settings from "./settings";
 
-function Settings() {
-  return <div>Settings</div>;
+function Page() {
+  return <Settings />;
 }
 
-export default Settings;
+export default Page;

@@ -69,6 +69,19 @@ export type Key = Database["public"]["Tables"]["keys"]["Row"];
 export type KeyInsert = Database["public"]["Tables"]["keys"]["Insert"];
 export type KeyUpdate = Database["public"]["Tables"]["keys"]["Update"];
 
+export type ModelProviderApiKey =
+  Database["public"]["Tables"]["model_provider_api_keys"]["Row"];
+export type ModelProviderApiKeyInsert =
+  Database["public"]["Tables"]["model_provider_api_keys"]["Insert"];
+export type ModelProviderApiKeyUpdate =
+  Database["public"]["Tables"]["model_provider_api_keys"]["Update"];
+
+export type ModelRepo = Database["public"]["Tables"]["model_repos"]["Row"];
+export type ModelRepoInsert =
+  Database["public"]["Tables"]["model_repos"]["Insert"];
+export type ModelRepoUpdate =
+  Database["public"]["Tables"]["model_repos"]["Update"];
+
 export type Chat = {
   role: string;
   content: string;
