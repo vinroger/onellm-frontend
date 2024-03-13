@@ -45,6 +45,13 @@ export type Database = {
             referencedRelation: "datasets";
             referencedColumns: ["id"];
           },
+          {
+            foreignKeyName: "public_data_points_owner_id_fkey";
+            columns: ["owner_id"];
+            isOneToOne: false;
+            referencedRelation: "users";
+            referencedColumns: ["id"];
+          },
         ];
       };
       datasets: {
@@ -354,45 +361,123 @@ export type Database = {
           },
         ];
       };
-      models: {
+      model_provider_api_keys: {
         Row: {
           api_key: string | null;
-          created_at: string | null;
-          description: string | null;
+          created_at: string;
+          data: string | null;
           id: string;
-          initial_prompt: Json | null;
-          integration_id: string | null;
-          name: string;
-          owner_id: string;
-          provider: string | null;
+          model_provider: string | null;
+          owner_id: string | null;
           updated_at: string | null;
-          version_id: string | null;
         };
         Insert: {
           api_key?: string | null;
-          created_at?: string | null;
-          description?: string | null;
-          id: string;
-          initial_prompt?: Json | null;
-          integration_id?: string | null;
-          name: string;
-          owner_id: string;
-          provider?: string | null;
+          created_at?: string;
+          data?: string | null;
+          id?: string;
+          model_provider?: string | null;
+          owner_id?: string | null;
           updated_at?: string | null;
-          version_id?: string | null;
         };
         Update: {
           api_key?: string | null;
+          created_at?: string;
+          data?: string | null;
+          id?: string;
+          model_provider?: string | null;
+          owner_id?: string | null;
+          updated_at?: string | null;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "public_model_provider_api_keys_owner_id_fkey";
+            columns: ["owner_id"];
+            isOneToOne: false;
+            referencedRelation: "users";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      models: {
+        Row: {
+          created_at: string | null;
+          data: Json | null;
+          description: string | null;
+          id: string;
+          model_provider_api_key_id: string | null;
+          models_repo_id: string | null;
+          name: string;
+          owner_id: string | null;
+          updated_at: string | null;
+        };
+        Insert: {
           created_at?: string | null;
+          data?: Json | null;
+          description?: string | null;
+          id: string;
+          model_provider_api_key_id?: string | null;
+          models_repo_id?: string | null;
+          name: string;
+          owner_id?: string | null;
+          updated_at?: string | null;
+        };
+        Update: {
+          created_at?: string | null;
+          data?: Json | null;
           description?: string | null;
           id?: string;
-          initial_prompt?: Json | null;
-          integration_id?: string | null;
+          model_provider_api_key_id?: string | null;
+          models_repo_id?: string | null;
           name?: string;
-          owner_id?: string;
-          provider?: string | null;
+          owner_id?: string | null;
           updated_at?: string | null;
-          version_id?: string | null;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "models_model_provider_api_key_id_fkey";
+            columns: ["model_provider_api_key_id"];
+            isOneToOne: false;
+            referencedRelation: "model_provider_api_keys";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "models_models_repo_id_fkey";
+            columns: ["models_repo_id"];
+            isOneToOne: false;
+            referencedRelation: "models_repo";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "models_owner_id_fkey";
+            columns: ["owner_id"];
+            isOneToOne: false;
+            referencedRelation: "users";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      models_repo: {
+        Row: {
+          data: Json | null;
+          description: string | null;
+          id: string;
+          name: string;
+          type: string | null;
+        };
+        Insert: {
+          data?: Json | null;
+          description?: string | null;
+          id: string;
+          name: string;
+          type?: string | null;
+        };
+        Update: {
+          data?: Json | null;
+          description?: string | null;
+          id?: string;
+          name?: string;
+          type?: string | null;
         };
         Relationships: [];
       };
@@ -471,8 +556,15 @@ export type Database = {
         };
         Relationships: [
           {
-            foreignKeyName: "trainings_base_model_id_fkey";
+            foreignKeyName: "public_trainings_base_model_id_fkey";
             columns: ["base_model_id"];
+            isOneToOne: false;
+            referencedRelation: "models";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "public_trainings_result_model_id_fkey";
+            columns: ["result_model_id"];
             isOneToOne: false;
             referencedRelation: "models";
             referencedColumns: ["id"];
@@ -482,13 +574,6 @@ export type Database = {
             columns: ["dataset_id"];
             isOneToOne: false;
             referencedRelation: "datasets";
-            referencedColumns: ["id"];
-          },
-          {
-            foreignKeyName: "trainings_result_model_id_fkey";
-            columns: ["result_model_id"];
-            isOneToOne: false;
-            referencedRelation: "models";
             referencedColumns: ["id"];
           },
         ];

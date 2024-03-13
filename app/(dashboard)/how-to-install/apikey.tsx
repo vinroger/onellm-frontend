@@ -142,9 +142,9 @@ function KeysTable() {
     <div className="p-4">
       <Card className="w-3/4 p-7">
         <div>
-          <h1 className="p-0 m-0 text-lg font-bold">API Keys</h1>
+          <h1 className="p-0 m-0 text-lg font-bold">Analytics API Keys</h1>
           <p className="p-0 m-0 mb-4 text-sm text-neutral-600">
-            Create API Key to access the OneLLM API.
+            Create Analytics API Key to access the OneLLM API.
           </p>
         </div>
         <Button variant="default" onClick={() => setOpen(true)}>

@@ -41,16 +41,26 @@ function NavItem({
 
 function NavItemRenderer({
   itemName,
+  itemKey,
   icon,
 }: {
+  itemKey: string;
   itemName: string;
   icon: React.ReactNode;
 }) {
   const router = useRouter();
+  const pathname = usePathname();
+  const isActive =
+    !!pathname && pathname.split("/")[1] === itemKey.toLowerCase();
   return (
     <NavItem
       item={
-        <div className="flex flex-row items-center">
+        <div
+          className={cn(
+            "flex flex-row items-center",
+            isActive && "font-bold text-[14.5px]"
+          )}
+        >
           {icon}
           {toTitleCase(itemName)}
         </div>
@@ -117,6 +127,7 @@ export function Navbar() {
           {navItems.map((item) => (
             <NavItemRenderer
               key={item.name}
+              itemKey={item.name}
               itemName={item.name}
               icon={item.icon}
             />
