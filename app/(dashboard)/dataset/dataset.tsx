@@ -77,8 +77,8 @@ function DatasetCard({
     >
       <div className="space-y-1">
         <h1 className="p-0 m-0 font-semibold text-md">{datasetName}</h1>
-        <p className="p-0 m-0 text-sm text-neutral-600">{description}</p>
-        <p className="p-0 m-0 mb-2 text-sm text-neutral-600">
+        <p className="p-0 m-0 text-xs text-neutral-600">{description}</p>
+        <p className="p-0 m-0 mb-2 text-xs text-neutral-600">
           Last Edited at {lastEdited}
         </p>
       </div>

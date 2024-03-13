@@ -2,7 +2,7 @@ import { Metadata } from "next";
 import ApiKeySettings from "./apikey";
 
 export const metadata: Metadata = {
-  title: "My Page Title",
+  title: "OneLLM - API Key Settings",
 };
 
 export default function Page() {

@@ -1,7 +1,12 @@
 import React from "react";
+import Model from "./model";
 
 function Page() {
-  return <div>Page</div>;
+  return (
+    <div>
+      <Model />
+    </div>
+  );
 }
 
 export default Page;

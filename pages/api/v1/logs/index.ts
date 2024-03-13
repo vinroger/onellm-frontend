@@ -41,24 +41,5 @@ export default async function handler(
     return res.status(200).json({ logs });
   }
 
-  if (req.method === "POST") {
-    const reqData = req.body as Log;
-
-    const { data, error } = await supabase.from("logs").insert([
-      {
-        owner_id: userId,
-        name,
-        description,
-      },
-    ]);
-
-    if (error) {
-      console.error("Error creating log:", error);
-      return res.status(500).json({ error: error.message });
-    }
-
-    return res.status(201).json(data);
-  }
-
   return res.status(405).end(`Method ${req.method} Not Allowed`);
 }

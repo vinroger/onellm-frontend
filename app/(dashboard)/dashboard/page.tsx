@@ -2,7 +2,7 @@ import { Metadata } from "next";
 import Home from "./home-page";
 
 export const metadata: Metadata = {
-  title: "My Page Title",
+  title: "OneLLM - Dashboard",
 };
 
 export default function Page() {
