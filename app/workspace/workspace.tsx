@@ -245,24 +245,26 @@ function Workspace() {
       </div>
       <Separator />
 
-      <div className="p-7">
-        <div className="flex flex-row items-center justify-between">
-          <div className="flex flex-row items-center">
-            <p className="mr-1 text-lg">Welcome back,</p>
-            <p className="text-lg font-semibold">{user?.fullName}</p>
-            <p className="mr-1 text-lg">!</p>
-          </div>
-          <div>
-            <Button
-              onClick={() => {
-                setIsDialogOpen(true);
-              }}
-            >
-              + Create New Project
-            </Button>
+      {user?.fullName && (
+        <div className="p-7">
+          <div className="flex flex-row items-center justify-between">
+            <div className="flex flex-row items-center">
+              <p className="mr-1 text-lg">Welcome back,</p>
+              <p className="text-lg font-semibold">{user?.fullName}</p>
+              <p className="mr-1 text-lg">!</p>
+            </div>
+            <div>
+              <Button
+                onClick={() => {
+                  setIsDialogOpen(true);
+                }}
+              >
+                + Create New Project
+              </Button>
+            </div>
           </div>
         </div>
-      </div>
+      )}
       <div className="grid grid-cols-1 gap-4 px-7 sm:grid-cols-3 lg:grid-cols-4">
         {status === "LOADING" ||
         projectsData?.length === 0 ||

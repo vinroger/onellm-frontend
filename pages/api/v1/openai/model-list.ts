@@ -3,26 +3,31 @@ import { getAuth } from "@clerk/nextjs/server";
 import { v4 as uuidv4 } from "uuid";
 
 import OpenAI from "openai";
+import {
+  OPEN_AI_AVAILABLE_GPT_MODELS_FOR_FINE_TUNE,
+  OPEN_AI_GPT_MODELS,
+} from "@/constants/openai";
 import supabase from "../../supabase-server.component";
 
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  const { userId } = getAuth(req);
+  try {
+    const { userId } = getAuth(req);
 
-  if (!userId) {
-    return res.status(401).json({ error: "Unauthorized" });
-  }
+    if (!userId) {
+      return res.status(401).json({ error: "Unauthorized" });
+    }
 
-  if (req.method === "POST") {
-    if (req.query.method === "model_provider_api_key_id") {
-      const { projectId } = req.body as { projectId: string };
+    if (req.method === "POST") {
+      if (req.query.method === "model_provider_api_key_id") {
+        const { projectId } = req.body as { projectId: string };
 
-      if (!projectId) {
-        return res.status(400).json({ error: "projectId is required" });
-      }
-      /* 
+        if (!projectId) {
+          return res.status(400).json({ error: "projectId is required" });
+        }
+        /* 
 
     1. The request body should contain the model_provider_api_key_id
     2. Hence, we first make a request to supabase to get the key of the model_provider_api_key_id 
@@ -31,37 +36,97 @@ export default async function handler(
     4. We then return the list of models from the openai api
     */
 
-      const { data: keys, error } = await supabase
+        const { data: keys, error } = await supabase
+          .from("model_provider_api_keys")
+          .select("*")
+          .eq("owner_id", userId)
+          .eq("project_id", projectId)
+          .eq("id", req.body.model_provider_api_key_id);
+
+        if (error) {
+          return res.status(500).json({ error: error.message });
+        }
+        if (keys.length === 0) {
+          return res.status(401).json({ error: "No keys found for the user" });
+        }
+        const { key: openAIKey } = keys[0] as any;
+        // use openai library
+        const openai = new OpenAI({
+          apiKey: openAIKey, // This is the default and can be omitted
+        });
+        const models = await openai.models.list();
+        return res.status(200).json(models);
+      }
+
+      if (req.query.method === "openai_key") {
+        // use openai library
+        const openai = new OpenAI({
+          apiKey: req.body.openai_key, // This is the default and can be omitted
+        });
+        const models = await openai.models.list();
+        return res.status(200).json(models);
+      }
+    }
+
+    if (req.method === "GET") {
+      const { projectId } = req.query as any;
+
+      if (!projectId) {
+        return res.status(400).json({ error: "projectId is required" });
+      }
+
+      // get the api key from the database
+
+      const { data: apikeys, error } = await supabase
         .from("model_provider_api_keys")
         .select("*")
         .eq("owner_id", userId)
-        .eq("project_id", projectId)
-        .eq("id", req.body.model_provider_api_key_id);
+        .eq("project_id", projectId);
 
-      if (error) {
-        return res.status(500).json({ error: error.message });
+      const openAIAPIKey = apikeys?.[0]?.api_key;
+      const modelProviderApiKeyId = apikeys?.[0]?.id;
+
+      if (error || !openAIAPIKey) {
+        return res.status(500).json({ error: error?.message });
       }
-      if (keys.length === 0) {
-        return res.status(401).json({ error: "No keys found for the user" });
-      }
-      const { key: openAIKey } = keys[0] as any;
+
       // use openai library
       const openai = new OpenAI({
-        apiKey: openAIKey, // This is the default and can be omitted
+        apiKey: openAIAPIKey,
       });
-      const models = await openai.models.list();
-      return res.status(200).json(models);
+
+      const { data: models } = await openai.models.list();
+
+      // map to supabase form
+      const supabaseModels = models.map((model) => {
+        return {
+          id: uuidv4(),
+          name: model.id,
+          owner_id: userId,
+          project_id: projectId,
+          model_provider_api_key_id: modelProviderApiKeyId,
+          type: model.id.startsWith("ft:") ? "fine-tune" : "base",
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString(),
+        };
+      });
+
+      // Now time to update supabase
+      const { data: supabaseResponse, error: updateError } = await supabase
+        .from("models")
+        .upsert(supabaseModels, { onConflict: "name,project_id" })
+        .select("*");
+
+      if (updateError) {
+        return res.status(500).json({ error: updateError.message });
+      }
+
+      return res.status(200).json(supabaseResponse);
     }
 
-    if (req.query.method === "openai_key") {
-      // use openai library
-      const openai = new OpenAI({
-        apiKey: req.body.openai_key, // This is the default and can be omitted
-      });
-      const models = await openai.models.list();
-      return res.status(200).json(models);
-    }
+    return res.status(405).end(`Method ${req.method} Not Allowed`);
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ error: error?.message });
   }
-
-  return res.status(405).end(`Method ${req.method} Not Allowed`);
 }
