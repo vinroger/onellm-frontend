@@ -16,7 +16,7 @@ export type Database = {
           dataset_id: string | null;
           id: string;
           owner_id: string;
-          project_id: string | null;
+          project_id: string;
           title: string;
           updated_at: string | null;
         };
@@ -26,7 +26,7 @@ export type Database = {
           dataset_id?: string | null;
           id: string;
           owner_id: string;
-          project_id?: string | null;
+          project_id: string;
           title: string;
           updated_at?: string | null;
         };
@@ -36,7 +36,7 @@ export type Database = {
           dataset_id?: string | null;
           id?: string;
           owner_id?: string;
-          project_id?: string | null;
+          project_id?: string;
           title?: string;
           updated_at?: string | null;
         };
@@ -72,7 +72,7 @@ export type Database = {
           integration_id: string | null;
           name: string;
           owner_id: string;
-          project_id: string | null;
+          project_id: string;
           updated_at: string | null;
         };
         Insert: {
@@ -82,7 +82,7 @@ export type Database = {
           integration_id?: string | null;
           name: string;
           owner_id: string;
-          project_id?: string | null;
+          project_id: string;
           updated_at?: string | null;
         };
         Update: {
@@ -92,7 +92,7 @@ export type Database = {
           integration_id?: string | null;
           name?: string;
           owner_id?: string;
-          project_id?: string | null;
+          project_id?: string;
           updated_at?: string | null;
         };
         Relationships: [
@@ -286,7 +286,7 @@ export type Database = {
           last_used: string | null;
           name: string | null;
           owner_id: string | null;
-          project_id: string | null;
+          project_id: string;
           updated_at: string | null;
         };
         Insert: {
@@ -296,7 +296,7 @@ export type Database = {
           last_used?: string | null;
           name?: string | null;
           owner_id?: string | null;
-          project_id?: string | null;
+          project_id: string;
           updated_at?: string | null;
         };
         Update: {
@@ -306,7 +306,7 @@ export type Database = {
           last_used?: string | null;
           name?: string | null;
           owner_id?: string | null;
-          project_id?: string | null;
+          project_id?: string;
           updated_at?: string | null;
         };
         Relationships: [
@@ -367,7 +367,7 @@ export type Database = {
           model_provider_api_key: string | null;
           onellm_api_key: string | null;
           owner_id: string;
-          project_id: string | null;
+          project_id: string;
           prompt_tokens: number | null;
           provider: string | null;
           status: string | null;
@@ -384,7 +384,7 @@ export type Database = {
           model_provider_api_key?: string | null;
           onellm_api_key?: string | null;
           owner_id: string;
-          project_id?: string | null;
+          project_id: string;
           prompt_tokens?: number | null;
           provider?: string | null;
           status?: string | null;
@@ -401,7 +401,7 @@ export type Database = {
           model_provider_api_key?: string | null;
           onellm_api_key?: string | null;
           owner_id?: string;
-          project_id?: string | null;
+          project_id?: string;
           prompt_tokens?: number | null;
           provider?: string | null;
           status?: string | null;
@@ -487,7 +487,7 @@ export type Database = {
           id: string;
           name: string;
           owner_id: string | null;
-          project_id: string | null;
+          project_id: string;
           type: string | null;
         };
         Insert: {
@@ -496,7 +496,7 @@ export type Database = {
           id: string;
           name: string;
           owner_id?: string | null;
-          project_id?: string | null;
+          project_id: string;
           type?: string | null;
         };
         Update: {
@@ -505,7 +505,7 @@ export type Database = {
           id?: string;
           name?: string;
           owner_id?: string | null;
-          project_id?: string | null;
+          project_id?: string;
           type?: string | null;
         };
         Relationships: [
@@ -535,7 +535,7 @@ export type Database = {
           models_repo_id: string | null;
           name: string;
           owner_id: string | null;
-          project_id: string | null;
+          project_id: string;
           updated_at: string | null;
         };
         Insert: {
@@ -547,7 +547,7 @@ export type Database = {
           models_repo_id?: string | null;
           name: string;
           owner_id?: string | null;
-          project_id?: string | null;
+          project_id: string;
           updated_at?: string | null;
         };
         Update: {
@@ -559,7 +559,7 @@ export type Database = {
           models_repo_id?: string | null;
           name?: string;
           owner_id?: string | null;
-          project_id?: string | null;
+          project_id?: string;
           updated_at?: string | null;
         };
         Relationships: [
@@ -637,7 +637,7 @@ export type Database = {
           id: number;
           name: string;
           owner_id: string;
-          project_id: string | null;
+          project_id: string;
           updated_at: string | null;
         };
         Insert: {
@@ -645,7 +645,7 @@ export type Database = {
           id?: number;
           name: string;
           owner_id: string;
-          project_id?: string | null;
+          project_id: string;
           updated_at?: string | null;
         };
         Update: {
@@ -653,7 +653,7 @@ export type Database = {
           id?: number;
           name?: string;
           owner_id?: string;
-          project_id?: string | null;
+          project_id?: string;
           updated_at?: string | null;
         };
         Relationships: [
@@ -676,7 +676,7 @@ export type Database = {
           id: string;
           integration_id: string | null;
           owner_id: string;
-          project_id: string | null;
+          project_id: string;
           result_model_id: string | null;
           status: string | null;
           title: string;
@@ -693,7 +693,7 @@ export type Database = {
           id: string;
           integration_id?: string | null;
           owner_id: string;
-          project_id?: string | null;
+          project_id: string;
           result_model_id?: string | null;
           status?: string | null;
           title: string;
@@ -710,7 +710,7 @@ export type Database = {
           id?: string;
           integration_id?: string | null;
           owner_id?: string;
-          project_id?: string | null;
+          project_id?: string;
           result_model_id?: string | null;
           status?: string | null;
           title?: string;
