@@ -120,7 +120,7 @@ export function Navbar() {
     <div className="flex flex-col border-neutral-300 border-e-[1px] min-h-full justify-start">
       <a
         className="flex flex-row items-center p-5 ml-2 space-x-3 text-xl font-bold cursor-pointer hover:opacity-50"
-        href={`/${projectId}/dashboard`}
+        href={"/workspace"}
       >
         <Image
           src="/onellmlogocropped.png"

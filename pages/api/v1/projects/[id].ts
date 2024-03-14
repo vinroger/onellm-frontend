@@ -27,5 +27,17 @@ export default async function handler(
     return res.status(200).json(projects[0]);
   }
 
+  if (req.method === "DELETE") {
+    const { error } = await supabase
+      .from("projects")
+      .delete()
+      .eq("id", id)
+      .eq("owner_id", userId);
+    if (error) {
+      return res.status(500).json({ error: error.message });
+    }
+    return res.status(204).end();
+  }
+
   return res.status(405).end(`Method ${req.method} Not Allowed`);
 }
