@@ -1,3 +1,6 @@
+/* eslint-disable jsx-a11y/click-events-have-key-events */
+/* eslint-disable jsx-a11y/no-static-element-interactions */
+
 "use client";
 
 import { FaHome, FaTable } from "react-icons/fa";
@@ -11,9 +14,10 @@ import {
   navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu";
 import { cn } from "@/lib/utils";
-import { toTitleCase } from "@/utils/functions/string";
+import { ellipsisString, toTitleCase } from "@/utils/functions/string";
 import Image from "next/image";
 import { useProjectContext } from "@/utils/contexts/useProject";
+import { useRef } from "react";
 
 function NavItem({
   item,
@@ -109,7 +113,8 @@ const navItems = [
 
 export function Navbar() {
   const { user } = useUser();
-  const { projectId } = useProjectContext();
+  const { projectId, name: projectName } = useProjectContext();
+  const userButtonRef = useRef<HTMLDivElement>(null);
 
   return (
     <div className="flex flex-col border-neutral-300 border-e-[1px] min-h-full justify-start">
@@ -127,7 +132,10 @@ export function Navbar() {
 
         <p>OneLLM</p>
       </a>
-      <NavigationMenu className="flex-col items-start justify-between flex-1 w-full max-w-full p-3 max-h-fit">
+      <p className="mt-4 ml-4 text-sm font-semibold text-neutral-500">
+        {ellipsisString(projectName, 20).toUpperCase()}
+      </p>
+      <NavigationMenu className="flex-col items-start justify-between flex-1 w-full max-w-full px-3 mt-3 max-h-fit">
         <div className="flex flex-col w-full list-none">
           {navItems.map((item) => (
             <NavItemRenderer
@@ -138,9 +146,16 @@ export function Navbar() {
             />
           ))}
         </div>
-        <div className="flex flex-row items-center w-full space-x-2">
-          <UserButton />
-          <div className="flex flex-col max-w-full overflow-scroll">
+        <div className="flex flex-row items-center w-full space-x-2 min-h-[60px]">
+          <div ref={userButtonRef}>
+            <UserButton />
+          </div>
+          <div
+            className="flex flex-col max-w-full overflow-scroll cursor-pointer hover:opacity-50 "
+            onClick={() => {
+              (document.querySelector(".cl-userButtonTrigger") as any)?.click();
+            }}
+          >
             <p className="overflow-scroll text-sm font-semibold text-wrap">
               {user?.fullName}
             </p>

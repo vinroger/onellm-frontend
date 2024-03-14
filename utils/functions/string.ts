@@ -6,6 +6,9 @@ export function toTitleCase(input: string): string {
     .join(" "); // Join the words back into a single string
 }
 export function ellipsisString(str: string, maxLength: number): string {
+  if (!str) {
+    return "";
+  }
   if (str.length <= maxLength) {
     return str;
   }
