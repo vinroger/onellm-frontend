@@ -6,6 +6,7 @@ import axios from "axios";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Toaster } from "@/components/ui/sonner";
+import { useProjectContext } from "@/utils/contexts/useProject";
 
 // const NAVBAR_WIDTH = "220px";
 
@@ -22,6 +23,8 @@ const updateDatasetName = async (id: string, name: string) => {
 export default function Layout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const id = pathname?.split("/dataset/")[1];
+
+  const { projectId } = useProjectContext();
 
   const [dataset, setDataset] = useState<DataSet>();
   if (!id) {
@@ -40,8 +43,8 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   }, []);
 
   const breadcrumbs = [
-    { link: "/dashboard", title: "Home", type: "link" },
-    { link: "/dataset", title: "Dataset", type: "link" },
+    { link: `/${projectId}/dashboard`, title: "Home", type: "link" },
+    { link: `/${projectId}/dataset`, title: "Dataset", type: "link" },
     {
       title: dataset?.name ?? "",
       type: "editable",

@@ -19,6 +19,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import Image from "next/image";
 import { UserButton } from "@clerk/nextjs";
+import { useProjectContext } from "@/utils/contexts/useProject";
 
 export type Breadcrumb = {
   link?: string;
@@ -100,9 +101,14 @@ export function BreadcrumbDemo({ breadcrumbs }: { breadcrumbs: Breadcrumb[] }) {
 }
 
 function TopNavbar({ breadcrumbs }: { breadcrumbs?: Breadcrumb[] }) {
+  const { projectId } = useProjectContext();
+
   return (
     <div className="flex flex-row items-center justify-between w-full p-3 border-neutral-300 border-b-[1px]">
-      <a className="pl-2 cursor-pointer hover:opacity-50" href="/dataset">
+      <a
+        className="pl-2 cursor-pointer hover:opacity-50"
+        href={`/${projectId}/dashboard`}
+      >
         <Image
           src="/onellmlogocropped.png"
           alt="onellm logo"

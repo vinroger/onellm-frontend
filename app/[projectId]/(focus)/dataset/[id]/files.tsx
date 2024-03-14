@@ -25,7 +25,6 @@ const postNewDatapoint = async (
     owner_id: ownerId,
     created_at: new Date().toISOString(),
     updated_at: new Date().toISOString(),
-    project_id: projectId,
   };
 
   // POST to api/v1/datapoints using axios

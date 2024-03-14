@@ -48,6 +48,8 @@ function DatasetCard({
   const router = useRouter();
   const { DialogConfimationCompoment, setOpen } = useDeleteConfirmationDialog();
 
+  const { projectId } = useProjectContext();
+
   const handleDelete = async () => {
     setOpen(false);
     await axios.delete(`/api/v1/datasets/${datasetId}`);
@@ -65,7 +67,7 @@ function DatasetCard({
         isHovered && "bg-neutral-100"
       )}
       onClick={() => {
-        router.push(`/dataset/${datasetId}`);
+        router.push(`/${projectId}/dataset/${datasetId}`);
       }}
       onMouseEnter={() => {
         setHovered(true);
