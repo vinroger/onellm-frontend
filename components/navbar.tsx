@@ -13,6 +13,7 @@ import {
 import { cn } from "@/lib/utils";
 import { toTitleCase } from "@/utils/functions/string";
 import Image from "next/image";
+import { useProjectContext } from "@/utils/contexts/useProject";
 
 function NavItem({
   item,
@@ -52,6 +53,8 @@ function NavItemRenderer({
   const pathname = usePathname();
   const isActive =
     !!pathname && pathname.split("/")[1] === itemKey.toLowerCase();
+
+  const { projectId } = useProjectContext();
   return (
     <NavItem
       item={
@@ -66,7 +69,7 @@ function NavItemRenderer({
         </div>
       }
       onClick={() => {
-        router.push(`/${itemName.toLowerCase()}`);
+        router.push(`/${projectId}/${itemName.toLowerCase()}`);
       }}
       itemKey={itemName.toLowerCase()}
     />
@@ -106,11 +109,13 @@ const navItems = [
 
 export function Navbar() {
   const { user } = useUser();
+  const { projectId } = useProjectContext();
+
   return (
     <div className="flex flex-col border-neutral-300 border-e-[1px] min-h-full justify-start">
       <a
         className="flex flex-row items-center p-5 ml-2 space-x-3 text-xl font-bold cursor-pointer hover:opacity-50"
-        href="/dashboard"
+        href={`/${projectId}/dashboard`}
       >
         <Image
           src="/onellmlogocropped.png"

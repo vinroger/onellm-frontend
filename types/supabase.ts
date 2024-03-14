@@ -16,6 +16,7 @@ export type Database = {
           dataset_id: string | null;
           id: string;
           owner_id: string;
+          project_id: string | null;
           title: string;
           updated_at: string | null;
         };
@@ -25,6 +26,7 @@ export type Database = {
           dataset_id?: string | null;
           id: string;
           owner_id: string;
+          project_id?: string | null;
           title: string;
           updated_at?: string | null;
         };
@@ -34,6 +36,7 @@ export type Database = {
           dataset_id?: string | null;
           id?: string;
           owner_id?: string;
+          project_id?: string | null;
           title?: string;
           updated_at?: string | null;
         };
@@ -52,6 +55,13 @@ export type Database = {
             referencedRelation: "users";
             referencedColumns: ["id"];
           },
+          {
+            foreignKeyName: "public_data_points_project_id_fkey";
+            columns: ["project_id"];
+            isOneToOne: false;
+            referencedRelation: "projects";
+            referencedColumns: ["id"];
+          },
         ];
       };
       datasets: {
@@ -62,6 +72,7 @@ export type Database = {
           integration_id: string | null;
           name: string;
           owner_id: string;
+          project_id: string | null;
           updated_at: string | null;
         };
         Insert: {
@@ -71,6 +82,7 @@ export type Database = {
           integration_id?: string | null;
           name: string;
           owner_id: string;
+          project_id?: string | null;
           updated_at?: string | null;
         };
         Update: {
@@ -80,6 +92,7 @@ export type Database = {
           integration_id?: string | null;
           name?: string;
           owner_id?: string;
+          project_id?: string | null;
           updated_at?: string | null;
         };
         Relationships: [
@@ -88,6 +101,13 @@ export type Database = {
             columns: ["owner_id"];
             isOneToOne: false;
             referencedRelation: "users";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "public_datasets_project_id_fkey";
+            columns: ["project_id"];
+            isOneToOne: false;
+            referencedRelation: "projects";
             referencedColumns: ["id"];
           },
         ];
@@ -131,6 +151,7 @@ export type Database = {
           evaluation_id: string | null;
           id: string;
           owner_id: string;
+          project_id: string | null;
           score: number | null;
           updated_at: string | null;
         };
@@ -142,6 +163,7 @@ export type Database = {
           evaluation_id?: string | null;
           id: string;
           owner_id: string;
+          project_id?: string | null;
           score?: number | null;
           updated_at?: string | null;
         };
@@ -153,6 +175,7 @@ export type Database = {
           evaluation_id?: string | null;
           id?: string;
           owner_id?: string;
+          project_id?: string | null;
           score?: number | null;
           updated_at?: string | null;
         };
@@ -169,6 +192,13 @@ export type Database = {
             columns: ["evaluation_id"];
             isOneToOne: false;
             referencedRelation: "evaluations";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "public_evaluation_points_project_id_fkey";
+            columns: ["project_id"];
+            isOneToOne: false;
+            referencedRelation: "projects";
             referencedColumns: ["id"];
           },
         ];
@@ -209,6 +239,7 @@ export type Database = {
           description: string | null;
           id: string;
           owner_id: string;
+          project_id: string;
           title: string;
           updated_at: string | null;
         };
@@ -217,6 +248,7 @@ export type Database = {
           description?: string | null;
           id: string;
           owner_id: string;
+          project_id: string;
           title: string;
           updated_at?: string | null;
         };
@@ -225,10 +257,26 @@ export type Database = {
           description?: string | null;
           id?: string;
           owner_id?: string;
+          project_id?: string;
           title?: string;
           updated_at?: string | null;
         };
-        Relationships: [];
+        Relationships: [
+          {
+            foreignKeyName: "public_evaluations_owner_id_fkey";
+            columns: ["owner_id"];
+            isOneToOne: false;
+            referencedRelation: "users";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "public_evaluations_project_id_fkey";
+            columns: ["project_id"];
+            isOneToOne: false;
+            referencedRelation: "projects";
+            referencedColumns: ["id"];
+          },
+        ];
       };
       keys: {
         Row: {
@@ -238,6 +286,7 @@ export type Database = {
           last_used: string | null;
           name: string | null;
           owner_id: string | null;
+          project_id: string | null;
           updated_at: string | null;
         };
         Insert: {
@@ -247,6 +296,7 @@ export type Database = {
           last_used?: string | null;
           name?: string | null;
           owner_id?: string | null;
+          project_id?: string | null;
           updated_at?: string | null;
         };
         Update: {
@@ -256,6 +306,7 @@ export type Database = {
           last_used?: string | null;
           name?: string | null;
           owner_id?: string | null;
+          project_id?: string | null;
           updated_at?: string | null;
         };
         Relationships: [
@@ -264,6 +315,13 @@ export type Database = {
             columns: ["owner_id"];
             isOneToOne: false;
             referencedRelation: "users";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "public_keys_project_id_fkey";
+            columns: ["project_id"];
+            isOneToOne: false;
+            referencedRelation: "projects";
             referencedColumns: ["id"];
           },
         ];
@@ -306,13 +364,15 @@ export type Database = {
           created_at: string | null;
           id: string;
           ip_address: string | null;
+          model_provider_api_key: string | null;
           onellm_api_key: string | null;
           owner_id: string;
+          project_id: string | null;
           prompt_tokens: number | null;
           provider: string | null;
           status: string | null;
+          tagged_user_id: string | null;
           type: string | null;
-          user_id: string | null;
         };
         Insert: {
           api?: string | null;
@@ -321,13 +381,15 @@ export type Database = {
           created_at?: string | null;
           id: string;
           ip_address?: string | null;
+          model_provider_api_key?: string | null;
           onellm_api_key?: string | null;
           owner_id: string;
+          project_id?: string | null;
           prompt_tokens?: number | null;
           provider?: string | null;
           status?: string | null;
+          tagged_user_id?: string | null;
           type?: string | null;
-          user_id?: string | null;
         };
         Update: {
           api?: string | null;
@@ -336,13 +398,15 @@ export type Database = {
           created_at?: string | null;
           id?: string;
           ip_address?: string | null;
+          model_provider_api_key?: string | null;
           onellm_api_key?: string | null;
           owner_id?: string;
+          project_id?: string | null;
           prompt_tokens?: number | null;
           provider?: string | null;
           status?: string | null;
+          tagged_user_id?: string | null;
           type?: string | null;
-          user_id?: string | null;
         };
         Relationships: [
           {
@@ -359,6 +423,13 @@ export type Database = {
             referencedRelation: "users";
             referencedColumns: ["id"];
           },
+          {
+            foreignKeyName: "public_logs_project_id_fkey";
+            columns: ["project_id"];
+            isOneToOne: false;
+            referencedRelation: "projects";
+            referencedColumns: ["id"];
+          },
         ];
       };
       model_provider_api_keys: {
@@ -369,6 +440,7 @@ export type Database = {
           id: string;
           model_provider: string | null;
           owner_id: string | null;
+          project_id: string | null;
           updated_at: string | null;
         };
         Insert: {
@@ -378,6 +450,7 @@ export type Database = {
           id?: string;
           model_provider?: string | null;
           owner_id?: string | null;
+          project_id?: string | null;
           updated_at?: string | null;
         };
         Update: {
@@ -387,6 +460,7 @@ export type Database = {
           id?: string;
           model_provider?: string | null;
           owner_id?: string | null;
+          project_id?: string | null;
           updated_at?: string | null;
         };
         Relationships: [
@@ -395,6 +469,13 @@ export type Database = {
             columns: ["owner_id"];
             isOneToOne: false;
             referencedRelation: "users";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "public_model_provider_api_keys_project_id_fkey";
+            columns: ["project_id"];
+            isOneToOne: false;
+            referencedRelation: "projects";
             referencedColumns: ["id"];
           },
         ];
@@ -406,6 +487,7 @@ export type Database = {
           id: string;
           name: string;
           owner_id: string | null;
+          project_id: string | null;
           type: string | null;
         };
         Insert: {
@@ -414,6 +496,7 @@ export type Database = {
           id: string;
           name: string;
           owner_id?: string | null;
+          project_id?: string | null;
           type?: string | null;
         };
         Update: {
@@ -422,9 +505,17 @@ export type Database = {
           id?: string;
           name?: string;
           owner_id?: string | null;
+          project_id?: string | null;
           type?: string | null;
         };
         Relationships: [
+          {
+            foreignKeyName: "public_model_repos_project_id_fkey";
+            columns: ["project_id"];
+            isOneToOne: false;
+            referencedRelation: "projects";
+            referencedColumns: ["id"];
+          },
           {
             foreignKeyName: "public_models_repo_owner_id_fkey";
             columns: ["owner_id"];
@@ -444,6 +535,7 @@ export type Database = {
           models_repo_id: string | null;
           name: string;
           owner_id: string | null;
+          project_id: string | null;
           updated_at: string | null;
         };
         Insert: {
@@ -455,6 +547,7 @@ export type Database = {
           models_repo_id?: string | null;
           name: string;
           owner_id?: string | null;
+          project_id?: string | null;
           updated_at?: string | null;
         };
         Update: {
@@ -466,6 +559,7 @@ export type Database = {
           models_repo_id?: string | null;
           name?: string;
           owner_id?: string | null;
+          project_id?: string | null;
           updated_at?: string | null;
         };
         Relationships: [
@@ -490,6 +584,48 @@ export type Database = {
             referencedRelation: "users";
             referencedColumns: ["id"];
           },
+          {
+            foreignKeyName: "public_models_project_id_fkey";
+            columns: ["project_id"];
+            isOneToOne: false;
+            referencedRelation: "projects";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      projects: {
+        Row: {
+          created_at: string;
+          data: Json | null;
+          description: string | null;
+          id: string;
+          name: string | null;
+          owner_id: string;
+        };
+        Insert: {
+          created_at?: string;
+          data?: Json | null;
+          description?: string | null;
+          id: string;
+          name?: string | null;
+          owner_id: string;
+        };
+        Update: {
+          created_at?: string;
+          data?: Json | null;
+          description?: string | null;
+          id?: string;
+          name?: string | null;
+          owner_id?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "public_projects_owner_id_fkey";
+            columns: ["owner_id"];
+            isOneToOne: false;
+            referencedRelation: "users";
+            referencedColumns: ["id"];
+          },
         ];
       };
       tags: {
@@ -498,6 +634,7 @@ export type Database = {
           id: number;
           name: string;
           owner_id: string;
+          project_id: string | null;
           updated_at: string | null;
         };
         Insert: {
@@ -505,6 +642,7 @@ export type Database = {
           id?: number;
           name: string;
           owner_id: string;
+          project_id?: string | null;
           updated_at?: string | null;
         };
         Update: {
@@ -512,9 +650,18 @@ export type Database = {
           id?: number;
           name?: string;
           owner_id?: string;
+          project_id?: string | null;
           updated_at?: string | null;
         };
-        Relationships: [];
+        Relationships: [
+          {
+            foreignKeyName: "public_tags_project_id_fkey";
+            columns: ["project_id"];
+            isOneToOne: false;
+            referencedRelation: "projects";
+            referencedColumns: ["id"];
+          },
+        ];
       };
       trainings: {
         Row: {
@@ -526,6 +673,7 @@ export type Database = {
           id: string;
           integration_id: string | null;
           owner_id: string;
+          project_id: string | null;
           result_model_id: string | null;
           status: string | null;
           title: string;
@@ -542,6 +690,7 @@ export type Database = {
           id: string;
           integration_id?: string | null;
           owner_id: string;
+          project_id?: string | null;
           result_model_id?: string | null;
           status?: string | null;
           title: string;
@@ -558,6 +707,7 @@ export type Database = {
           id?: string;
           integration_id?: string | null;
           owner_id?: string;
+          project_id?: string | null;
           result_model_id?: string | null;
           status?: string | null;
           title?: string;
@@ -571,6 +721,13 @@ export type Database = {
             columns: ["base_model_id"];
             isOneToOne: false;
             referencedRelation: "models";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "public_trainings_project_id_fkey";
+            columns: ["project_id"];
+            isOneToOne: false;
+            referencedRelation: "projects";
             referencedColumns: ["id"];
           },
           {
