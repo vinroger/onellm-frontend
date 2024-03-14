@@ -15,8 +15,8 @@ import { toHumanDateString } from "@/utils/functions/date";
 
 import { Log } from "@/types/table";
 
-import { DetailDialog } from "./dialog";
 import { useProjectContext } from "@/utils/contexts/useProject";
+import { DetailDialog } from "./dialog";
 
 const columns: ColumnDef<Log>[] = [
   {
