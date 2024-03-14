@@ -24,11 +24,18 @@ export default async function handler(
     return res.status(401).json({ error: "Unauthorized" });
   }
 
+  const { projectId } = req.query as { projectId: string };
+
+  if (!projectId) {
+    return res.status(400).json({ error: "projectId is required" });
+  }
+
   if (req.method === "GET") {
     const { data: api_keys, error } = await supabase
       .from("model_provider_api_keys")
       .select("*")
-      .eq("owner_id", userId);
+      .eq("owner_id", userId)
+      .eq("project_id", projectId);
     if (error) {
       return res.status(500).json({ error: error.message });
     }
@@ -46,6 +53,7 @@ export default async function handler(
           created_at: new Date().toISOString(),
           updated_at: new Date().toISOString(),
           model_provider: req.body.model_provider,
+          project_id: projectId,
         },
       ])
       .eq("owner_id", userId)
@@ -67,7 +75,7 @@ export default async function handler(
       })
       .eq("owner_id", userId)
       .eq("model_provider", req.body.model_provider)
-      // .eq("id", req.body.id) TODO
+      .eq("project_id", projectId)
       .select("*");
 
     if (error) {

@@ -14,11 +14,18 @@ export default async function handler(
     return res.status(401).json({ error: "Unauthorized" });
   }
 
+  const { projectId } = req.query as { projectId: string };
+
+  if (!projectId) {
+    return res.status(400).json({ error: "projectId is required" });
+  }
+
   if (req.method === "GET") {
     const { data: keys, error } = await supabase
       .from("keys")
       .select("*")
-      .eq("owner_id", userId);
+      .eq("owner_id", userId)
+      .eq("project_id", projectId);
     if (error) {
       return res.status(500).json({ error: error.message });
     }
@@ -38,6 +45,7 @@ export default async function handler(
         id: uuidv4(),
         created_at: new Date().toISOString(),
         last_used: new Date().toISOString(),
+        project_id: projectId,
       },
     ]);
 

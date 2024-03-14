@@ -17,6 +17,11 @@ export default async function handler(
 
   if (req.method === "POST") {
     if (req.query.method === "model_provider_api_key_id") {
+      const { projectId } = req.query as { projectId: string };
+
+      if (!projectId) {
+        return res.status(400).json({ error: "projectId is required" });
+      }
       /* 
 
     1. The request body should contain the model_provider_api_key_id
@@ -30,6 +35,7 @@ export default async function handler(
         .from("model_provider_api_keys")
         .select("*")
         .eq("owner_id", userId)
+        .eq("project_id", projectId)
         .eq("id", req.body.model_provider_api_key_id);
 
       if (error) {

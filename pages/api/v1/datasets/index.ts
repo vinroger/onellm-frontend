@@ -14,11 +14,18 @@ export default async function handler(
     return res.status(401).json({ error: "Unauthorized" });
   }
 
+  const { projectId } = req.query as { projectId: string };
+
+  if (!projectId) {
+    return res.status(400).json({ error: "projectId is required" });
+  }
+
   if (req.method === "GET") {
     const { data: datasets, error } = await supabase
       .from("datasets")
       .select("*")
       .eq("owner_id", userId)
+      .eq("project_id", req.query.projectId as string)
       .order("updated_at", { ascending: false });
     if (error) {
       console.error("Error getting logs:", error);

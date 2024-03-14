@@ -13,14 +13,18 @@ export default async function handler(
     return res.status(401).json({ error: "Unauthorized" });
   }
 
-  const { id: datasetId } = req.query as { id: string };
+  const { id: datasetId, projectId } = req.query as {
+    id: string;
+    projectId: string;
+  };
 
   if (req.method === "GET") {
     const { data: datasets, error } = await supabase
       .from("datasets")
       .select("*")
       .eq("id", datasetId)
-      .eq("owner_id", userId);
+      .eq("owner_id", userId)
+      .eq("project_id", projectId);
     if (error) {
       console.error("Error getting logs:", error);
       return res.status(500).json({ error: error.message });
