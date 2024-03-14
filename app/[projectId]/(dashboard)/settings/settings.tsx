@@ -24,6 +24,7 @@ import LoadingState from "@/components/LoadingState";
 import { sensitizeKey } from "@/utils/functions/string";
 import { ModelProviderApiKey } from "@/types/table";
 import { Pencil } from "lucide-react";
+import { useProjectContext } from "@/utils/contexts/useProject";
 
 // TODO ADD ANTROPIC, GEMINI, LLaMa 2, search openai
 
@@ -65,9 +66,14 @@ const saveAPIKey = async (
   return res.data;
 };
 
-const fetchKeys = async () => {
+const fetchKeys = async (projectId: string) => {
   const response: { data: ModelProviderApiKey[] } = await axios.get(
-    "/api/v1/model-provider-api-keys"
+    "/api/v1/model-provider-api-keys",
+    {
+      params: {
+        projectId,
+      },
+    }
   );
   return response.data;
 };
@@ -82,7 +88,13 @@ function APIKeySettings() {
     "post"
   );
 
-  const { value: availableKeys, execute, status } = useAsync(fetchKeys);
+  const { projectId } = useProjectContext();
+
+  const {
+    value: availableKeys,
+    execute,
+    status,
+  } = useAsync(() => fetchKeys(projectId));
 
   const handleCreateKey = async () => {
     const isValid = await validateKey(apiKeyInput);

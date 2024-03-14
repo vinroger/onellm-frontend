@@ -31,11 +31,16 @@ import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
 import useCopyToClipboard from "@/utils/hooks/useCopyPaste";
 import { CopyButton } from "@/components/copybutton";
+import { useProjectContext } from "@/utils/contexts/useProject";
 
 const API_URL = "/api/v1/keys";
 
-const fetchKeys = async () => {
-  const response = await axios.get("/api/v1/keys");
+const fetchKeys = async (projectId: string) => {
+  const response = await axios.get("/api/v1/keys", {
+    params: {
+      projectId,
+    },
+  });
   return response.data.keys;
 };
 
@@ -117,9 +122,11 @@ function KeysTable() {
   const [newKeyName, setNewKeyName] = useState("");
   const [loading, setLoading] = useState(false);
 
+  const { projectId } = useProjectContext();
+
   const loadKeys = async () => {
     setLoading(true);
-    const fetchedKeys = await fetchKeys();
+    const fetchedKeys = await fetchKeys(projectId);
     setKeys(fetchedKeys);
     setLoading(false);
   };

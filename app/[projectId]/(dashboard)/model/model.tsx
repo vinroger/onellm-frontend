@@ -5,13 +5,18 @@ import NonIdealState from "@/components/NonIdealState";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { cn } from "@/lib/utils";
+import { useProjectContext } from "@/utils/contexts/useProject";
 import axios from "axios";
 import { Loader, LoaderIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import React, { use, useEffect, useState } from "react";
 
-const fetchKeys = async () => {
-  const res = await axios.get("/api/v1/model-provider-api-keys");
+const fetchKeys = async (projectId: string) => {
+  const res = await axios.get("/api/v1/model-provider-api-keys", {
+    params: {
+      projectId,
+    },
+  });
   return res.data;
 };
 
@@ -19,9 +24,11 @@ const useHasOpenAIKey = () => {
   const [hasOpenAIKey, setHasOpenAIKey] = useState(false);
   const [loading, setLoading] = useState(true);
 
+  const { projectId } = useProjectContext();
+
   const loadKeys = async () => {
     setLoading(true);
-    const data = await fetchKeys();
+    const data = await fetchKeys(projectId);
 
     if (data.length > 0) {
       setHasOpenAIKey(true);
@@ -31,6 +38,7 @@ const useHasOpenAIKey = () => {
 
   useEffect(() => {
     loadKeys();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return { hasOpenAIKey, setHasOpenAIKey, loading, loadKeys };

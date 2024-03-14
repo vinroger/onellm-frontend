@@ -30,6 +30,7 @@ import { toast } from "sonner";
 import { Toaster } from "@/components/ui/sonner";
 import useDeleteConfirmationDialog from "@/utils/hooks/useDeleteConfirmationDialog";
 import { cn } from "@/lib/utils";
+import { useProjectContext } from "@/utils/contexts/useProject";
 
 function DatasetCard({
   datasetName,
@@ -220,8 +221,12 @@ export const CreateNewDatasetDialog = ({
   );
 };
 
-const fetchDataset = async () => {
-  const response = await axios.get("/api/v1/datasets/");
+const fetchDataset = async (projectId: string) => {
+  const response = await axios.get("/api/v1/datasets/", {
+    params: {
+      projectId,
+    },
+  });
   return response.data;
 };
 
@@ -230,10 +235,11 @@ function Dataset() {
   const [loading, setLoading] = useState(false);
 
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const { projectId } = useProjectContext();
 
   const loadDataset = async () => {
     setLoading(true);
-    const fetchedDatasets = await fetchDataset();
+    const fetchedDatasets = await fetchDataset(projectId);
 
     setDatasets(fetchedDatasets);
     setLoading(false);

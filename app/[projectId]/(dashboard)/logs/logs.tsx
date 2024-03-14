@@ -16,6 +16,7 @@ import { toHumanDateString } from "@/utils/functions/date";
 import { Log } from "@/types/table";
 
 import { DetailDialog } from "./dialog";
+import { useProjectContext } from "@/utils/contexts/useProject";
 
 const columns: ColumnDef<Log>[] = [
   {
@@ -104,8 +105,12 @@ const columns: ColumnDef<Log>[] = [
   },
 ];
 
-const fetchLogs = async () => {
-  const response = await axios.get("/api/v1/logs");
+const fetchLogs = async (projectId: string) => {
+  const response = await axios.get("/api/v1/logs", {
+    params: {
+      projectId,
+    },
+  });
   return response.data.logs;
 };
 
@@ -115,9 +120,11 @@ export default function Logs() {
   const [loading, setLoading] = useState(false);
   const [logs, setLogs] = useState<Log[]>([]);
 
+  const { projectId } = useProjectContext();
+
   const loadLogs = async () => {
     setLoading(true);
-    const fetchedKeys = await fetchLogs();
+    const fetchedKeys = await fetchLogs(projectId);
     setLogs(fetchedKeys);
     setLoading(false);
   };

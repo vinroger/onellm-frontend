@@ -2,7 +2,6 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
 // import * as Sentry from "@sentry/nextjs";
 import React, { Component, ErrorInfo, ReactNode } from "react";
-import { useRouter } from "next/router";
 
 interface Props {
   children?: ReactNode;
@@ -48,8 +47,6 @@ class ErrorBoundaryInner extends Component<Props, State> {
 export const ErrorBoundary = (
   props: Omit<Props, "onError"> & { name: string }
 ): JSX.Element => {
-  const router = useRouter();
-
   return <ErrorBoundaryInner {...props} />;
 };
 
