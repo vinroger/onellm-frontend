@@ -76,8 +76,13 @@ export const DetailDialog = ({
               <tbody>
                 {log !== null &&
                   Object.entries(log).map(([key, value]) => {
-                    if (key === "chat") return <div />;
-                    if (key === "onellm_api_key") return <div />;
+                    const forbiddenKeys = [
+                      "chat",
+                      "onellm_api_key",
+                      "owner_id",
+                      "model_provider_api_key",
+                    ];
+                    if (forbiddenKeys.includes(key)) return null;
                     return (
                       <tr key={key}>
                         <th className="pr-5 detail-key text-start">

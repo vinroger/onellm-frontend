@@ -22,7 +22,8 @@ const constructOpenAIUrl = (req: NextApiRequest): string => {
 async function processTags(
   tagsString: string,
   owner_id: string,
-  log_id: string
+  log_id: string,
+  project_id: string
 ) {
   try {
     /* 
@@ -61,7 +62,7 @@ async function processTags(
       if (!tag) {
         const { data: newTag, error: createError } = await supabase
           .from("tags")
-          .insert([{ name: tagName, owner_id }])
+          .insert([{ name: tagName, owner_id, project_id }])
           .select();
 
         if (createError || !newTag) {
@@ -108,7 +109,13 @@ export default async function handler(
   // Decode token
   const payload: any = verifyJwtToken(OneLLMApiKey as string);
 
-  const { ownerId } = payload;
+  const { ownerId, projectId } = payload;
+
+  if (!ownerId || !projectId) {
+    return res
+      .status(401)
+      .json({ error: "Invalid Token. Please re-generate." });
+  }
 
   const ipAddress =
     requestIp.getClientIp(req) && requestIp.getClientIp(req) !== "::1"
@@ -124,9 +131,13 @@ export default async function handler(
       "Content-Type": "application/json",
     };
 
-    if (req.headers.authorization) {
-      headers.Authorization = req.headers.authorization;
+    if (!req.headers.authorization) {
+      return res
+        .status(401)
+        .json({ error: "Please provide authorization key. (openai apikey)" });
     }
+
+    headers.Authorization = req.headers.authorization;
 
     const openAIResponse = await fetch(openAIUrl, {
       method: req.method,
@@ -151,10 +162,12 @@ export default async function handler(
         ip_address: ipAddress,
         provider: "openai",
         chat: chatData,
-        user_id: OneLLMUserId as string,
+        tagged_user_id: OneLLMUserId as string,
         prompt_tokens: openAIData.usage?.prompt_tokens ?? 0,
         completion_token: openAIData.usage?.completion_tokens ?? 0,
         status: openAIResponse.status === 200 ? "success" : "error",
+        project_id: projectId,
+        model_provider_api_key: req.headers.authorization ?? "N/A",
       };
 
       const { data: supabaseResponse, error } = await supabase
@@ -163,11 +176,12 @@ export default async function handler(
         .select();
 
       if (error) {
-        throw new Error("Error creating log");
+        console.error("Error creating log:", error);
+        throw new Error("Error creating record. Please try again later.");
       }
 
       const { id: newlogId } = supabaseResponse[0];
-      processTags(OneLLMTags as string, ownerId, newlogId);
+      processTags(OneLLMTags as string, ownerId, newlogId, projectId);
     }
 
     return res.status(openAIResponse.status).json(openAIData);

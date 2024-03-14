@@ -1,7 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { getAuth } from "@clerk/nextjs/server";
 import { v4 as uuidv4 } from "uuid";
-import { generateJwtToken } from "@/utils/functions/jwt";
+
 import OpenAI from "openai";
 import supabase from "../../supabase-server.component";
 
@@ -17,7 +17,7 @@ export default async function handler(
 
   if (req.method === "POST") {
     if (req.query.method === "model_provider_api_key_id") {
-      const { projectId } = req.query as { projectId: string };
+      const { projectId } = req.body as { projectId: string };
 
       if (!projectId) {
         return res.status(400).json({ error: "projectId is required" });

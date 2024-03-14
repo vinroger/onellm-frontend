@@ -14,13 +14,12 @@ export default async function handler(
     return res.status(401).json({ error: "Unauthorized" });
   }
 
-  const { projectId } = req.query as { projectId: string };
-
-  if (!projectId) {
-    return res.status(400).json({ error: "projectId is required" });
-  }
-
   if (req.method === "GET") {
+    const { projectId } = req.query as { projectId: string };
+
+    if (!projectId) {
+      return res.status(400).json({ error: "projectId is required" });
+    }
     const { data: keys, error } = await supabase
       .from("keys")
       .select("*")
@@ -33,9 +32,13 @@ export default async function handler(
   }
 
   if (req.method === "POST") {
-    const { name } = req.body;
+    const { name, projectId } = req.body;
 
-    const key = generateJwtToken({ ownerId: userId });
+    if (!projectId) {
+      return res.status(400).json({ error: "projectId is required" });
+    }
+
+    const key = generateJwtToken({ ownerId: userId, projectId });
 
     const { data, error } = await supabase.from("keys").insert([
       {

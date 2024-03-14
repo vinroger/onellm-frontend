@@ -3,16 +3,18 @@ import jwt from "jsonwebtoken";
 interface TokenOptions {
   email?: string;
   ownerId: string;
+  projectId: string;
   expiresIn?: string; // Optional expiration time (e.g., '1h' for 1 hour, '2d' for 2 days)
 }
 
 export function generateJwtToken(options: TokenOptions): string {
-  const { email, ownerId, expiresIn } = options;
+  const { email, ownerId, expiresIn, projectId } = options;
 
   // Prepare the JWT payload
   const payload = {
     email,
     ownerId,
+    projectId,
   };
 
   // Sign the JWT

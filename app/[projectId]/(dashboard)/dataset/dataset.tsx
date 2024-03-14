@@ -121,11 +121,13 @@ export const CreateNewDatasetDialog = ({
   isOpen: boolean;
   onClose: () => void;
 }) => {
+  const { projectId } = useProjectContext();
   const [datasetData, setDatasetData] = useState<Partial<DataSet>>({
     description: "",
     integration_id: null,
     name: "",
     owner_id: "",
+    project_id: projectId,
   });
 
   const router = useRouter();

@@ -3,6 +3,7 @@
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { DataPoint } from "@/types/table";
+import { useProjectContext } from "@/utils/contexts/useProject";
 import { ellipsisString } from "@/utils/functions/string";
 import { useAuth } from "@clerk/nextjs";
 import axios from "axios";
@@ -11,7 +12,11 @@ import { usePathname } from "next/navigation";
 import React from "react";
 import { v4 as uuidv4 } from "uuid";
 
-const postNewDatapoint = async (ownerId: string, datasetId: string) => {
+const postNewDatapoint = async (
+  ownerId: string,
+  datasetId: string,
+  projectId: string
+) => {
   const newDatapoint: DataPoint = {
     id: uuidv4(),
     title: "New datapoint",
@@ -20,6 +25,7 @@ const postNewDatapoint = async (ownerId: string, datasetId: string) => {
     owner_id: ownerId,
     created_at: new Date().toISOString(),
     updated_at: new Date().toISOString(),
+    project_id: projectId,
   };
 
   // POST to api/v1/datapoints using axios
@@ -146,9 +152,11 @@ function Files({
   const pathname = usePathname();
   const datasetId = pathname?.split("/dataset/")[1];
 
+  const { projectId } = useProjectContext();
+
   const handleNewFile = async () => {
     if (!userId || !datasetId) throw new Error("No user id or datasetid");
-    await postNewDatapoint(userId, datasetId);
+    await postNewDatapoint(userId, datasetId, projectId);
     refetch();
   };
   return (

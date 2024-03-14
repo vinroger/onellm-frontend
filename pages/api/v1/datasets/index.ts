@@ -14,13 +14,12 @@ export default async function handler(
     return res.status(401).json({ error: "Unauthorized" });
   }
 
-  const { projectId } = req.query as { projectId: string };
-
-  if (!projectId) {
-    return res.status(400).json({ error: "projectId is required" });
-  }
-
   if (req.method === "GET") {
+    const { projectId } = req.query as { projectId: string };
+
+    if (!projectId) {
+      return res.status(400).json({ error: "projectId is required" });
+    }
     const { data: datasets, error } = await supabase
       .from("datasets")
       .select("*")
@@ -35,6 +34,11 @@ export default async function handler(
     return res.status(200).json(datasets);
   }
   if (req.method === "POST") {
+    const { projectId } = req.body as { projectId: string };
+
+    if (!projectId) {
+      return res.status(400).json({ error: "projectId is required" });
+    }
     const { data, error } = await supabase
       .from("datasets")
       .insert([{ ...req.body, owner_id: userId, id: uuidv4() }])

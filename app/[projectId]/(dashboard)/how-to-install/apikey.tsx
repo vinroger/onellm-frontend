@@ -132,11 +132,12 @@ function KeysTable() {
   };
   useEffect(() => {
     loadKeys();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleCreateKey = async () => {
     try {
-      await axios.post(API_URL, { name: newKeyName });
+      await axios.post(API_URL, { name: newKeyName, projectId });
       setNewKeyName("");
       setOpen(false);
       loadKeys();

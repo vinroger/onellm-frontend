@@ -49,6 +49,7 @@ const saveAPIKey = async (
   api_key: string,
   model_provider: string,
   reqType: "post" | "put",
+  projectId: string,
   keyId?: string
 ) => {
   if (reqType === "put") {
@@ -62,6 +63,7 @@ const saveAPIKey = async (
   const res = await axios.post("/api/v1/model-provider-api-keys", {
     api_key,
     model_provider,
+    projectId,
   });
   return res.data;
 };
@@ -99,7 +101,7 @@ function APIKeySettings() {
   const handleCreateKey = async () => {
     const isValid = await validateKey(apiKeyInput);
     if (isValid) {
-      await saveAPIKey(apiKeyInput, selectedProvider, dialogReqMode);
+      await saveAPIKey(apiKeyInput, selectedProvider, dialogReqMode, projectId);
       setOpen(false);
       toast.success("API Key updated successfully");
       execute();
