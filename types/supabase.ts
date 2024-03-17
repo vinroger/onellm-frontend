@@ -268,6 +268,54 @@ export type Database = {
           },
         ];
       };
+      files: {
+        Row: {
+          cloud_provider: string | null;
+          created_at: string;
+          data: Json | null;
+          id: string;
+          link: string | null;
+          owner_id: string | null;
+          project_id: string | null;
+          updated_at: string | null;
+        };
+        Insert: {
+          cloud_provider?: string | null;
+          created_at?: string;
+          data?: Json | null;
+          id: string;
+          link?: string | null;
+          owner_id?: string | null;
+          project_id?: string | null;
+          updated_at?: string | null;
+        };
+        Update: {
+          cloud_provider?: string | null;
+          created_at?: string;
+          data?: Json | null;
+          id?: string;
+          link?: string | null;
+          owner_id?: string | null;
+          project_id?: string | null;
+          updated_at?: string | null;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "public_files_owner_id_fkey";
+            columns: ["owner_id"];
+            isOneToOne: false;
+            referencedRelation: "users";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "public_files_project_id_fkey";
+            columns: ["project_id"];
+            isOneToOne: false;
+            referencedRelation: "projects";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
       keys: {
         Row: {
           created_at: string;
@@ -667,13 +715,14 @@ export type Database = {
           dataset_id: string | null;
           description: string | null;
           id: string;
-          integration_id: string | null;
           owner_id: string;
           project_id: string;
           result_model_id: string | null;
           status: string | null;
           title: string;
           training_completed_at: string | null;
+          training_provider_id: string | null;
+          training_provider_name: string | null;
           training_started_at: string | null;
           updated_at: string | null;
         };
@@ -684,13 +733,14 @@ export type Database = {
           dataset_id?: string | null;
           description?: string | null;
           id: string;
-          integration_id?: string | null;
           owner_id: string;
           project_id: string;
           result_model_id?: string | null;
           status?: string | null;
           title: string;
           training_completed_at?: string | null;
+          training_provider_id?: string | null;
+          training_provider_name?: string | null;
           training_started_at?: string | null;
           updated_at?: string | null;
         };
@@ -701,13 +751,14 @@ export type Database = {
           dataset_id?: string | null;
           description?: string | null;
           id?: string;
-          integration_id?: string | null;
           owner_id?: string;
           project_id?: string;
           result_model_id?: string | null;
           status?: string | null;
           title?: string;
           training_completed_at?: string | null;
+          training_provider_id?: string | null;
+          training_provider_name?: string | null;
           training_started_at?: string | null;
           updated_at?: string | null;
         };

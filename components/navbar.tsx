@@ -30,6 +30,9 @@ function NavItem({
 }) {
   const pathname = usePathname();
 
+  const isActive =
+    !!pathname && pathname.split("/")[2] === itemKey.toLowerCase();
+
   return (
     <NavigationMenuLink
       className={cn(
@@ -37,7 +40,7 @@ function NavItem({
         "w-full justify-start items-center cursor-pointer font-normal"
       )}
       onClick={onClick}
-      active={!!pathname && pathname.split("/")[1] === itemKey.toLowerCase()}
+      active={isActive}
     >
       {item}
     </NavigationMenuLink>
