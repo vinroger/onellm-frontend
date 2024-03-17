@@ -6,6 +6,7 @@ import { v4 as uuidv4 } from "uuid";
 import axios from "axios";
 import OpenAI from "openai";
 import { DataPoint } from "@/types/table";
+import { getOpenAIKey } from "@/utils/api/apikey";
 import supabase from "../../supabase-server.component";
 
 const validateDataset = (datapoints: DataPoint[]): "PASSED" | string => {
@@ -98,7 +99,7 @@ export default async function handler(
       }
 
       const validateDatasetResult = validateDataset(datapoints);
-      if (validateDatasetResult === "PASSED") {
+      if (validateDatasetResult !== "PASSED") {
         console.error(`Invalid datapoints: ${validateDatasetResult}`, error);
         throw new Error(`Invalid datapoints: ${validateDatasetResult}`);
       }
@@ -116,18 +117,7 @@ export default async function handler(
       formData.append("purpose", "fine-tune");
 
       // NOW GET THE API KEY FROM OPENAI
-      const { data: apiKeys, error: apiKeyError } = await supabase
-        .from("model_provider_api_keys")
-        .select("*")
-        .eq("owner_id", userId)
-        .eq("project_id", projectId);
-
-      const apiKey = apiKeys?.[0]?.api_key;
-
-      if (apiKeyError || apiKeys.length === 0 || !apiKey) {
-        console.error("Error getting logs:", error);
-        throw new Error("No API keys found for the user");
-      }
+      const { apiKey, apiKeyId } = await getOpenAIKey(projectId, userId);
 
       const openAIResponse = await axios
         .post("https://api.openai.com/v1/files", formData, {
@@ -174,7 +164,7 @@ export default async function handler(
       });
 
       const supabaseFineTuningJob = {
-        id: uuidv4(),
+        id: fineTuningJob.id,
         owner_id: userId,
         project_id: projectId,
         dataset_id: datasetId,
@@ -187,6 +177,7 @@ export default async function handler(
         title: fineTuningJob.id,
         training_provider_name: "openai",
         file_id: supabaseFileId,
+        model_provider_api_key_id: apiKeyId,
       };
 
       const { data: fineTuningJobData, error: fineTuningJobError } =
@@ -204,7 +195,7 @@ export default async function handler(
     }
   } catch (err) {
     console.error(err);
-    return res.status(500).send(err);
+    return res.status(500).json({ error: (err as any).message });
   }
 
   return res.status(405).end(`Method ${req.method} Not Allowed`);

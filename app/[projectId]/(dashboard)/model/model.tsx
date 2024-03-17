@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
+import { Skeleton } from "@/components/ui/skeleton";
 import {
   OPEN_AI_AVAILABLE_GPT_MODELS_FOR_FINE_TUNE,
   OPEN_AI_GPT_MODELS,
@@ -149,15 +150,15 @@ function ModelPage() {
     execute();
   }, [execute]);
 
-  if (loading || modelStatus === "LOADING") {
-    return <LoadingState />;
-  }
-
   const gptModels: Model[] = openaiModelsList?.filter((model: any) => {
     return (
       OPEN_AI_GPT_MODELS.includes(model.name) || model.name.includes("ft:gpt")
     );
   });
+
+  if (loading) {
+    return <LoadingState />;
+  }
 
   return (
     <div>
@@ -205,7 +206,7 @@ function ModelPage() {
         <Separator className="mb-5" />
 
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-3 lg:grid-cols-3">
-          {gptModels ? (
+          {!loading && gptModels ? (
             gptModels.map((item, index) => (
               <ModelCard
                 key={item.id}
@@ -217,7 +218,14 @@ function ModelPage() {
               />
             ))
           ) : (
-            <LoaderIcon className="animate-spin" />
+            <>
+              {Array.from({ length: 2 }).map((_, index) => (
+                // eslint-disable-next-line react/no-array-index-key
+                <Card className="p-8" key={index}>
+                  <Skeleton className="w-[200px] h-4" />
+                </Card>
+              ))}
+            </>
           )}
         </div>
         {/* <CreateNewModelDialog

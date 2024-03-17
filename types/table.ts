@@ -90,3 +90,7 @@ export type Chat = {
 export type Project = Database["public"]["Tables"]["projects"]["Row"];
 export type ProjectInsert = Database["public"]["Tables"]["projects"]["Insert"];
 export type ProjectUpdate = Database["public"]["Tables"]["projects"]["Update"];
+
+export type OneLLMFile = Database["public"]["Tables"]["files"]["Row"];
+export type OneLLMFileInsert = Database["public"]["Tables"]["files"]["Insert"];
+export type OneLLMFileUpdate = Database["public"]["Tables"]["files"]["Update"];

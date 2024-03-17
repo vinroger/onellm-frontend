@@ -31,6 +31,7 @@ import { Toaster } from "@/components/ui/sonner";
 import useDeleteConfirmationDialog from "@/utils/hooks/useDeleteConfirmationDialog";
 import { cn } from "@/lib/utils";
 import { useProjectContext } from "@/utils/contexts/useProject";
+import { Skeleton } from "@/components/ui/skeleton";
 
 function DatasetCard({
   datasetName,
@@ -288,7 +289,14 @@ function Dataset() {
             />
           ))
         ) : (
-          <LoaderIcon className="animate-spin" />
+          <>
+            {Array.from({ length: 2 }).map((_, index) => (
+              // eslint-disable-next-line react/no-array-index-key
+              <Card className="p-8" key={index}>
+                <Skeleton className="w-[200px] h-4" />
+              </Card>
+            ))}
+          </>
         )}
       </div>
       <CreateNewDatasetDialog

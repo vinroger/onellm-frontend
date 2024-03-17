@@ -27,6 +27,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { toHumanDateString } from "@/utils/functions/date";
+import { Skeleton } from "@/components/ui/skeleton";
 
 function ProjectCard({
   projectName,
@@ -245,7 +246,7 @@ function Workspace() {
       </div>
       <Separator />
 
-      {user?.fullName && (
+      {user?.fullName ? (
         <div className="p-7">
           <div className="flex flex-row items-center justify-between">
             <div className="flex flex-row items-center">
@@ -264,12 +265,21 @@ function Workspace() {
             </div>
           </div>
         </div>
+      ) : (
+        <Skeleton className="w-[200px] h-4 m-8 p-3" />
       )}
       <div className="grid grid-cols-1 gap-4 px-7 sm:grid-cols-3 lg:grid-cols-4">
         {status === "LOADING" ||
         projectsData?.length === 0 ||
         projectsData === null ? (
-          <LoadingState />
+          <>
+            {Array.from({ length: 2 }).map((_, index) => (
+              // eslint-disable-next-line react/no-array-index-key
+              <Card className="p-8" key={index}>
+                <Skeleton className="w-[200px] h-4" />
+              </Card>
+            ))}
+          </>
         ) : (
           projectsData.map((project: Project) => (
             <ProjectCard

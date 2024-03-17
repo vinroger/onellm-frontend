@@ -1,8 +1,14 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import { Separator } from "@/components/ui/separator";
+import { Skeleton } from "@/components/ui/skeleton";
+import { useProjectContext } from "@/utils/contexts/useProject";
+import useAsync from "@/utils/hooks/useAsync";
+
 import axios from "axios";
-import React from "react";
+import React, { useEffect } from "react";
 
 type FineTuningObject = {
   datasetId: string;
@@ -37,6 +43,7 @@ const createFineTuneFetch = async ({
 };
 
 function Training() {
+  const { projectId } = useProjectContext();
   const handleCreateFineTune = async () => {
     const fineTune = await createFineTuneFetch({
       oneLLMModelId: "11201c63-d9fe-4c58-8f7f-6952a950c778",
@@ -55,9 +62,55 @@ function Training() {
     const data = fineTune;
     console.log(data);
   };
+
+  const {
+    execute,
+    value: openAIFineTuningJobs,
+    status: modelStatus,
+  } = useAsync(async () => {
+    const res = await axios.get("/api/v1/trainings", {
+      params: {
+        projectId,
+      },
+    });
+    return res.data;
+  });
+
+  useEffect(() => {
+    execute();
+  }, [execute]);
+
   return (
-    <div>
-      <Button onClick={() => handleCreateFineTune()}>test</Button>Training
+    <div className="p-7">
+      <div className="flex flex-row items-center justify-between">
+        <div>
+          <h1 className="p-0 m-0 text-lg font-bold">Trainings</h1>
+          <p className="p-0 m-0 mb-4 text-sm text-neutral-600">
+            Here you can view your list of trainings or fine-tuning processes.
+            To try out models, visit the evaluation page.
+          </p>
+        </div>
+        <div>
+          <Button variant="outline" onClick={() => execute()}>
+            Refresh
+          </Button>
+        </div>
+      </div>
+      <Separator className="mb-5" />
+      <div className="flex flex-col space-y-2">
+        {modelStatus !== "LOADING" ? (
+          <Button onClick={() => handleCreateFineTune()}>test</Button>
+        ) : (
+          <>
+            {Array.from({ length: 2 }).map((_, index) => (
+              // eslint-disable-next-line react/no-array-index-key
+              <Card className="p-8" key={index}>
+                <Skeleton className="w-[200px] h-4" />
+              </Card>
+            ))}
+          </>
+        )}
+      </div>
     </div>
   );
 }
