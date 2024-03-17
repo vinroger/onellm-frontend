@@ -48,10 +48,9 @@ export default async function handler(
         title: job.id,
         training_provider_name: "openai",
         training_started_at: new Date(job.created_at * 1000).toISOString(),
-        training_completed_at: (job.finished_at
-          ? new Date(job.finished_at * 1000)
-          : new Date()
-        ).toISOString(),
+        training_completed_at: job.finished_at
+          ? new Date(job.finished_at * 1000).toISOString()
+          : null,
         training_provider_id: job.id,
       };
     }
@@ -59,10 +58,9 @@ export default async function handler(
       ...trainingObject,
       status: job.status,
       training_started_at: new Date(job.created_at * 1000).toISOString(),
-      training_completed_at: (job.finished_at
-        ? new Date(job.finished_at * 1000)
-        : new Date()
-      ).toISOString(),
+      training_completed_at: job.finished_at
+        ? new Date(job.finished_at * 1000).toISOString()
+        : null,
       data: job as any,
     };
   });

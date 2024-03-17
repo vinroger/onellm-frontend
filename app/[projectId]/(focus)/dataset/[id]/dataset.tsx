@@ -38,9 +38,39 @@ function Dataset() {
   // Context stuff
   const [activeDatapointId, setActiveDatapointId] = React.useState<string>("");
 
-  const activeDatapoint = datapoints.find(
+  useEffect(() => {
+    const handleArrowKeys = (e: any) => {
+      const activeDatapointIdx = datapoints.findIndex(
+        (datapoint) => datapoint.id === activeDatapointId
+      );
+
+      if (e.key === "ArrowLeft" && activeDatapointIdx > 0) {
+        setActiveDatapointId(datapoints[activeDatapointIdx - 1].id);
+      }
+      if (
+        e.key === "ArrowRight" &&
+        activeDatapointIdx < datapoints.length - 1
+      ) {
+        setActiveDatapointId(datapoints[activeDatapointIdx + 1].id);
+      }
+      if (e.key === "ArrowUp" && activeDatapointIdx > 0) {
+        setActiveDatapointId(datapoints[activeDatapointIdx - 1].id);
+      }
+      if (e.key === "ArrowDown" && activeDatapointIdx < datapoints.length - 1) {
+        setActiveDatapointId(datapoints[activeDatapointIdx + 1].id);
+      }
+    };
+    window.addEventListener("keydown", handleArrowKeys);
+    return () => {
+      window.removeEventListener("keydown", handleArrowKeys);
+    };
+  }, [activeDatapointId, datapoints]);
+
+  const activeDatapointIdx = datapoints.findIndex(
     (datapoint) => datapoint.id === activeDatapointId
   );
+
+  const activeDatapoint = datapoints[activeDatapointIdx];
 
   return (
     <div className="flex flex-row min-w-full min-h-full space-x-2 p-7">
@@ -51,6 +81,7 @@ function Dataset() {
           setActiveDatapointId={setActiveDatapointId}
           activeDatapointId={activeDatapointId}
           refetch={loadDatapoints}
+          setLoading={setLoading}
         />
       </div>
       <div className="flex flex-1 max-h-full overflow-scroll bg-white rounded-lg">

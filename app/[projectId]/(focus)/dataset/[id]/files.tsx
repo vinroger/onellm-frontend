@@ -73,13 +73,16 @@ function DatapointButton({
       onClick={() => setActiveDatapointId(datapoint.id)}
       variant="ghost"
       className={cn(
-        "flex justify-between h-[30px] min-w-full px-2",
+        "flex justify-between h-[30px] min-w-full px-2 focus-visible:outline-none focus-visible:ring-0 focus-visible:ring-ring",
         isActive && "bg-neutral-50"
       )}
     >
       <div className="flex flex-row items-center max-w-3/4">
-        <File className="w-4 mr-2" />
-        <div>
+        <File
+          className={cn("font-light w-4 mr-2", isActive && "font-extrabold")}
+          strokeWidth={isActive ? 2 : 1}
+        />
+        <div className={cn("font-light", isActive && "font-bold")}>
           {!isEditing ? (
             ellipsisString(datapoint.title, 25)
           ) : (
@@ -139,12 +142,14 @@ function Files({
   activeDatapointId,
   refetch,
   loading,
+  setLoading,
 }: {
   datapoints: DataPoint[];
   setActiveDatapointId: (id: string) => void;
   activeDatapointId: string;
   refetch: () => void;
   loading: boolean;
+  setLoading: (loading: boolean) => void;
 }) {
   const { userId } = useAuth();
 
@@ -155,6 +160,7 @@ function Files({
 
   const handleNewFile = async () => {
     if (!userId || !datasetId) throw new Error("No user id or datasetid");
+    setLoading(true);
     await postNewDatapoint(userId, datasetId, projectId);
     refetch();
   };

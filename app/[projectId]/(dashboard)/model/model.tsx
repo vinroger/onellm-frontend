@@ -228,13 +228,6 @@ function ModelPage() {
             </>
           )}
         </div>
-        {/* <CreateNewModelDialog
-          isOpen={isDialogOpen}
-          onClose={async () => {
-            setIsDialogOpen(false);
-            await loadModel();
-          }}
-        /> */}
       </div>
     </div>
   );

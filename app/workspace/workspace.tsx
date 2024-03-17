@@ -204,6 +204,54 @@ export const CreateNewProjectDialog = ({
   );
 };
 
+const ProjectList = ({
+  projectsData,
+  status,
+  execute,
+}: {
+  projectsData: Project[];
+  status: string;
+  execute: () => void;
+}) => {
+  if (projectsData && projectsData.length === 0) {
+    return (
+      <div className="px-7">
+        <div className="flex flex-col items-center justify-center w-full h-full p-5 py-10 rounded-lg bg-neutral-100">
+          <p className="text-lg font-semibold">No projects found</p>
+          <p className="text-md text-neutral-600">
+            Create a new project to get started.
+          </p>
+        </div>
+      </div>
+    );
+  }
+  return (
+    <div className="grid grid-cols-1 gap-4 px-7 sm:grid-cols-3 lg:grid-cols-4">
+      {status === "LOADING" || projectsData === null ? (
+        <>
+          {Array.from({ length: 2 }).map((_, index) => (
+            // eslint-disable-next-line react/no-array-index-key
+            <Card className="p-8" key={index}>
+              <Skeleton className="w-[200px] h-4" />
+            </Card>
+          ))}
+        </>
+      ) : (
+        projectsData.map((project: Project) => (
+          <ProjectCard
+            key={project.id}
+            projectId={project.id}
+            projectName={project.name}
+            description={project.description}
+            lastEdited={project.updated_at}
+            refetch={execute}
+          />
+        ))
+      )}
+    </div>
+  );
+};
+
 function Workspace() {
   const { user } = useUser();
 
@@ -268,10 +316,8 @@ function Workspace() {
       ) : (
         <Skeleton className="w-[200px] h-4 m-8 p-3" />
       )}
-      <div className="grid grid-cols-1 gap-4 px-7 sm:grid-cols-3 lg:grid-cols-4">
-        {status === "LOADING" ||
-        projectsData?.length === 0 ||
-        projectsData === null ? (
+
+      {/* {status === "LOADING" || projectsData === null ? (
           <>
             {Array.from({ length: 2 }).map((_, index) => (
               // eslint-disable-next-line react/no-array-index-key
@@ -291,8 +337,13 @@ function Workspace() {
               refetch={execute}
             />
           ))
-        )}
-      </div>
+        )} */}
+      <ProjectList
+        projectsData={projectsData}
+        status={status}
+        execute={execute}
+      />
+
       <Toaster />
       <CreateNewProjectDialog
         isOpen={isDialogOpen}
