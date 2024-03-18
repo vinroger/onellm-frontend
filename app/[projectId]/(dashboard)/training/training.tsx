@@ -1,4 +1,5 @@
 /* eslint-disable no-nested-ternary */
+
 "use client";
 
 import { Badge } from "@/components/ui/badge";
@@ -18,6 +19,8 @@ import axios from "axios";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { toast } from "sonner";
+// eslint-disable-next-line import/no-named-as-default
+import CreateNewTrainingDialog from "./createnewtrainingdialog";
 
 type FineTuningObject = {
   datasetId: string;
@@ -152,22 +155,6 @@ function ModelCard({
   );
 }
 
-const createFineTuneFetch = async ({
-  datasetId,
-  projectId,
-  openAItrainingId,
-  fineTuningOptions,
-}: FineTuningObject): Promise<Training> => {
-  const response = await axios.post("/api/v1/openai/finetune", {
-    datasetId,
-    projectId,
-
-    openAItrainingId,
-    fineTuningOptions,
-  });
-  return response.data as Training;
-};
-
 const FineTuningCards = ({
   openAIFineTuningJobs,
   refetch,
@@ -210,25 +197,6 @@ const FineTuningCards = ({
 
 function TrainingPage() {
   const { projectId } = useProjectContext();
-  const handleCreateFineTune = async () => {
-    const fineTune = await createFineTuneFetch({
-      oneLLMtrainingId: "11201c63-d9fe-4c58-8f7f-6952a950c778",
-      datasetId: "fef6dcd1-0d3c-45d6-93e3-c350bab1785f",
-      projectId: "53778932-56da-44c4-9e00-175ffe4165bd",
-      openAItrainingId: "gpt-3.5-turbo",
-      fineTuningOptions: {
-        hyperparameters: {
-          n_epochs: 1,
-          batch_size: 1,
-          learning_rate_multiplier: 1,
-        },
-      },
-      title: "Test",
-      description: "Test",
-    });
-
-    const data = fineTune;
-  };
 
   const {
     execute,
@@ -247,6 +215,8 @@ function TrainingPage() {
     execute();
   }, [execute]);
 
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+
   return (
     <div className="p-7">
       <div className="flex flex-row items-center justify-between">
@@ -257,14 +227,21 @@ function TrainingPage() {
             To try out models, visit the evaluation page.
           </p>
         </div>
-        <div>
+        <div className="flex flex-row space-x-2">
           <Button variant="outline" onClick={() => execute()}>
             Refresh
+          </Button>
+          <Button
+            onClick={() => {
+              setIsDialogOpen(true);
+            }}
+          >
+            + Start a New Training
           </Button>
         </div>
       </div>
       <Separator className="mb-5" />
-      <Button onClick={() => handleCreateFineTune()}>test</Button>
+
       <div className="flex flex-col space-y-2">
         {modelStatus !== "LOADING" && openAIFineTuningJobs ? (
           <FineTuningCards
@@ -282,6 +259,13 @@ function TrainingPage() {
           </>
         )}
       </div>
+      <CreateNewTrainingDialog
+        isOpen={isDialogOpen}
+        onClose={async () => {
+          setIsDialogOpen(false);
+          await execute();
+        }}
+      />
     </div>
   );
 }

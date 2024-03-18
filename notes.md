@@ -18,3 +18,7 @@ bsaically everything need to be updated to check if project_id equals to req.bod
 ## if you add more models other than openai
 
 change the model checking logic. and the message if there is no open ai key
+
+
+## migrate to next
+polling system, request openai every 5 minutes or so, instead of fetch on demand.

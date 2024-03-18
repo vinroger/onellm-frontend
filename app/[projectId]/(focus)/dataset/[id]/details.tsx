@@ -37,13 +37,15 @@ function MessageRenderer({
   handleDelete: () => void;
 }) {
   const [role, setRole] = React.useState(roleInp);
+  useEffect(() => {
+    setRole(roleInp);
+  }, [roleInp]);
   const [message, setMessage] = React.useState(content);
 
   return (
     <div className="flex max-w-full mb-3 space-x-2">
       <div className="flex flex-row max-w-full min-w-full space-x-5">
         <Select
-          defaultValue={role}
           value={role}
           onValueChange={(val) => {
             setRole(val);
@@ -95,8 +97,8 @@ function FormattedDisplay({
 }) {
   const [data, setData] = useState<ChatData>(datapoint.data as ChatData);
   useEffect(() => {
-    setData(datapoint.data as ChatData);
-  }, [datapoint]);
+    setData([...(datapoint.data as any)]);
+  }, [datapoint.data, setData]);
 
   const handleNewMessage = async () => {
     const newMessage = {

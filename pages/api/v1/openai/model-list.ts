@@ -69,7 +69,7 @@ export default async function handler(
     }
 
     if (req.method === "GET") {
-      const { projectId } = req.query as any;
+      const { projectId, filter } = req.query as any;
 
       if (!projectId) {
         return res.status(400).json({ error: "projectId is required" });
@@ -97,16 +97,36 @@ export default async function handler(
 
       const { data: models } = await openai.models.list();
 
-      // map to supabase form
-      const supabaseModels = models.map((model) => {
+      // fetch supaabse
+      const { data: supabaseModelsData, error: supabaseModelsError } =
+        await supabase
+          .from("models")
+          .select("*")
+          .eq("owner_id", userId)
+          .eq("project_id", projectId);
+
+      if (supabaseModelsError) {
+        return res.status(500).json({ error: supabaseModelsError.message });
+      }
+
+      const updates = models.map((model) => {
+        const supabaseModel = supabaseModelsData.find(
+          (m) => m.name === model.id
+        );
+        if (!supabaseModel) {
+          return {
+            id: uuidv4(),
+            name: model.id,
+            owner_id: userId,
+            project_id: projectId,
+            model_provider_api_key_id: modelProviderApiKeyId,
+            type: model.id.startsWith("ft:") ? "fine-tune" : "base",
+            created_at: new Date().toISOString(),
+            updated_at: new Date().toISOString(),
+          };
+        }
         return {
-          id: uuidv4(),
-          name: model.id,
-          owner_id: userId,
-          project_id: projectId,
-          model_provider_api_key_id: modelProviderApiKeyId,
-          type: model.id.startsWith("ft:") ? "fine-tune" : "base",
-          created_at: new Date().toISOString(),
+          ...supabaseModel,
           updated_at: new Date().toISOString(),
         };
       });
@@ -114,11 +134,25 @@ export default async function handler(
       // Now time to update supabase
       const { data: supabaseResponse, error: updateError } = await supabase
         .from("models")
-        .upsert(supabaseModels, { onConflict: "name,project_id" })
+        .upsert(updates, { onConflict: "name,project_id" })
         .select("*");
 
       if (updateError) {
         return res.status(500).json({ error: updateError.message });
+      }
+
+      if (filter === "fine-tune") {
+        const fineTuneModels = supabaseResponse.filter((model) =>
+          model.name.startsWith("ft:")
+        );
+        return res.status(200).json(fineTuneModels);
+      }
+
+      if (filter === "fine-tune-base") {
+        const fineTuneModels = supabaseResponse.filter((model) =>
+          OPEN_AI_AVAILABLE_GPT_MODELS_FOR_FINE_TUNE.includes(model.name)
+        );
+        return res.status(200).json(fineTuneModels);
       }
 
       return res.status(200).json(supabaseResponse);

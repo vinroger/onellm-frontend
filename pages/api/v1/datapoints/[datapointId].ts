@@ -13,26 +13,13 @@ export default async function handler(
     return res.status(401).json({ error: "Unauthorized" });
   }
 
-  const { datasetId } = req.query as { datasetId: string };
+  const { datapointId } = req.query as { datapointId: string };
 
-  if (req.method === "GET") {
-    const { data: datapoints, error } = await supabase
-      .from("data_points")
-      .select("*")
-      .eq("dataset_id", datasetId)
-      .eq("owner_id", userId)
-      .order("created_at", { ascending: false });
-
-    if (error) {
-      return res.status(500).json({ error: error.message });
-    }
-    return res.status(200).json(datapoints);
-  }
   if (req.method === "PUT") {
     const { data: datapoints, error } = await supabase
       .from("data_points")
       .update({ ...req.body })
-      .eq("id", datasetId)
+      .eq("id", datapointId)
       .eq("owner_id", userId)
       .select();
 
@@ -40,7 +27,7 @@ export default async function handler(
     await supabase
       .from("datasets")
       .update({ updated_at: new Date().toISOString() })
-      .eq("id", datasetId)
+      .eq("id", datapointId)
       .eq("owner_id", userId)
       .select();
 
@@ -54,7 +41,7 @@ export default async function handler(
     const { data: datapoints, error } = await supabase
       .from("data_points")
       .delete()
-      .eq("id", datasetId)
+      .eq("id", datapointId)
       .eq("owner_id", userId);
     if (error) {
       return res.status(500).json({ error: error.message });

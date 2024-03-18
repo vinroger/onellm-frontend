@@ -7,33 +7,25 @@ import axios from "axios";
 import OpenAI from "openai";
 import { DataPoint } from "@/types/table";
 import { getOpenAIKey } from "@/utils/api/apikey";
+import { validateDatasetHelper } from "@/utils/api/dataset";
 import supabase from "../../supabase-server.component";
 
-const validateDataset = (datapoints: DataPoint[]): "PASSED" | string => {
-  if (datapoints.length < 10) {
-    return "Dataset should contain at least 10 data points";
-  }
-
-  for (const datapoint of datapoints) {
-    if (!datapoint.data) {
-      return "Data points should contain a data field";
-    }
-    let assistantMessageCount = 0;
-    let userMessageCount = 0;
-    const datapointData = datapoint.data as any;
-    for (const message of datapointData) {
-      if (message.role === "assistant") {
-        assistantMessageCount += 1;
-      } else {
-        userMessageCount += 1;
-      }
-    }
-    if (assistantMessageCount < 1 || userMessageCount < 1) {
-      return "Data points should contain at least 1 assistant and 1 user message";
-    }
-  }
-
-  return "PASSED";
+export type CreateFineTuneReqBodyType = {
+  datasetId: string;
+  projectId: string;
+  openAIModelId: string;
+  oneLLMBaseModelId: string;
+  fineTuningOptions: {
+    hyperparameters?: {
+      n_epochs?: number;
+      batch_size?: number;
+      learning_rate_multiplier?: number;
+    };
+    suffix?: string;
+    validation_file?: string;
+  };
+  title: string;
+  description: string;
 };
 
 export default async function handler(
@@ -66,21 +58,9 @@ export default async function handler(
         fineTuningOptions,
         oneLLMBaseModelId,
         openAIModelId,
-      } = req.body as {
-        datasetId: string;
-        projectId: string;
-        openAIModelId: string;
-        oneLLMBaseModelId: string;
-        fineTuningOptions: {
-          hyperparameters?: {
-            n_epochs: number;
-            batch_size: number;
-            learning_rate_multiplier: number;
-          };
-          suffix?: string;
-          validation_file?: string;
-        };
-      };
+        title,
+        description,
+      } = req.body as CreateFineTuneReqBodyType;
 
       if (!datasetId) {
         return res.status(400).json({ error: "datasetId is required" });
@@ -98,10 +78,13 @@ export default async function handler(
         throw new Error(error as any);
       }
 
-      const validateDatasetResult = validateDataset(datapoints);
-      if (validateDatasetResult !== "PASSED") {
-        console.error(`Invalid datapoints: ${validateDatasetResult}`, error);
-        throw new Error(`Invalid datapoints: ${validateDatasetResult}`);
+      const validateDatasetResult = validateDatasetHelper(datapoints);
+      if (validateDatasetResult.status !== "PASSED") {
+        console.error(
+          `Invalid datapoints: ${validateDatasetResult.message}`,
+          error
+        );
+        throw new Error(`Invalid datapoints: ${validateDatasetResult.message}`);
       }
 
       // Convert datapoints into .jsonl format
@@ -174,7 +157,8 @@ export default async function handler(
         training_provider_id: fineTuningJob.id,
         training_started_at: new Date().toISOString(),
         status: fineTuningJob.status,
-        title: fineTuningJob.id,
+        title,
+        description,
         training_provider_name: "openai",
         file_id: supabaseFileId,
         model_provider_api_key_id: apiKeyId,

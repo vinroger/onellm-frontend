@@ -8,7 +8,11 @@ import Details from "./details";
 import Files from "./files";
 
 const fetchDatapoints = async (datasetId: string) => {
-  const response = await axios.get(`/api/v1/datapoints/${datasetId}`);
+  const response = await axios.get("/api/v1/datapoints", {
+    params: {
+      datasetId,
+    },
+  });
   return response.data;
 };
 
