@@ -1,7 +1,13 @@
 import React from "react";
+import Hero from "./hero";
+import Hero2 from "./hero2";
 
 function Index() {
-  return <div>HELLO WELCOME TO ONELLM</div>;
+  return (
+    <div>
+      <Hero2 />
+    </div>
+  );
 }
 
 export default Index;

@@ -22,6 +22,8 @@ import { toast } from "sonner";
 
 import NonIdealState from "@/components/NonIdealState";
 import { useHasOpenAIKey } from "@/utils/hooks/useHasOpenAIKey";
+
+import LoadingState from "@/components/LoadingState";
 // eslint-disable-next-line import/no-named-as-default
 import CreateNewTrainingDialog from "./createnewtrainingdialog";
 
@@ -219,6 +221,10 @@ function TrainingPage() {
   }, [execute]);
 
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+
+  if (loading) {
+    return <LoadingState />;
+  }
 
   return (
     <div>
