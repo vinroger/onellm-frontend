@@ -7,7 +7,13 @@ import { FaHome, FaTable } from "react-icons/fa";
 import { IoMdSettings } from "react-icons/io";
 import { useRouter, usePathname } from "next/navigation";
 import { UserButton, useAuth, useUser } from "@clerk/nextjs";
-import { Boxes, Database, AreaChart, MonitorDown } from "lucide-react";
+import {
+  Boxes,
+  Database,
+  AreaChart,
+  MonitorDown,
+  FlaskConical,
+} from "lucide-react";
 import {
   NavigationMenu,
   NavigationMenuLink,
@@ -107,6 +113,10 @@ const navItems = [
   {
     name: "settings",
     icon: <IoMdSettings className={"mr-2 w-3.5 "} />,
+  },
+  {
+    name: "experiment",
+    icon: <FlaskConical className={"mr-2 w-3.5 "} />,
   },
   {
     name: "how-to-install",

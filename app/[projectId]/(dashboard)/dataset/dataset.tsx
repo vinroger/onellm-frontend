@@ -9,7 +9,7 @@ import { DataSet } from "@/types/table";
 import { toHumanDateString } from "@/utils/functions/date";
 import axios from "axios";
 import { useRouter } from "next/navigation";
-import React, { use, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Dialog,
   DialogContent,
@@ -17,13 +17,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import {
-  DatabaseZap,
-  DatabaseZapIcon,
-  Loader,
-  LoaderIcon,
-  Trash2,
-} from "lucide-react";
+import { DatabaseZap, Trash2 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { v4 as uuidv4 } from "uuid";
 import { toast } from "sonner";

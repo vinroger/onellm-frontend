@@ -5,7 +5,6 @@ import { ColumnDef, Row } from "@tanstack/react-table";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { LoaderIcon } from "lucide-react";
-import Layout from "@/components/TopLayout";
 import {
   DataTablePagination,
   usePaginatedDataTable,
@@ -136,6 +135,7 @@ export default function Logs() {
 
   useEffect(() => {
     loadLogs();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   if (!table || loading) {

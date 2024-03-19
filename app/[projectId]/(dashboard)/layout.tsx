@@ -1,6 +1,6 @@
 "use client";
 
-import { ErrorBoundary } from "@/components/errorboundary";
+import { ErrorBoundary } from "@/components/ErrorBoundary";
 import Layout from "@/components/TopLayout";
 import { Toaster } from "@/components/ui/sonner";
 import { useProjectContext } from "@/utils/contexts/useProject";
