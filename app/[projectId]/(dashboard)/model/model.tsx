@@ -14,19 +14,11 @@ import { useProjectContext } from "@/utils/contexts/useProject";
 import { toHumanDateString } from "@/utils/functions/date";
 import useAsync from "@/utils/hooks/useAsync";
 import useDeleteConfirmationDialog from "@/utils/hooks/useDeleteConfirmationDialog";
+import { useHasOpenAIKey } from "@/utils/hooks/useHasOpenAIKey";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { toast } from "sonner";
-
-const fetchKeys = async (projectId: string) => {
-  const res = await axios.get("/api/v1/model-provider-api-keys", {
-    params: {
-      projectId,
-    },
-  });
-  return res.data;
-};
 
 function ModelCard({
   ModelName,
@@ -92,30 +84,6 @@ function ModelCard({
   );
 }
 
-const useHasOpenAIKey = () => {
-  const [hasOpenAIKey, setHasOpenAIKey] = useState(false);
-  const [loading, setLoading] = useState(true);
-
-  const { projectId } = useProjectContext();
-
-  const loadKeys = async () => {
-    setLoading(true);
-    const data = await fetchKeys(projectId);
-
-    if (data.length > 0) {
-      setHasOpenAIKey(true);
-    }
-    setLoading(false);
-  };
-
-  useEffect(() => {
-    loadKeys();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  return { hasOpenAIKey, setHasOpenAIKey, loading, loadKeys };
-};
-
 function ModelPage() {
   const { hasOpenAIKey, loading } = useHasOpenAIKey();
   const router = useRouter();
@@ -158,7 +126,7 @@ function ModelPage() {
             description="Please provide your OpenAI API key to continue"
             additionalComponent={
               <div className="mt-5">
-                <Button onClick={() => router.push("/settings")}>
+                <Button onClick={() => router.push(`/${projectId}/settings`)}>
                   Go to Settings →
                 </Button>
               </div>

@@ -19,6 +19,9 @@ import axios from "axios";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { toast } from "sonner";
+
+import NonIdealState from "@/components/NonIdealState";
+import { useHasOpenAIKey } from "@/utils/hooks/useHasOpenAIKey";
 // eslint-disable-next-line import/no-named-as-default
 import CreateNewTrainingDialog from "./createnewtrainingdialog";
 
@@ -195,6 +198,8 @@ const FineTuningCards = ({
 
 function TrainingPage() {
   const { projectId } = useProjectContext();
+  const { hasOpenAIKey, loading } = useHasOpenAIKey();
+  const router = useRouter();
 
   const {
     execute,
@@ -216,54 +221,82 @@ function TrainingPage() {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   return (
-    <div className="p-7">
-      <div className="flex flex-row items-center justify-between">
-        <div>
-          <h1 className="p-0 m-0 text-lg font-bold">Trainings</h1>
-          <p className="p-0 m-0 mb-4 text-sm text-neutral-600">
-            Here you can view your list of trainings or fine-tuning processes.
-            To try out models, visit the evaluation page.
-          </p>
-        </div>
-        <div className="flex flex-row space-x-2">
-          <Button variant="outline" onClick={() => execute()}>
-            Refresh
-          </Button>
-          <Button
-            onClick={() => {
-              setIsDialogOpen(true);
-            }}
-          >
-            + Start a New Training
-          </Button>
-        </div>
-      </div>
-      <Separator className="mb-5" />
-
-      <div className="flex flex-col space-y-2">
-        {modelStatus !== "LOADING" && openAIFineTuningJobs ? (
-          <FineTuningCards
-            openAIFineTuningJobs={openAIFineTuningJobs}
-            refetch={execute}
+    <div>
+      {!hasOpenAIKey && (
+        <div
+          className="absolute z-30"
+          style={{ top: "calc(100% /2.3 )", left: "calc(100%/2.2)" }}
+        >
+          <NonIdealState
+            title={<p className="text-lg font-semibold">No OpenAI API Key</p>}
+            description="Please provide your OpenAI API key to continue"
+            additionalComponent={
+              <div className="mt-5">
+                <Button onClick={() => router.push(`/${projectId}/settings`)}>
+                  Go to Settings →
+                </Button>
+              </div>
+            }
           />
-        ) : (
-          <>
-            {Array.from({ length: 2 }).map((_, index) => (
-              // eslint-disable-next-line react/no-array-index-key
-              <Card className="p-8" key={index}>
-                <Skeleton className="w-[200px] h-4" />
-              </Card>
-            ))}
-          </>
+        </div>
+      )}
+      <div
+        className={cn(
+          "p-7",
+          !hasOpenAIKey && "blur-md disabled cursor-not-allowed"
         )}
-      </div>
-      <CreateNewTrainingDialog
-        isOpen={isDialogOpen}
-        onClose={async () => {
-          setIsDialogOpen(false);
-          await execute();
+        style={{
+          pointerEvents: !hasOpenAIKey ? "none" : "auto",
         }}
-      />
+      >
+        <div className="flex flex-row items-center justify-between">
+          <div>
+            <h1 className="p-0 m-0 text-lg font-bold">Trainings</h1>
+            <p className="p-0 m-0 mb-4 text-sm text-neutral-600">
+              Here you can view your list of trainings or fine-tuning processes.
+              To try out models, visit the evaluation page.
+            </p>
+          </div>
+          <div className="flex flex-row space-x-2">
+            <Button variant="outline" onClick={() => execute()}>
+              Refresh
+            </Button>
+            <Button
+              onClick={() => {
+                setIsDialogOpen(true);
+              }}
+            >
+              + Start a New Training
+            </Button>
+          </div>
+        </div>
+        <Separator className="mb-5" />
+
+        <div className="flex flex-col space-y-2">
+          {modelStatus !== "LOADING" && openAIFineTuningJobs ? (
+            <FineTuningCards
+              openAIFineTuningJobs={openAIFineTuningJobs}
+              refetch={execute}
+            />
+          ) : (
+            <>
+              {Array.from({ length: 2 }).map((_, index) => (
+                // eslint-disable-next-line react/no-array-index-key
+                <Card className="p-8" key={index}>
+                  <Skeleton className="w-[200px] h-4" />
+                </Card>
+              ))}
+            </>
+          )}
+        </div>
+        <CreateNewTrainingDialog
+          isOpen={isDialogOpen}
+          onClose={async () => {
+            setIsDialogOpen(false);
+            await execute();
+          }}
+        />
+      </div>
     </div>
   );
 }

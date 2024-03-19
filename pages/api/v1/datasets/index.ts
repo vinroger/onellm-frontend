@@ -1,3 +1,4 @@
+/* eslint-disable camelcase */
 import type { NextApiRequest, NextApiResponse } from "next";
 import { getAuth } from "@clerk/nextjs/server";
 
@@ -34,9 +35,9 @@ export default async function handler(
     return res.status(200).json(datasets);
   }
   if (req.method === "POST") {
-    const { projectId } = req.body as { projectId: string };
+    const { project_id } = req.body as { project_id: string };
 
-    if (!projectId) {
+    if (!project_id) {
       return res.status(400).json({ error: "projectId is required" });
     }
     const { data, error } = await supabase

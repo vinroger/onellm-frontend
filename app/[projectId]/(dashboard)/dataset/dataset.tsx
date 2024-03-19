@@ -128,7 +128,10 @@ export const CreateNewDatasetDialog = ({
   const router = useRouter();
 
   const handleSubmit = async () => {
-    const response: any = await axios.post("/api/v1/datasets/", datasetData);
+    const response: any = await axios.post("/api/v1/datasets/", {
+      ...datasetData,
+      project_id: projectId,
+    });
 
     setDatasetData({
       description: "",
@@ -143,7 +146,7 @@ export const CreateNewDatasetDialog = ({
       action: {
         label: <div>Go to Dataset →</div>,
         onClick: () => {
-          router.push(`/dataset/${response.data[0].id}`);
+          router.push(`/${projectId}/dataset/${response.data[0].id}`);
         },
       },
     });

@@ -37,10 +37,11 @@ function MessageRenderer({
   handleDelete: () => void;
 }) {
   const [role, setRole] = React.useState(roleInp);
+  const [message, setMessage] = React.useState(content);
   useEffect(() => {
     setRole(roleInp);
-  }, [roleInp]);
-  const [message, setMessage] = React.useState(content);
+    setMessage(content);
+  }, [roleInp, content]);
 
   return (
     <div className="flex max-w-full mb-3 space-x-2">
@@ -129,7 +130,7 @@ function FormattedDisplay({
       });
       refetch();
     },
-    500
+    1000
   );
 
   if (!datapoint || !datapoint.data) {
