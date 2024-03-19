@@ -7,10 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { Skeleton } from "@/components/ui/skeleton";
-import {
-  OPEN_AI_AVAILABLE_GPT_MODELS_FOR_FINE_TUNE,
-  OPEN_AI_GPT_MODELS,
-} from "@/constants/openai";
+import { OPEN_AI_GPT_MODELS } from "@/constants/openai";
 import { cn } from "@/lib/utils";
 import { Model } from "@/types/table";
 import { useProjectContext } from "@/utils/contexts/useProject";
@@ -18,10 +15,8 @@ import { toHumanDateString } from "@/utils/functions/date";
 import useAsync from "@/utils/hooks/useAsync";
 import useDeleteConfirmationDialog from "@/utils/hooks/useDeleteConfirmationDialog";
 import axios from "axios";
-import { Loader, LoaderIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
-import OpenAI from "openai";
-import React, { use, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { toast } from "sonner";
 
 const fetchKeys = async (projectId: string) => {
@@ -46,12 +41,7 @@ function ModelCard({
   ModelId: string;
   refetch: () => void;
 }) {
-  const router = useRouter();
   const { DialogConfimationCompoment, setOpen } = useDeleteConfirmationDialog();
-
-  const { projectId } = useProjectContext();
-
-  const isBaseModel = OPEN_AI_GPT_MODELS.includes(ModelName);
 
   const isFineTunedModel = ModelName.startsWith("ft:gpt");
 
@@ -132,11 +122,7 @@ function ModelPage() {
 
   const { projectId } = useProjectContext();
 
-  const {
-    execute,
-    value: openaiModelsList,
-    status: modelStatus,
-  } = useAsync(async () => {
+  const { execute, value: openaiModelsList } = useAsync(async () => {
     const res = await axios.get("/api/v1/openai/model-list", {
       params: {
         filter: "gpt",
@@ -207,7 +193,7 @@ function ModelPage() {
 
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-3 lg:grid-cols-3">
           {!loading && gptModels ? (
-            gptModels.map((item, index) => (
+            gptModels.map((item) => (
               <ModelCard
                 key={item.id}
                 ModelId={item.id}

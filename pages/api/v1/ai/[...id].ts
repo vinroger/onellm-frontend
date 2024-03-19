@@ -59,7 +59,7 @@ async function processTags(
         .single();
 
       // If the tag doesn't exist, create it
-      if (!tag) {
+      if (!tag || error) {
         const { data: newTag, error: createError } = await supabase
           .from("tags")
           .insert([{ name: tagName, owner_id, project_id }])

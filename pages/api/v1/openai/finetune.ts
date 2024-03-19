@@ -5,7 +5,6 @@ import { getAuth } from "@clerk/nextjs/server";
 import { v4 as uuidv4 } from "uuid";
 import axios from "axios";
 import OpenAI from "openai";
-import { DataPoint } from "@/types/table";
 import { getOpenAIKey } from "@/utils/api/apikey";
 import { validateDatasetHelper } from "@/utils/api/dataset";
 import supabase from "../../supabase-server.component";
@@ -109,8 +108,8 @@ export default async function handler(
             Authorization: `Bearer ${apiKey}`,
           },
         })
-        .catch((error) => {
-          throw new Error(error);
+        .catch((openAIError) => {
+          throw new Error(openAIError);
         });
 
       const openAiFileId = openAIResponse.data.id;
@@ -126,7 +125,7 @@ export default async function handler(
         link: openAiFileId,
       };
 
-      const { data: file, error: fileError } = await supabase
+      const { error: fileError } = await supabase
         .from("files")
         .insert([supabaseFile]);
 

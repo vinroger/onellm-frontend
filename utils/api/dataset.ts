@@ -1,5 +1,4 @@
 /* eslint-disable no-restricted-syntax */
-import supabase from "@/pages/api/supabase-server.component";
 import { DataPoint } from "@/types/table";
 import axios from "axios";
 

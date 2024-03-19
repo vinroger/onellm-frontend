@@ -1,8 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { getAuth } from "@clerk/nextjs/server";
 
-import { v4 as uuidv4 } from "uuid";
-import axios from "axios";
 import supabase from "../../../supabase-server.component";
 
 export default async function handler(

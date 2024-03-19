@@ -19,9 +19,7 @@ import {
 } from "@/components/ui/dialog";
 import { DatabaseZap, Trash2 } from "lucide-react";
 import { Input } from "@/components/ui/input";
-import { v4 as uuidv4 } from "uuid";
 import { toast } from "sonner";
-import { Toaster } from "@/components/ui/sonner";
 import useDeleteConfirmationDialog from "@/utils/hooks/useDeleteConfirmationDialog";
 import { cn } from "@/lib/utils";
 import { useProjectContext } from "@/utils/contexts/useProject";
@@ -271,8 +269,8 @@ function Dataset() {
       <Separator className="mb-5" />
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-3 lg:grid-cols-4">
-        {datasets ? (
-          datasets.map((item: DataSet, index) => (
+        {datasets && !loading ? (
+          datasets.map((item: DataSet) => (
             <DatasetCard
               key={item.id}
               datasetId={item.id}

@@ -182,7 +182,7 @@ function Files({
         + New datapoint
       </Button>
       {datapoints &&
-        datapoints.map((datapoint, index) => {
+        datapoints.map((datapoint) => {
           return (
             <div
               key={datapoint.id}

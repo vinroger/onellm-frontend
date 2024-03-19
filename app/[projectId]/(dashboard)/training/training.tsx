@@ -22,7 +22,7 @@ import { toast } from "sonner";
 // eslint-disable-next-line import/no-named-as-default
 import CreateNewTrainingDialog from "./createnewtrainingdialog";
 
-type FineTuningObject = {
+export type FineTuningObject = {
   datasetId: string;
   projectId: string;
   oneLLMtrainingId: string;
@@ -97,10 +97,7 @@ function ModelCard({
   startedAt: string | null;
   completedAt: string | null;
 }) {
-  const router = useRouter();
   const { DialogConfimationCompoment, setOpen } = useDeleteConfirmationDialog();
-
-  const { projectId } = useProjectContext();
 
   const handleDelete = async () => {
     setOpen(false);
@@ -144,6 +141,7 @@ function ModelCard({
       <div className="flex flex-row items-center mt-5">
         <p className="p-0 m-0 mr-2 text-xs font-semibold">Status:</p>
         <BadgeComponent status={status ?? "warning"} />
+        <p className="p-0 m-0 mr-2 text-xs font-semibold">{providerName}</p>
       </div>
 
       <DialogConfimationCompoment
@@ -176,7 +174,7 @@ const FineTuningCards = ({
   }
   return (
     <div className="grid grid-cols-1 gap-4 sm:grid-cols-1 lg:grid-cols-2">
-      {openAIFineTuningJobs.map((item: Training, index: number) => {
+      {openAIFineTuningJobs.map((item: Training) => {
         return (
           <ModelCard
             key={item.id}

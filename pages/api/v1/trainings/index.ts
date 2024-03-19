@@ -19,7 +19,7 @@ export default async function handler(
   if (!projectId)
     return res.status(400).json({ error: "projectId is required" });
 
-  const { apiKey, apiKeyId } = await getOpenAIKey(projectId, userId);
+  const { apiKey } = await getOpenAIKey(projectId, userId);
 
   const { data: trainings, error: trainingError } = await supabase
     .from("trainings")

@@ -2,7 +2,6 @@
 
 "use client";
 
-import LoadingState from "@/components/LoadingState";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -17,7 +16,7 @@ import axios from "axios";
 import { FolderGit2, Trash2 } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { toast } from "sonner";
 import {
   Dialog,

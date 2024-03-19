@@ -6,7 +6,7 @@
 import { FaHome, FaTable } from "react-icons/fa";
 import { IoMdSettings } from "react-icons/io";
 import { useRouter, usePathname } from "next/navigation";
-import { UserButton, useAuth, useUser } from "@clerk/nextjs";
+import { UserButton, useUser } from "@clerk/nextjs";
 import {
   Boxes,
   Database,
@@ -126,7 +126,7 @@ const navItems = [
 
 export function Navbar() {
   const { user } = useUser();
-  const { projectId, name: projectName } = useProjectContext();
+  const { name: projectName } = useProjectContext();
   const userButtonRef = useRef<HTMLDivElement>(null);
 
   return (

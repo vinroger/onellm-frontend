@@ -2,7 +2,7 @@
 import { useProjectContext } from "@/utils/contexts/useProject";
 import axios from "axios";
 import { useRouter } from "next/navigation";
-import React, { use, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Dialog,
   DialogContent,
@@ -14,12 +14,7 @@ import { toast } from "sonner";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { CreateFineTuneReqBodyType } from "@/pages/api/v1/openai/finetune";
-import {
-  LoaderIcon,
-  SquareActivity,
-  Terminal,
-  TriangleAlert,
-} from "lucide-react";
+import { LoaderIcon, SquareActivity, TriangleAlert } from "lucide-react";
 import { validateDataset } from "@/utils/api/dataset";
 import {
   Select,
@@ -31,10 +26,8 @@ import {
 import useAsync from "@/utils/hooks/useAsync";
 import { DataSet, Model, Training } from "@/types/table";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { FormLabel } from "@/components/ui/form";
-import { Form } from "react-hook-form";
+
 import { cn } from "@/lib/utils";
-import { validate } from "uuid";
 
 const validateData = async (
   trainingData: CreateFineTuneReqBodyType

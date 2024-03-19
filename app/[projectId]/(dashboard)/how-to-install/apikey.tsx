@@ -2,8 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { Copy, DeleteIcon, LoaderIcon, Trash2 } from "lucide-react";
-import Layout from "@/components/TopLayout";
+import { LoaderIcon, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -17,9 +16,7 @@ import { Key } from "@/types/table";
 import {
   Table,
   TableBody,
-  TableCaption,
   TableCell,
-  TableFooter,
   TableHead,
   TableHeader,
   TableRow,
@@ -27,9 +24,7 @@ import {
 import { sensitizeKey } from "@/utils/functions/string";
 import { Card } from "@/components/ui/card";
 import { toHumanDateString } from "@/utils/functions/date";
-import { cn } from "@/lib/utils";
-import { Badge } from "@/components/ui/badge";
-import useCopyToClipboard from "@/utils/hooks/useCopyPaste";
+
 import { CopyButton } from "@/components/copybutton";
 import { useProjectContext } from "@/utils/contexts/useProject";
 

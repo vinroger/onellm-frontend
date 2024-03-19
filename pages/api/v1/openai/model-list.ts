@@ -3,10 +3,7 @@ import { getAuth } from "@clerk/nextjs/server";
 import { v4 as uuidv4 } from "uuid";
 
 import OpenAI from "openai";
-import {
-  OPEN_AI_AVAILABLE_GPT_MODELS_FOR_FINE_TUNE,
-  OPEN_AI_GPT_MODELS,
-} from "@/constants/openai";
+import { OPEN_AI_AVAILABLE_GPT_MODELS_FOR_FINE_TUNE } from "@/constants/openai";
 import supabase from "../../supabase-server.component";
 
 export default async function handler(
