@@ -4,9 +4,10 @@ import TopNavbar from "@/components/topnavbar";
 import { DataSet } from "@/types/table";
 import axios from "axios";
 import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Toaster } from "@/components/ui/sonner";
 import { useProjectContext } from "@/utils/contexts/useProject";
+import DatasetProvider from "@/utils/contexts/useDataset";
 
 // const NAVBAR_WIDTH = "220px";
 
@@ -22,7 +23,7 @@ const updateDatasetName = async (id: string, name: string) => {
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
-  const id = pathname?.split("/dataset/")[1];
+  const id = useMemo(() => pathname?.split("/dataset/")[1], [pathname]);
 
   const { projectId } = useProjectContext();
 
@@ -58,7 +59,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
     <div className="flex flex-col w-screen max-h-screen min-h-screen">
       <TopNavbar breadcrumbs={breadcrumbs} />
       <div className="flex flex-1 overflow-scroll bg-neutral-50">
-        {children}
+        <DatasetProvider datasetId={id}>{children}</DatasetProvider>
       </div>
       <Toaster />
     </div>
