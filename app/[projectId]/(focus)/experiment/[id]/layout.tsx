@@ -13,7 +13,7 @@ import EvaluationProvider from "@/utils/contexts/useEvaluation";
 
 const fetchDataset = async (id: string) => {
   const response = await axios.get(`/api/v1/evaluations/${id}`);
-  return response.data[0];
+  return response.data;
 };
 
 const updateDatasetName = async (id: string, title: string) => {
@@ -41,7 +41,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     loadDataset();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [id]);
 
   const breadcrumbs = [
     { link: `/${projectId}/dashboard`, title: "Home", type: "link" },

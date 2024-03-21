@@ -13,24 +13,40 @@ export default async function handler(
     return res.status(401).json({ error: "Unauthorized" });
   }
 
-  const { id: datasetId } = req.query as {
+  const { id: evaluationId } = req.query as {
     id: string;
     // projectId: string;
   };
 
   if (req.method === "GET") {
-    const { data: evaluations, error } = await supabase
+    const { data: evaluationData, error } = await supabase
       .from("evaluations")
       .select("*")
-      .eq("id", datasetId)
-      .eq("owner_id", userId);
-    // .eq("project_id", projectId);
+      .eq("id", evaluationId)
+      .eq("owner_id", userId)
+      .order("updated_at", { ascending: false });
+
+    // get the models associated with this evaluationData
+
+    const { data: modelData, error: modelsError } = await supabase
+      .from("evaluation_models")
+      .select(
+        `
+      *,
+      model: models(*)
+      `
+      )
+      .eq("evaluation_id", evaluationId);
+
     if (error) {
       console.error("Error getting logs:", error);
       return res.status(500).json({ error: error.message });
     }
 
-    return res.status(200).json(evaluations);
+    return res.status(200).json({
+      ...evaluationData[0],
+      models: modelData?.map((modelDataItem) => modelDataItem.model),
+    });
   }
 
   if (req.method === "PUT") {
@@ -38,7 +54,7 @@ export default async function handler(
     const { data: updatedDataset, error } = await supabase
       .from("evaluations")
       .update({ ...fields, updated_at: new Date().toISOString() })
-      .eq("id", datasetId)
+      .eq("id", evaluationId)
       .eq("owner_id", userId)
       .select();
     if (error) {
@@ -53,7 +69,7 @@ export default async function handler(
     const { data: evaluations, error } = await supabase
       .from("evaluations")
       .delete()
-      .eq("id", datasetId)
+      .eq("id", evaluationId)
       .eq("owner_id", userId)
       .select("*");
     if (error) {

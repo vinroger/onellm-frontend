@@ -6,12 +6,15 @@ import {
   Evaluation,
   EvaluationPoint,
   EvaluationPointJoinedDataPoint,
+  Model,
 } from "@/types/table";
 
 import { useDebounceCallback } from "usehooks-ts";
 
+type EvaluationWithModel = Evaluation & { models: Model[] };
+
 type EvaluationContextType = {
-  evaluation: Evaluation;
+  evaluation: EvaluationWithModel;
   fetchEvaluation: () => void;
   evaluationPoints: EvaluationPointJoinedDataPoint[];
   fetchEvaluationPoints: () => void;
@@ -40,6 +43,7 @@ const EvaluationContext = createContext<EvaluationContextType>({
     project_id: "",
     created_at: null,
     updated_at: null,
+    models: [],
   },
   fetchEvaluation: () => {},
   evaluationPoints: [],
@@ -61,7 +65,7 @@ const EvaluationProvider = ({
   evaluationId: string;
   children: React.ReactNode;
 }) => {
-  const [evaluation, setEvaluation] = React.useState<Evaluation>({
+  const [evaluation, setEvaluation] = React.useState<EvaluationWithModel>({
     id: "",
     title: "",
     description: "",
@@ -69,6 +73,7 @@ const EvaluationProvider = ({
     project_id: "",
     created_at: null,
     updated_at: null,
+    models: [],
   });
 
   const [evaluationPoints, setEvaluationPoints] = React.useState<
@@ -107,7 +112,7 @@ const EvaluationProvider = ({
   const updateEvaluation = useCallback(
     async (payload: Partial<Evaluation>) => {
       setLoading(true);
-      setEvaluation((prev) => {
+      setEvaluation((prev: any) => {
         return { ...prev, ...payload };
       });
       await axios.put(`/api/v1/evaluations/${evaluation.id}`, payload);
