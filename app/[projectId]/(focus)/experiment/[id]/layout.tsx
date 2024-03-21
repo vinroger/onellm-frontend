@@ -7,6 +7,7 @@ import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Toaster } from "@/components/ui/sonner";
 import { useProjectContext } from "@/utils/contexts/useProject";
+import EvaluationProvider from "@/utils/contexts/useEvaluation";
 
 // const NAVBAR_WIDTH = "220px";
 
@@ -58,7 +59,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
     <div className="flex flex-col w-screen max-h-screen min-h-screen">
       <TopNavbar breadcrumbs={breadcrumbs} />
       <div className="flex flex-1 overflow-scroll bg-neutral-50">
-        {children}
+        <EvaluationProvider evaluationId={id}>{children}</EvaluationProvider>
       </div>
       <Toaster />
     </div>

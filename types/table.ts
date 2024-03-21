@@ -26,6 +26,10 @@ export type EvaluationPointInsert =
 export type EvaluationPointUpdate =
   Database["public"]["Tables"]["evaluation_points"]["Update"];
 
+export type EvaluationPointJoinedDataPoint = EvaluationPoint & {
+  data_point: DataPoint | null;
+};
+
 export type EvaluationTag =
   Database["public"]["Tables"]["evaluation_tags"]["Row"];
 export type EvaluationTagInsert =
