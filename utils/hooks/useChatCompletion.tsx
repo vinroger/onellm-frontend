@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { set } from "react-hook-form";
 
 function useChatCompletion() {
   const [response, setResponse] = useState<string>("");
@@ -24,7 +25,7 @@ function useChatCompletion() {
       }),
     });
 
-    if (res.body) {
+    if (res.ok && res.body) {
       const reader2 = res.body.getReader();
 
       const processStream = async (
@@ -32,25 +33,18 @@ function useChatCompletion() {
       ) => {
         const { done, value } = await reader.read();
 
-        if (done) {
-          setStatus("Idle");
-          return;
-        }
         const chunk = new TextDecoder("utf-8").decode(value);
 
-        if (value.includes("\u0004\u0003")) {
-          console.log(
-            "%cutils/hooks/useChatCompletion.tsx:53 value",
-            "color: #007acc;",
-            value
-          );
-          return;
-        }
-        if (chunk.length === 0) {
+        /* Check if the response is complete. Hacky stuff here */
+        const endResponse = chunk.includes("2wJn!HPnjhQnAS#hWDU3DWf3yZk%oB@x@");
+        const data = chunk.replace("2wJn!HPnjhQnAS#hWDU3DWf3yZk%oB@x@", "");
+
+        setResponse((prev) => prev + data);
+
+        if (endResponse) {
           setStatus("Idle");
           return;
         }
-        setResponse((prev) => prev + chunk);
         // Recursively call processStream to handle the next chunk.
         await processStream(reader);
       };
@@ -62,8 +56,6 @@ function useChatCompletion() {
     } else {
       setStatus("Errored");
     }
-
-    setStatus("Idle");
   };
 
   return {

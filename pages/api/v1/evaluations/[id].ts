@@ -24,7 +24,7 @@ export default async function handler(
       .select("*")
       .eq("id", evaluationId)
       .eq("owner_id", userId)
-      .order("updated_at", { ascending: false });
+      .order("created_at", { ascending: false });
 
     // get the models associated with this evaluationData
 
@@ -37,7 +37,6 @@ export default async function handler(
       `
       )
       .eq("evaluation_id", evaluationId);
-
     if (error) {
       console.error("Error getting logs:", error);
       return res.status(500).json({ error: error.message });

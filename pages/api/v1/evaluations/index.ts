@@ -3,7 +3,17 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import { getAuth } from "@clerk/nextjs/server";
 
 import { v4 as uuidv4 } from "uuid";
+import { GETDatapointsByDatasetId } from "@/utils/api/datapoints";
 import supabase from "../../supabase-server.component";
+import { EvaluationPoint } from "@/types/table";
+
+export type CreateEvaluationReqBodyType = {
+  title: string;
+  description: string;
+  datasetId: string;
+  projectId: string;
+  modelIds: string[];
+};
 
 export default async function handler(
   req: NextApiRequest,
@@ -35,19 +45,74 @@ export default async function handler(
     return res.status(200).json(datasets);
   }
   if (req.method === "POST") {
-    const { project_id } = req.body as { project_id: string };
+    const { datasetId, projectId, modelIds, title, description } =
+      req.body as CreateEvaluationReqBodyType;
+    /* 
 
-    if (!project_id) {
-      return res.status(400).json({ error: "projectId is required" });
-    }
+    1. get datapoints based on the datasetId. 
+    2. Create evaluation (title and description) -> evaluation_id
+    3.. Insert into evaluation_points table, 
+      each with the data_point_id, evaluation_id, copy the data also.
+    4. Insert into evaluation_models table.
+    */
+
+    const datapoints = await GETDatapointsByDatasetId(datasetId, userId);
+
+    const evaluationId = uuidv4();
+
     const { data, error } = await supabase
       .from("evaluations")
-      .insert([{ ...req.body, owner_id: userId, id: uuidv4() }])
+      .insert([
+        {
+          title,
+          description,
+          owner_id: userId,
+          id: evaluationId,
+          project_id: projectId,
+        },
+      ])
       .select("*");
 
     if (error) {
       console.error("Error creating log:", error);
       return res.status(500).json({ error: error.message });
+    }
+
+    const evaluationPoints: EvaluationPoint[] = datapoints.map((datapoint) => ({
+      evaluation_id: evaluationId,
+      data_point_id: datapoint.id,
+      data: {
+        prompt: datapoint.data,
+        answer: {},
+      },
+      project_id: projectId,
+      owner_id: userId,
+      id: uuidv4(),
+      score: 0,
+      comment: "",
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString(),
+    }));
+
+    const { data: evaluationPointsData, error: evaluationPointsError } =
+      await supabase.from("evaluation_points").insert(evaluationPoints);
+
+    if (evaluationPointsError) {
+      console.error("Error creating evalpoints:", evaluationPointsError);
+      return res.status(500).json({ error: evaluationPointsError.message });
+    }
+
+    const evaluationModels = modelIds.map((modelId) => ({
+      evaluation_id: evaluationId,
+      model_id: modelId,
+    }));
+
+    const { data: evaluationModelsData, error: evaluationModelsError } =
+      await supabase.from("evaluation_models").insert(evaluationModels);
+
+    if (evaluationModelsError) {
+      console.error("Error creating evalmodels:", evaluationModelsError);
+      return res.status(500).json({ error: evaluationModelsError.message });
     }
 
     return res.status(201).json(data);

@@ -1,5 +1,5 @@
 import { useEvaluationContext } from "@/utils/contexts/useEvaluation";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Model } from "@/types/table";
@@ -9,16 +9,37 @@ import { Separator } from "@/components/ui/separator";
 import { useProjectContext } from "@/utils/contexts/useProject";
 
 function DetailsPage() {
-  const { activeEvaluationPoint } = useEvaluationContext();
+  const { activeEvaluationPoint, evaluation, updateEvaluationPoint } =
+    useEvaluationContext();
 
   const datapoint = activeEvaluationPoint?.data_point;
 
   const [activeModelId, setActiveModelId] = useState("");
-  const { evaluation } = useEvaluationContext();
 
   const { response, status, sendMessage, setResponse } = useChatCompletion();
 
   const { projectId } = useProjectContext();
+
+  useEffect(() => {
+    if (activeEvaluationPoint) {
+      updateEvaluationPoint(
+        activeEvaluationPoint.id,
+        {
+          data: {
+            ...(activeEvaluationPoint.data as any),
+            completion: {
+              ...(activeEvaluationPoint?.data as any)?.completion,
+              [activeModelId]: {
+                response,
+              },
+            },
+          },
+        },
+        true
+      );
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [response]);
 
   if (!activeEvaluationPoint) {
     return (
@@ -30,31 +51,37 @@ function DetailsPage() {
 
   const availableModel = evaluation?.models || [];
 
+  availableModel.sort((a, b) => a.name.localeCompare(b.name));
+
   const defaultModel = availableModel?.[0];
+
+  const responseToDisplay = (activeEvaluationPoint.data as any).completion?.[
+    activeModelId
+  ]?.response;
 
   return (
     <div className="min-w-full p-4">
       <p className="mb-2 font-semibold">Prompt</p>
-      <div className="overflow-scroll max-h-48">
-        <pre className="p-4 overflow-scroll text-xs text-left whitespace-pre-wrap bg-gray-100 rounded-lg text-muted-foreground">
+      <div className="h-48 overflow-scroll">
+        <pre className="min-h-full p-4 overflow-scroll text-xs text-left whitespace-pre-wrap bg-gray-100 rounded-lg text-muted-foreground">
           <code>{JSON.stringify(datapoint?.data, null, 2)}</code>
         </pre>
       </div>
       <div className="flex flex-row items-center mt-10 space-x-3">
         <p className="mt-2 mb-2 font-semibold">Pick a model</p>
         <Tabs
-          defaultValue={defaultModel?.name}
+          defaultValue={defaultModel?.id}
           className=""
           orientation="vertical"
           value={activeModelId}
         >
-          <TabsList className="">
+          <TabsList className={availableModel?.[0]?.name}>
             {availableModel.map((model: Model) => {
               return (
                 <TabsTrigger
-                  key={model.name}
-                  value={model.name}
-                  onClick={() => setActiveModelId(model.name)}
+                  key={model.id}
+                  value={model.id}
+                  onClick={() => setActiveModelId(model.id)}
                 >
                   {model.name}
                 </TabsTrigger>
@@ -78,10 +105,12 @@ function DetailsPage() {
         ▶ Generate
       </Button>
 
-      <div className="h-48 mt-2 overflow-scroll max-h-48">
+      <div className="flex mt-2 overflow-scroll max-h-[24rem] min-h-[20rem]">
         <pre className="flex flex-1 min-h-full p-4 overflow-scroll text-xs text-left whitespace-pre-wrap bg-gray-100 rounded-lg text-muted-foreground">
           <code>
-            {response || "No response. Pick a model and click generate."}
+            {responseToDisplay === undefined
+              ? "No response. Pick a model and click generate."
+              : responseToDisplay}
           </code>
         </pre>
       </div>

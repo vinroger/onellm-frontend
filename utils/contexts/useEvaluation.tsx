@@ -10,6 +10,7 @@ import {
 } from "@/types/table";
 
 import { useDebounceCallback } from "usehooks-ts";
+import debounce from "debounce";
 
 type EvaluationWithModel = Evaluation & { models: Model[] };
 
@@ -22,7 +23,7 @@ type EvaluationContextType = {
   updateEvaluationPoint: (
     evaluationPointId: string,
     payload: Partial<EvaluationPoint>,
-    debouncedMs?: number
+    debouncedMs?: boolean
   ) => void;
   loading: boolean;
   deleteEvaluationPoint: (evaluationPointId: string) => void;
@@ -121,19 +122,26 @@ const EvaluationProvider = ({
     [evaluation.id]
   );
 
-  const request = useDebounceCallback(
-    async (evaluationPointId: string, payload: Partial<EvaluationPoint>) => {
-      await axios.put(`/api/v1/evaluationPoints/${evaluationPointId}`, payload);
-      setLoading(false);
-    },
-    1000
-  );
+  const debouncedUpdate = useMemo(() => {
+    // Debounce the entire update function
+    return debounce(
+      async (evaluationPointId: string, payload: Partial<EvaluationPoint>) => {
+        await axios.put(
+          `/api/v1/evaluationpoints/${evaluationPointId}`,
+          payload
+        );
+
+        setLoading(false);
+      },
+      1000
+    );
+  }, []);
 
   const updateEvaluationPoint = useCallback(
     async (
       evaluationPointId: string,
       payload: Partial<EvaluationPoint>,
-      debouncedMs?: number
+      debouncedMs?: boolean
     ) => {
       setLoading(true);
       setEvaluationPoints((prev) => {
@@ -146,17 +154,18 @@ const EvaluationProvider = ({
       });
 
       if (debouncedMs) {
-        await request(evaluationPointId, payload);
+        debouncedUpdate(evaluationPointId, payload);
       } else {
         await axios.put(
-          `/api/v1/evaluationPoints/${evaluationPointId}`,
+          `/api/v1/evaluationpoints/${evaluationPointId}`,
           payload
         );
+        setLoading(false);
       }
 
       setLoading(false);
     },
-    [request]
+    [debouncedUpdate]
   );
 
   const deleteEvaluationPoint = useCallback(
@@ -165,7 +174,7 @@ const EvaluationProvider = ({
       setEvaluationPoints((prev) => {
         return prev.filter((d) => d.id !== evaluationPointId);
       });
-      await axios.delete(`/api/v1/evaluationPoints/${evaluationPointId}`);
+      await axios.delete(`/api/v1/evaluationpoints/${evaluationPointId}`);
       setLoading(false);
     },
     [setEvaluationPoints]

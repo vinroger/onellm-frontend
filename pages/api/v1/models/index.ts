@@ -1,6 +1,14 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { getAuth } from "@clerk/nextjs/server";
 
+import { getOpenAIKey } from "@/utils/api/apikey";
+import OpenAI from "openai";
+import {
+  OPEN_AI_AVAILABLE_GPT_MODELS_FOR_FINE_TUNE,
+  OPEN_AI_GPT_MODELS,
+} from "@/constants/openai";
+
+import { v4 as uuidv4 } from "uuid";
 import supabase from "../../supabase-server.component";
 
 export default async function handler(
@@ -14,38 +22,101 @@ export default async function handler(
   }
 
   if (req.method === "GET") {
-    const { projectId } = req.query as { projectId: string };
+    const { projectId, filter } = req.query as any;
 
     if (!projectId) {
       return res.status(400).json({ error: "projectId is required" });
     }
-    const { data: datasets, error } = await supabase
-      .from("datasets")
+
+    // get the api key from the database
+
+    const { data: apikeys, error } = await supabase
+      .from("model_provider_api_keys")
       .select("*")
       .eq("owner_id", userId)
-      .eq("project_id", projectId)
-      .order("updated_at", { ascending: false });
-    if (error) {
-      console.error("Error getting logs:", error);
-      return res.status(500).json({ error: error.message });
+      .eq("project_id", projectId);
+
+    const openAIAPIKey = apikeys?.[0]?.api_key;
+    const modelProviderApiKeyId = apikeys?.[0]?.id;
+
+    if (error || !openAIAPIKey) {
+      return res.status(500).json({ error: error?.message });
     }
 
-    return res.status(200).json(datasets);
+    // use openai library
+    const openai = new OpenAI({
+      apiKey: openAIAPIKey,
+    });
+
+    const { data: models } = await openai.models.list();
+
+    // fetch supaabse
+    const { data: supabaseModelsData, error: supabaseModelsError } =
+      await supabase
+        .from("models")
+        .select("*")
+        .eq("owner_id", userId)
+        .eq("project_id", projectId);
+
+    if (supabaseModelsError) {
+      return res.status(500).json({ error: supabaseModelsError.message });
+    }
+
+    const updates = models.map((model) => {
+      const supabaseModel = supabaseModelsData.find((m) => m.name === model.id);
+      if (!supabaseModel) {
+        return {
+          id: uuidv4(),
+          name: model.id,
+          owner_id: userId,
+          project_id: projectId,
+          model_provider_api_key_id: modelProviderApiKeyId,
+          type: model.id.startsWith("ft:") ? "fine-tune" : "base",
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString(),
+        };
+      }
+      return {
+        ...supabaseModel,
+        updated_at: new Date().toISOString(),
+      };
+    });
+
+    // Now time to update supabase
+    const { data: supabaseResponse, error: updateError } = await supabase
+      .from("models")
+      .upsert(updates, { onConflict: "name,project_id" })
+      .select("*");
+
+    if (updateError) {
+      return res.status(500).json({ error: updateError.message });
+    }
+
+    if (filter === "fine-tune") {
+      const fineTuneModels = supabaseResponse.filter((model) =>
+        model.name.startsWith("ft:")
+      );
+      return res.status(200).json(fineTuneModels);
+    }
+
+    if (filter === "fine-tune-base") {
+      const fineTuneModels = supabaseResponse.filter((model) =>
+        OPEN_AI_AVAILABLE_GPT_MODELS_FOR_FINE_TUNE.includes(model.name)
+      );
+      return res.status(200).json(fineTuneModels);
+    }
+
+    if (filter === "chat") {
+      const chatModels = supabaseResponse.filter(
+        (model) =>
+          OPEN_AI_GPT_MODELS.includes(model.name) ||
+          model.name.startsWith("ft:")
+      );
+      return res.status(200).json(chatModels);
+    }
+
+    return res.status(200).json(supabaseResponse);
   }
-
-  // if (req.method === "POST") {
-  //   const { data, error } = await supabase
-  //     .from("datasets")
-  //     .insert([{ ...req.body, owner_id: userId, id: uuidv4() }])
-  //     .select("*");
-
-  //   if (error) {
-  //     console.error("Error creating log:", error);
-  //     return res.status(500).json({ error: error.message });
-  //   }
-
-  //   return res.status(201).json(data);
-  // }
 
   return res.status(405).end(`Method ${req.method} Not Allowed`);
 }

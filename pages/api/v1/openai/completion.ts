@@ -54,45 +54,8 @@ export default async function handler(
       res.write("event: error\ndata: An error occurred\n\n");
     }
 
-    // const stream = await openai.beta.chat.completions.stream({
-    //   model: "gpt-3.5-turbo",
-    //   stream: true,
-    //   messages: [{ role: "user", content: "test" }],
-    // });
-
-    // stream.on("content", (delta, snapshot) => {
-    //   console.log(delta);
-    //   res.write(`data: ${delta}  \n\n`);
-    // });
-
-    // stream.on("error", (error) => {
-    //   console.error(error);
-    //   res.write("event: error\ndata: An error occurred\n\n");
-    // });
-
-    // stream.on("end", () => {
-    //   res.end();
-    // });
-
-    // return res.send(stream.toReadableStream());
+    /* Mark if the response is complete. Hacky stuff here */
+    res.write("2wJn!HPnjhQnAS#hWDU3DWf3yZk%oB@x@");
   }
-
-  //     stream.then(async (stream) => {
-  //       for await (const chunk of stream) {
-  //         const message = chunk.choices[0].delta.content || "";
-  //         console.log(
-  //           "%cpages/api/v1/openai/completion.ts:49 message",
-  //           "color: #007acc;",
-  //           message
-  //         );
-  //         res.write(`data: ${message}  \n\n`);
-  //       }
-  //     });
-
-  //     req.on("close", () => {
-  //       res.end();
-  //     });
-  //   } else {
-  //     return res.status(405).end(`Method ${req.method} Not Allowed`);
-  //   }
+  return res.end();
 }

@@ -65,6 +65,17 @@ function Files() {
     setActiveEvaluationPointId,
   } = useEvaluationContext();
 
+  // sort by created_at
+  evaluationPoints.sort((a, b) => {
+    if (!a.data_point?.created_at || !b.data_point?.created_at) {
+      return 0;
+    }
+    return (
+      new Date(b.data_point.created_at).getTime() -
+      new Date(a.data_point.created_at).getTime()
+    );
+  });
+
   return (
     <div className="flex flex-col min-w-full p-4">
       <div className="flex flex-row items-center mb-4 ">
