@@ -59,6 +59,10 @@ function DetailsPage() {
     activeModelId
   ]?.response;
 
+  const activeOpenAIModelName = availableModel.find(
+    (model) => model.id === activeModelId
+  )?.name;
+
   return (
     <div className="min-w-full p-4">
       <p className="mb-2 font-semibold">Prompt</p>
@@ -98,7 +102,11 @@ function DetailsPage() {
         className="mt-3"
         onClick={() => {
           setResponse("");
-          sendMessage(projectId, activeModelId, datapoint?.data || {});
+          sendMessage(
+            projectId,
+            activeOpenAIModelName || "",
+            datapoint?.data || {}
+          );
         }}
         disabled={!activeModelId || !datapoint?.data || status === "Generating"}
       >
