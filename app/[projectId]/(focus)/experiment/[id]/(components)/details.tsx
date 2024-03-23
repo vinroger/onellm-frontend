@@ -3,6 +3,10 @@ import React, { useState } from "react";
 
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Model } from "@/types/table";
+import useChatCompletion from "@/utils/hooks/useChatCompletion";
+import { Button } from "@/components/ui/button";
+import { Separator } from "@/components/ui/separator";
+import { useProjectContext } from "@/utils/contexts/useProject";
 
 function DetailsPage() {
   const { activeEvaluationPoint } = useEvaluationContext();
@@ -11,6 +15,10 @@ function DetailsPage() {
 
   const [activeModelId, setActiveModelId] = useState("");
   const { evaluation } = useEvaluationContext();
+
+  const { response, status, sendMessage, setResponse } = useChatCompletion();
+
+  const { projectId } = useProjectContext();
 
   if (!activeEvaluationPoint) {
     return (
@@ -32,27 +40,51 @@ function DetailsPage() {
           <code>{JSON.stringify(datapoint?.data, null, 2)}</code>
         </pre>
       </div>
-      <p className="mt-2 mb-2 font-semibold">Result</p>
-      <Tabs
-        defaultValue={defaultModel?.id}
-        className="mb-10 "
-        orientation="vertical"
-        value={activeModelId}
+      <div className="flex flex-row items-center mt-10 space-x-3">
+        <p className="mt-2 mb-2 font-semibold">Pick a model</p>
+        <Tabs
+          defaultValue={defaultModel?.name}
+          className=""
+          orientation="vertical"
+          value={activeModelId}
+        >
+          <TabsList className="">
+            {availableModel.map((model: Model) => {
+              return (
+                <TabsTrigger
+                  key={model.name}
+                  value={model.name}
+                  onClick={() => setActiveModelId(model.name)}
+                >
+                  {model.name}
+                </TabsTrigger>
+              );
+            })}
+          </TabsList>
+        </Tabs>
+      </div>
+
+      <Separator className="mt-3" />
+
+      <Button
+        variant="outline"
+        className="mt-3"
+        onClick={() => {
+          setResponse("");
+          sendMessage(projectId, activeModelId, datapoint?.data || {});
+        }}
+        disabled={!activeModelId || !datapoint?.data || status === "Generating"}
       >
-        <TabsList className="">
-          {availableModel.map((model: Model) => {
-            return (
-              <TabsTrigger
-                key={model.id}
-                value={model.id}
-                onClick={() => setActiveModelId(model.id)}
-              >
-                {model.name}
-              </TabsTrigger>
-            );
-          })}
-        </TabsList>
-      </Tabs>
+        ▶ Generate
+      </Button>
+
+      <div className="h-48 mt-2 overflow-scroll max-h-48">
+        <pre className="flex flex-1 min-h-full p-4 overflow-scroll text-xs text-left whitespace-pre-wrap bg-gray-100 rounded-lg text-muted-foreground">
+          <code>
+            {response || "No response. Pick a model and click generate."}
+          </code>
+        </pre>
+      </div>
     </div>
   );
 }
