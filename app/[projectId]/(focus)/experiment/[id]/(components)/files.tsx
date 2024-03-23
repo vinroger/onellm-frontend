@@ -28,6 +28,16 @@ function EvaluationPointButton({
   setActiveEvaluationPointId: (id: string) => void;
 }) {
   const datapoint = evaluationPoint.data_point;
+
+  const colors = [100, 200, 300, 400, 500, 600, 700, 800, 900];
+
+  const completionData = (evaluationPoint?.data as any)?.completion;
+
+  const { evaluation } = useEvaluationContext();
+
+  const availableModel = evaluation?.models;
+  availableModel.sort((a, b) => a.name.localeCompare(b.name));
+
   return (
     <Button
       onClick={() => setActiveEvaluationPointId(evaluationPoint.id)}
@@ -37,13 +47,36 @@ function EvaluationPointButton({
         isActive && "bg-neutral-50"
       )}
     >
-      <div className="flex flex-row items-center max-w-3/4">
-        <File
-          className={cn("font-light w-4 mr-2", isActive && "font-extrabold")}
-          strokeWidth={isActive ? 2 : 1}
-        />
-        <div className={cn("font-light", isActive && "font-bold")}>
-          {datapoint && ellipsisString(datapoint.title, 25)}
+      <div className="flex flex-row items-center justify-between w-full max-w-3/4">
+        <div className="flex flex-row items-center">
+          <File
+            className={cn("font-light w-4 mr-2", isActive && "font-extrabold")}
+            strokeWidth={isActive ? 2 : 1}
+          />
+          <div className={cn("font-light", isActive && "font-bold")}>
+            {datapoint && ellipsisString(datapoint.title, 25)}
+          </div>
+        </div>
+
+        <div className="flex flex-row items-center space-x-[1px]">
+          {availableModel.map((model) => {
+            const score = completionData?.[model.id]?.rating;
+            if (!score) {
+              return <div key={model.id} className={"w-2 h-2 bg-red-200"} />;
+            }
+
+            const greenNumber = Math.max(
+              Math.min(Math.floor(score) * 100, 950),
+              50
+            );
+
+            return (
+              <div
+                key={model.id}
+                className={`w-2 h-2 bg-green-${greenNumber}`}
+              />
+            );
+          })}
         </div>
       </div>
     </Button>

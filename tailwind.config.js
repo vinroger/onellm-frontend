@@ -11,6 +11,16 @@ module.exports = {
     "./src/**/*.{ts,tsx}",
     // "./**/*.{js,ts,jsx,tsx}",
   ],
+  safelist: [
+    //anything regex that start with bg-
+    "bg-",
+    {
+      pattern: /bg-/,
+    },
+    {
+      pattern: /ring-/,
+    },
+  ],
   prefix: "",
   theme: {
     container: {
