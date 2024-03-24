@@ -4,8 +4,8 @@ import { getAuth } from "@clerk/nextjs/server";
 
 import { v4 as uuidv4 } from "uuid";
 import { GETDatapointsByDatasetId } from "@/utils/api/datapoints";
-import supabase from "../../supabase-server.component";
 import { EvaluationPoint } from "@/types/table";
+import supabase from "../../supabase-server.component";
 
 export type CreateEvaluationReqBodyType = {
   title: string;
