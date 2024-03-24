@@ -5,7 +5,7 @@
 import { DataPoint } from "@/types/table";
 import { usePathname } from "next/navigation";
 import React, { useEffect, useState } from "react";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Braces, Trash } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -17,8 +17,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import axios from "axios";
 import { useDebounceCallback } from "usehooks-ts";
+import { useDatasetContext } from "@/utils/contexts/useDataset";
 
 export type ChatData = {
   role: string;
@@ -26,7 +26,7 @@ export type ChatData = {
 }[];
 
 function MessageRenderer({
-  role: roleInp,
+  role,
   content,
   handleChange,
   handleDelete,
@@ -36,20 +36,13 @@ function MessageRenderer({
   handleChange: (newMessage: { role: string; content: string }) => void;
   handleDelete: () => void;
 }) {
-  const [role, setRole] = React.useState(roleInp);
-  const [message, setMessage] = React.useState(content);
-  useEffect(() => {
-    setRole(roleInp);
-    setMessage(content);
-  }, [roleInp, content]);
-
+  const [message, setMessage] = useState(content);
   return (
     <div className="flex max-w-full mb-3 space-x-2">
       <div className="flex flex-row max-w-full min-w-full space-x-5">
         <Select
           value={role}
           onValueChange={(val) => {
-            setRole(val);
             handleChange({ role: val, content });
           }}
         >
@@ -89,49 +82,40 @@ function MessageRenderer({
   );
 }
 
-function FormattedDisplay({
-  datapoint,
-  refetch,
-}: {
-  datapoint: DataPoint;
-  refetch: () => void;
-}) {
-  const [data, setData] = useState<ChatData>(datapoint.data as ChatData);
-  useEffect(() => {
-    setData([...(datapoint.data as any)]);
-  }, [datapoint.data, setData]);
+function FormattedDisplay({ datapoint }: { datapoint: DataPoint }) {
+  const { updateDatapoint, setDatapoints } = useDatasetContext();
+
+  const data = datapoint.data as ChatData;
 
   const handleNewMessage = async () => {
     const newMessage = {
       role: "user",
       content: "hello",
     };
-    setData([...data, newMessage]);
 
-    await axios.put(`/api/v1/datapoints/${datapoint.id}`, {
+    await updateDatapoint(datapoint.id, {
       data: [...data, newMessage],
     });
-    refetch();
   };
 
-  const handleChangeMessageAtIdx = useDebounceCallback(
-    async (
-      idx: number,
-      newMessage: {
-        role: string;
-        content: string;
-      }
-    ) => {
-      const newData = [...data];
-      newData[idx] = newMessage;
+  const handleChangeMessageAtIdx = async (
+    idx: number,
+    newMessage: {
+      role: string;
+      content: string;
+    }
+  ) => {
+    const newData = [...data];
+    newData[idx] = newMessage;
 
-      await axios.put(`/api/v1/datapoints/${datapoint.id}`, {
+    await updateDatapoint(
+      datapoint.id,
+      {
         data: newData,
-      });
-      refetch();
-    },
-    1000
-  );
+      },
+      1000
+    );
+  };
 
   if (!datapoint || !datapoint.data) {
     return <div>No data</div>;
@@ -140,13 +124,10 @@ function FormattedDisplay({
   const handleDeleteAtIdx = async (idx: number) => {
     const newData = [...data];
     newData.splice(idx, 1);
-    setData(newData);
 
-    await axios.put(`/api/v1/datapoints/${datapoint.id}`, {
+    await updateDatapoint(datapoint.id, {
       data: newData,
     });
-
-    refetch();
   };
 
   return (
@@ -172,7 +153,6 @@ function FormattedDisplay({
           No messages found. Create new message by clicking this button.
         </div>
       )}
-      {/* <MessageRenderer role={"system"} content={"hello"} /> */}
       <Button
         variant="default"
         className="mb-3 h-[30px] w-[200px] mt-5"
@@ -194,26 +174,20 @@ function JSONDisplay({ datapoint }: { datapoint: DataPoint }) {
   );
 }
 
-function Details({
-  datapoint,
-  refetch,
-}: {
-  datapoint?: DataPoint;
-  refetch: () => void;
-}) {
+function Details() {
   const pathname = usePathname();
 
   if (!pathname) {
     throw new Error("No pathname");
   }
 
-  const id = pathname.split("/dataset/")[1];
-
   const [activeTab, setActiveTab] = React.useState<"formatted" | "json">(
     "formatted"
   );
 
-  if (!datapoint) {
+  const { activeDatapoint } = useDatasetContext();
+
+  if (!activeDatapoint) {
     return (
       <div className="flex items-center justify-center min-w-full min-h-full p-7">
         Please select a datapoint from the left to continue.
@@ -240,9 +214,9 @@ function Details({
         </Tabs>
       </div>
       {activeTab === "formatted" ? (
-        <FormattedDisplay datapoint={datapoint} refetch={refetch} />
+        <FormattedDisplay datapoint={activeDatapoint} />
       ) : (
-        <JSONDisplay datapoint={datapoint} />
+        <JSONDisplay datapoint={activeDatapoint} />
       )}
     </div>
   );

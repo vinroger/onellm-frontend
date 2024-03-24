@@ -143,6 +143,14 @@ export default async function handler(
         training_file: openAiFileId,
         model: openAIModelId,
         ...fineTuningOptions,
+        hyperparameters: {
+          n_epochs: fineTuningOptions.hyperparameters?.n_epochs,
+          batch_size: fineTuningOptions.hyperparameters?.batch_size,
+          learning_rate_multiplier:
+            fineTuningOptions.hyperparameters?.learning_rate_multiplier,
+        },
+        suffix: fineTuningOptions.suffix || title,
+        validation_file: fineTuningOptions.validation_file,
       });
 
       const supabaseFineTuningJob = {

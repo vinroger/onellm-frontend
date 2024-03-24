@@ -103,20 +103,21 @@ const navItems = [
     icon: <Database strokeWidth="2.8px" className={"mr-2 w-3.5 "} />,
   },
   {
-    name: "training",
-    icon: <AreaChart strokeWidth="2.8px" className={"mr-2 w-3.5 "} />,
-  },
-  {
     name: "model",
     icon: <Boxes className={"mr-2.5 w-3.5 "} />,
   },
   {
-    name: "settings",
-    icon: <IoMdSettings className={"mr-2 w-3.5 "} />,
+    name: "training",
+    icon: <AreaChart strokeWidth="2.8px" className={"mr-2 w-3.5 "} />,
   },
+
   {
     name: "experiment",
     icon: <FlaskConical className={"mr-2 w-3.5 "} />,
+  },
+  {
+    name: "settings",
+    icon: <IoMdSettings className={"mr-2 w-3.5 "} />,
   },
   {
     name: "how-to-install",

@@ -14,50 +14,50 @@ export default async function handler(
     return res.status(401).json({ error: "Unauthorized" });
   }
 
-  const { datapointId } = req.query as { datapointId: string };
+  const { id: evaluationPointId } = req.query as { id: string };
 
   if (req.method === "PUT") {
-    const { data: datapoints, error } = await supabase
-      .from("data_points")
+    const { data: evaluationPoints, error } = await supabase
+      .from("evaluation_points")
       .update({ ...req.body })
-      .eq("id", datapointId)
+      .eq("id", evaluationPointId)
       .eq("owner_id", userId)
-      .select("*");
+      .select();
 
     if (
-      !datapoints ||
-      datapoints.length === 0 ||
-      datapoints[0].dataset_id === null
+      !evaluationPoints ||
+      evaluationPoints.length === 0 ||
+      evaluationPoints[0].evaluation_id === null
     ) {
       return res.status(404).json({ error: "Not Found" });
     }
 
-    const { dataset_id } = datapoints[0];
+    const { evaluation_id } = evaluationPoints[0];
 
     // update dataset updated_date
     await supabase
-      .from("datasets")
+      .from("evaluations")
       .update({ updated_at: new Date().toISOString() })
-      .eq("id", dataset_id)
+      .eq("id", evaluation_id)
       .eq("owner_id", userId)
-      .select();
+      .select("*");
 
     if (error) {
       return res.status(500).json({ error: (error as any).message });
     }
-    return res.status(200).json(datapoints);
+    return res.status(200).json(evaluationPoints);
   }
 
   if (req.method === "DELETE") {
-    const { data: datapoints, error } = await supabase
-      .from("data_points")
+    const { data: evaluationPoints, error } = await supabase
+      .from("evaluation_points")
       .delete()
-      .eq("id", datapointId)
+      .eq("id", evaluationPointId)
       .eq("owner_id", userId);
     if (error) {
       return res.status(500).json({ error: error.message });
     }
-    return res.status(200).json({ datapoints });
+    return res.status(200).json({ evaluationPoints });
   }
 
   return res.status(405).end(`Method ${req.method} Not Allowed`);
