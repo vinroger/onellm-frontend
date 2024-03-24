@@ -185,6 +185,13 @@ export type Database = {
             referencedColumns: ["id"];
           },
           {
+            foreignKeyName: "public_evaluation_points_owner_id_fkey";
+            columns: ["owner_id"];
+            isOneToOne: false;
+            referencedRelation: "users";
+            referencedColumns: ["id"];
+          },
+          {
             foreignKeyName: "public_evaluation_points_project_id_fkey";
             columns: ["project_id"];
             isOneToOne: false;
@@ -477,6 +484,7 @@ export type Database = {
           data: string | null;
           id: string;
           model_provider: string | null;
+          model_provider_api_key_id: string | null;
           owner_id: string | null;
           project_id: string | null;
           updated_at: string | null;
@@ -487,6 +495,7 @@ export type Database = {
           data?: string | null;
           id?: string;
           model_provider?: string | null;
+          model_provider_api_key_id?: string | null;
           owner_id?: string | null;
           project_id?: string | null;
           updated_at?: string | null;
@@ -497,11 +506,19 @@ export type Database = {
           data?: string | null;
           id?: string;
           model_provider?: string | null;
+          model_provider_api_key_id?: string | null;
           owner_id?: string | null;
           project_id?: string | null;
           updated_at?: string | null;
         };
         Relationships: [
+          {
+            foreignKeyName: "public_model_provider_api_keys_model_provider_api_key_id_fkey";
+            columns: ["model_provider_api_key_id"];
+            isOneToOne: false;
+            referencedRelation: "model_provider_api_keys";
+            referencedColumns: ["id"];
+          },
           {
             foreignKeyName: "public_model_provider_api_keys_owner_id_fkey";
             columns: ["owner_id"];
@@ -714,7 +731,9 @@ export type Database = {
           data: Json | null;
           dataset_id: string | null;
           description: string | null;
+          file_id: string | null;
           id: string;
+          model_provider_api_key_id: string | null;
           owner_id: string;
           project_id: string;
           result_model_id: string | null;
@@ -732,7 +751,9 @@ export type Database = {
           data?: Json | null;
           dataset_id?: string | null;
           description?: string | null;
+          file_id?: string | null;
           id: string;
+          model_provider_api_key_id?: string | null;
           owner_id: string;
           project_id: string;
           result_model_id?: string | null;
@@ -750,7 +771,9 @@ export type Database = {
           data?: Json | null;
           dataset_id?: string | null;
           description?: string | null;
+          file_id?: string | null;
           id?: string;
+          model_provider_api_key_id?: string | null;
           owner_id?: string;
           project_id?: string;
           result_model_id?: string | null;
@@ -768,6 +791,20 @@ export type Database = {
             columns: ["base_model_id"];
             isOneToOne: false;
             referencedRelation: "models";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "public_trainings_file_id_fkey";
+            columns: ["file_id"];
+            isOneToOne: false;
+            referencedRelation: "files";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "public_trainings_model_provider_api_key_id_fkey";
+            columns: ["model_provider_api_key_id"];
+            isOneToOne: false;
+            referencedRelation: "model_provider_api_keys";
             referencedColumns: ["id"];
           },
           {
@@ -828,6 +865,31 @@ export type Database = {
       [_ in never]: never;
     };
     Functions: {
+      get_evaluation_with_models: {
+        Args: {
+          input_evaluation_id: string;
+        };
+        Returns: {
+          evaluation_id: string;
+          evaluation_title: string;
+          evaluation_description: string;
+          evaluation_owner_id: string;
+          evaluation_created_at: string;
+          evaluation_updated_at: string;
+          evaluation_project_id: string;
+          model_id: string;
+          model_data: Json;
+          model_created_at: string;
+          model_description: string;
+          model_provider_api_key_id: string;
+          model_name: string;
+          model_owner_id: string;
+          model_updated_at: string;
+          models_repo_id: string;
+          model_project_id: string;
+          model_type: string;
+        }[];
+      };
       requesting_user_id: {
         Args: Record<PropertyKey, never>;
         Returns: string;
@@ -842,9 +904,11 @@ export type Database = {
   };
 };
 
+type PublicSchema = Database[Extract<keyof Database, "public">];
+
 export type Tables<
   PublicTableNameOrOptions extends
-    | keyof (Database["public"]["Tables"] & Database["public"]["Views"])
+    | keyof (PublicSchema["Tables"] & PublicSchema["Views"])
     | { schema: keyof Database },
   TableName extends PublicTableNameOrOptions extends { schema: keyof Database }
     ? keyof (Database[PublicTableNameOrOptions["schema"]]["Tables"] &
@@ -857,10 +921,10 @@ export type Tables<
     }
     ? R
     : never
-  : PublicTableNameOrOptions extends keyof (Database["public"]["Tables"] &
-      Database["public"]["Views"])
-  ? (Database["public"]["Tables"] &
-      Database["public"]["Views"])[PublicTableNameOrOptions] extends {
+  : PublicTableNameOrOptions extends keyof (PublicSchema["Tables"] &
+      PublicSchema["Views"])
+  ? (PublicSchema["Tables"] &
+      PublicSchema["Views"])[PublicTableNameOrOptions] extends {
       Row: infer R;
     }
     ? R
@@ -869,7 +933,7 @@ export type Tables<
 
 export type TablesInsert<
   PublicTableNameOrOptions extends
-    | keyof Database["public"]["Tables"]
+    | keyof PublicSchema["Tables"]
     | { schema: keyof Database },
   TableName extends PublicTableNameOrOptions extends { schema: keyof Database }
     ? keyof Database[PublicTableNameOrOptions["schema"]]["Tables"]
@@ -880,8 +944,8 @@ export type TablesInsert<
     }
     ? I
     : never
-  : PublicTableNameOrOptions extends keyof Database["public"]["Tables"]
-  ? Database["public"]["Tables"][PublicTableNameOrOptions] extends {
+  : PublicTableNameOrOptions extends keyof PublicSchema["Tables"]
+  ? PublicSchema["Tables"][PublicTableNameOrOptions] extends {
       Insert: infer I;
     }
     ? I
@@ -890,7 +954,7 @@ export type TablesInsert<
 
 export type TablesUpdate<
   PublicTableNameOrOptions extends
-    | keyof Database["public"]["Tables"]
+    | keyof PublicSchema["Tables"]
     | { schema: keyof Database },
   TableName extends PublicTableNameOrOptions extends { schema: keyof Database }
     ? keyof Database[PublicTableNameOrOptions["schema"]]["Tables"]
@@ -901,8 +965,8 @@ export type TablesUpdate<
     }
     ? U
     : never
-  : PublicTableNameOrOptions extends keyof Database["public"]["Tables"]
-  ? Database["public"]["Tables"][PublicTableNameOrOptions] extends {
+  : PublicTableNameOrOptions extends keyof PublicSchema["Tables"]
+  ? PublicSchema["Tables"][PublicTableNameOrOptions] extends {
       Update: infer U;
     }
     ? U
@@ -911,13 +975,13 @@ export type TablesUpdate<
 
 export type Enums<
   PublicEnumNameOrOptions extends
-    | keyof Database["public"]["Enums"]
+    | keyof PublicSchema["Enums"]
     | { schema: keyof Database },
   EnumName extends PublicEnumNameOrOptions extends { schema: keyof Database }
     ? keyof Database[PublicEnumNameOrOptions["schema"]]["Enums"]
     : never = never,
 > = PublicEnumNameOrOptions extends { schema: keyof Database }
   ? Database[PublicEnumNameOrOptions["schema"]]["Enums"][EnumName]
-  : PublicEnumNameOrOptions extends keyof Database["public"]["Enums"]
-  ? Database["public"]["Enums"][PublicEnumNameOrOptions]
+  : PublicEnumNameOrOptions extends keyof PublicSchema["Enums"]
+  ? PublicSchema["Enums"][PublicEnumNameOrOptions]
   : never;

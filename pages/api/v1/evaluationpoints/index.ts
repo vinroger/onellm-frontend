@@ -14,30 +14,35 @@ export default async function handler(
   }
 
   if (req.method === "GET") {
-    const { datasetId } = req.query as { datasetId: string };
-    const { data: datapoints, error } = await supabase
-      .from("data_points")
-      .select("*")
-      .eq("dataset_id", datasetId)
+    const { evaluationId } = req.query as { evaluationId: string };
+    const { data: evaluationPoints, error } = await supabase
+      .from("evaluation_points")
+      .select(
+        `
+      *,
+      data_point: data_points(*)
+      `
+      )
+      .eq("evaluation_id", evaluationId)
       .eq("owner_id", userId)
       .order("created_at", { ascending: false });
 
     if (error) {
       return res.status(500).json({ error: error.message });
     }
-    return res.status(200).json(datapoints);
+    return res.status(200).json(evaluationPoints);
   }
 
   if (req.method === "POST") {
-    const { data: datapoints, error } = await supabase
-      .from("data_points")
+    const { data: evaluationPoints, error } = await supabase
+      .from("evaluation_points")
       .insert({ ...req.body })
-      .select();
+      .select("*");
 
     if (error) {
       return res.status(500).json({ error: error.message });
     }
-    return res.status(200).json(datapoints);
+    return res.status(200).json(evaluationPoints);
   }
 
   return res.status(405).end(`Method ${req.method} Not Allowed`);

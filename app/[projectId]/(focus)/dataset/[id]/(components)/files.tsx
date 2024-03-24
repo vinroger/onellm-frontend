@@ -3,6 +3,7 @@
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { DataPoint } from "@/types/table";
+import useDataset, { useDatasetContext } from "@/utils/contexts/useDataset";
 import { useProjectContext } from "@/utils/contexts/useProject";
 import { ellipsisString } from "@/utils/functions/string";
 import { useAuth } from "@clerk/nextjs";
@@ -36,33 +37,29 @@ function DatapointButton({
   datapoint,
   setActiveDatapointId,
   isActive,
-  refetch,
 }: {
   datapoint: DataPoint;
   isActive: boolean;
   setActiveDatapointId: (id: string) => void;
-  refetch: () => void;
 }) {
   const [isHovered, setHovered] = React.useState(false);
   const [isEditing, setEditing] = React.useState(false);
 
   const [datapointTitle, setDatapointTitle] = React.useState(datapoint.title);
 
+  const { deleteDatapoint, updateDatapoint } = useDatasetContext();
+
   const handleEdit = async () => {
     setEditing(true);
   };
 
   const handleDelete = async () => {
-    await axios.delete(`/api/v1/datapoints/${datapoint.id}`);
-    refetch();
+    await deleteDatapoint(datapoint.id);
   };
 
   const handleSave = async () => {
-    await axios.put(`/api/v1/datapoints/${datapoint.id}`, {
-      title: datapointTitle,
-    });
-    await refetch();
     setEditing(false);
+    await updateDatapoint(datapoint.id, { title: datapointTitle });
   };
   return (
     <Button
@@ -140,16 +137,12 @@ function Files({
   datapoints,
   setActiveDatapointId,
   activeDatapointId,
-  refetch,
   loading,
-  setLoading,
 }: {
   datapoints: DataPoint[];
   setActiveDatapointId: (id: string) => void;
   activeDatapointId: string;
-  refetch: () => void;
   loading: boolean;
-  setLoading: (loading: boolean) => void;
 }) {
   const { userId } = useAuth();
 
@@ -158,11 +151,12 @@ function Files({
 
   const { projectId } = useProjectContext();
 
+  const { fetchDatapoints } = useDatasetContext();
+
   const handleNewFile = async () => {
     if (!userId || !datasetId) throw new Error("No user id or datasetid");
-    setLoading(true);
     await postNewDatapoint(userId, datasetId, projectId);
-    refetch();
+    await fetchDatapoints();
   };
   return (
     <div className="flex flex-col min-w-full p-4">
@@ -192,7 +186,6 @@ function Files({
                 isActive={activeDatapointId === datapoint.id}
                 datapoint={datapoint}
                 setActiveDatapointId={setActiveDatapointId}
-                refetch={refetch}
               />
             </div>
           );

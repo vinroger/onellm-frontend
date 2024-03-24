@@ -4,8 +4,9 @@ import React, { useCallback, useEffect } from "react";
 import { DataPoint } from "@/types/table";
 import axios from "axios";
 import { usePathname } from "next/navigation";
-import Details from "./details";
-import Files from "./files";
+import { useDatasetContext } from "@/utils/contexts/useDataset";
+import Details from "./(components)/details";
+import Files from "./(components)/files";
 
 const fetchDatapoints = async (datasetId: string) => {
   const response = await axios.get("/api/v1/datapoints", {
@@ -17,9 +18,6 @@ const fetchDatapoints = async (datasetId: string) => {
 };
 
 function Dataset() {
-  const [datapoints, setDatapoints] = React.useState<DataPoint[]>([]);
-  const [loading, setLoading] = React.useState(false);
-
   const pathname = usePathname();
   const datasetId = pathname?.split("/dataset/")[1];
 
@@ -27,20 +25,10 @@ function Dataset() {
     throw new Error("No dataset id");
   }
 
-  const loadDatapoints = useCallback(async () => {
-    setLoading(true);
-    const fetchedDatapoints = await fetchDatapoints(datasetId);
-
-    setDatapoints(fetchedDatapoints);
-    setLoading(false);
-  }, [datasetId, setDatapoints, setLoading]);
-
-  useEffect(() => {
-    loadDatapoints();
-  }, [loadDatapoints]);
+  const { datapoints, loading } = useDatasetContext();
 
   // Context stuff
-  const [activeDatapointId, setActiveDatapointId] = React.useState<string>("");
+  const { activeDatapointId, setActiveDatapointId } = useDatasetContext();
 
   useEffect(() => {
     const handleArrowKeys = (e: any) => {
@@ -68,13 +56,11 @@ function Dataset() {
     return () => {
       window.removeEventListener("keydown", handleArrowKeys);
     };
-  }, [activeDatapointId, datapoints]);
+  }, [activeDatapointId, datapoints, setActiveDatapointId]);
 
   const activeDatapointIdx = datapoints.findIndex(
     (datapoint) => datapoint.id === activeDatapointId
   );
-
-  const activeDatapoint = datapoints[activeDatapointIdx];
 
   return (
     <div className="flex flex-row min-w-full min-h-full space-x-2 p-7">
@@ -84,12 +70,10 @@ function Dataset() {
           datapoints={datapoints}
           setActiveDatapointId={setActiveDatapointId}
           activeDatapointId={activeDatapointId}
-          refetch={loadDatapoints}
-          setLoading={setLoading}
         />
       </div>
       <div className="flex flex-1 max-h-full overflow-scroll bg-white rounded-lg">
-        <Details datapoint={activeDatapoint} refetch={loadDatapoints} />
+        <Details />
       </div>
     </div>
   );
