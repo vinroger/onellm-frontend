@@ -37,7 +37,6 @@ export default async function handler(
     const { data: logs, error } = await supabase
       .from("logs")
       .select("*")
-      .eq("owner_id", userId)
       .eq("project_id", projectId);
     if (error) {
       console.error("Error getting logs:", error);

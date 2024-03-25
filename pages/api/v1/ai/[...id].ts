@@ -55,7 +55,6 @@ async function processTags(
         .from("tags")
         .select("id")
         .eq("name", tagName)
-        .eq("owner_id", owner_id)
         .single();
 
       // If the tag doesn't exist, create it

@@ -21,7 +21,6 @@ export default async function handler(
       .from("evaluation_points")
       .update({ ...req.body })
       .eq("id", evaluationPointId)
-      .eq("owner_id", userId)
       .select();
 
     if (
@@ -39,7 +38,6 @@ export default async function handler(
       .from("evaluations")
       .update({ updated_at: new Date().toISOString() })
       .eq("id", evaluation_id)
-      .eq("owner_id", userId)
       .select("*");
 
     if (error) {
@@ -52,8 +50,7 @@ export default async function handler(
     const { data: evaluationPoints, error } = await supabase
       .from("evaluation_points")
       .delete()
-      .eq("id", evaluationPointId)
-      .eq("owner_id", userId);
+      .eq("id", evaluationPointId);
     if (error) {
       return res.status(500).json({ error: error.message });
     }

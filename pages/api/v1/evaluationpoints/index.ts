@@ -24,7 +24,6 @@ export default async function handler(
       `
       )
       .eq("evaluation_id", evaluationId)
-      .eq("owner_id", userId)
       .order("created_at", { ascending: false });
 
     if (error) {

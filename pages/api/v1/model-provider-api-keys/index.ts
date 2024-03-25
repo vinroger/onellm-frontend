@@ -33,7 +33,6 @@ export default async function handler(
     const { data: api_keys, error } = await supabase
       .from("model_provider_api_keys")
       .select("*")
-      .eq("owner_id", userId)
       .eq("project_id", projectId);
     if (error) {
       return res.status(500).json({ error: error.message });
@@ -59,7 +58,6 @@ export default async function handler(
           project_id: projectId,
         },
       ])
-      .eq("owner_id", userId)
       .select("*");
 
     if (error) {
@@ -80,7 +78,6 @@ export default async function handler(
         api_key: req.body.api_key,
         updated_at: new Date().toISOString(),
       })
-      .eq("owner_id", userId)
       .eq("model_provider", req.body.model_provider)
       .eq("project_id", projectId)
       .select("*");

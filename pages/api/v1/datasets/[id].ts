@@ -22,8 +22,7 @@ export default async function handler(
     const { data: datasets, error } = await supabase
       .from("datasets")
       .select("*")
-      .eq("id", datasetId)
-      .eq("owner_id", userId);
+      .eq("id", datasetId);
     // .eq("project_id", projectId);
     if (error) {
       console.error("Error getting logs:", error);
@@ -39,7 +38,6 @@ export default async function handler(
       .from("datasets")
       .update({ ...fields, updated_at: new Date().toISOString() })
       .eq("id", datasetId)
-      .eq("owner_id", userId)
       .select();
     if (error) {
       console.error("Error updating dataset:", error);
@@ -54,7 +52,6 @@ export default async function handler(
       .from("datasets")
       .delete()
       .eq("id", datasetId)
-      .eq("owner_id", userId)
       .select("*");
     if (error) {
       return res.status(500).json({ error: error.message });
