@@ -860,6 +860,39 @@ export type Database = {
         };
         Relationships: [];
       };
+      users_projects_junction: {
+        Row: {
+          project_id: string;
+          role: string | null;
+          user_id: string;
+        };
+        Insert: {
+          project_id: string;
+          role?: string | null;
+          user_id: string;
+        };
+        Update: {
+          project_id?: string;
+          role?: string | null;
+          user_id?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "public_users_projects_junction_project_id_fkey";
+            columns: ["project_id"];
+            isOneToOne: false;
+            referencedRelation: "projects";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "public_users_projects_junction_user_id_fkey";
+            columns: ["user_id"];
+            isOneToOne: false;
+            referencedRelation: "users";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
     };
     Views: {
       [_ in never]: never;

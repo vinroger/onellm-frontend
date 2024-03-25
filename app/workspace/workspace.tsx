@@ -29,6 +29,7 @@ import { toHumanDateString } from "@/utils/functions/date";
 import { Skeleton } from "@/components/ui/skeleton";
 import BorderMagicButton from "@/components/aceternity/bordermagicbutton";
 import ShimmerButton from "@/components/aceternity/shimmerbutton";
+import { toTitleCase } from "@/utils/functions/string";
 
 function ProjectCard({
   projectName,
@@ -36,12 +37,14 @@ function ProjectCard({
   lastEdited,
   projectId,
   refetch,
+  role,
 }: {
   projectName: string | null;
   description: string | null;
   lastEdited: string | null;
   projectId: string;
   refetch: () => void;
+  role?: string;
 }) {
   const router = useRouter();
   const { DialogConfimationCompoment, setOpen } = useDeleteConfirmationDialog();
@@ -79,6 +82,9 @@ function ProjectCard({
         <p className="p-0 m-0 text-xs text-neutral-600">{description}</p>
         <p className="p-0 m-0 mb-2 text-xs text-neutral-600">
           Last Edited at {toHumanDateString(new Date(lastEdited ?? ""))}
+        </p>
+        <p className="p-0 m-0 text-xs text-neutral-600">
+          {toTitleCase(role ?? "Unknown role")}
         </p>
       </div>
 
@@ -246,6 +252,7 @@ const ProjectList = ({
             description={project.description}
             lastEdited={project.updated_at}
             refetch={execute}
+            role={(project as any).role ?? "owner"}
           />
         ))
       )}

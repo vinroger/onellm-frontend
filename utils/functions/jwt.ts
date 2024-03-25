@@ -30,3 +30,9 @@ export function generateJwtToken(options: TokenOptions): string {
 export function verifyJwtToken(token: string): string | jwt.JwtPayload {
   return jwt.verify(token, process.env.JWT_SECRET_KEY!);
 }
+
+export function generateJWTTokenAnyPayload(payload: any, expiresIn?: string) {
+  return jwt.sign(payload, process.env.JWT_SECRET_KEY!, {
+    expiresIn,
+  });
+}
