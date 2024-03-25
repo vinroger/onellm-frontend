@@ -1,5 +1,22 @@
-const { fontFamily } = require("tailwindcss/defaultTheme");
+/* eslint-disable import/no-import-module-exports */
+/* eslint-disable global-require */
+
+import { fontFamily } from "tailwindcss/defaultTheme";
+
+import { default as flattenColorPalette } from "tailwindcss/lib/util/flattenColorPalette";
+
 import formsPlugin from "@tailwindcss/forms";
+
+function addVariablesForColors({ addBase, theme }: any) {
+  const allColors = flattenColorPalette(theme("colors"));
+  const newVars = Object.fromEntries(
+    Object.entries(allColors).map(([key, val]) => [`--${key}`, val])
+  );
+
+  addBase({
+    ":root": newVars,
+  });
+}
 
 /** @type {import('tailwindcss').Config} */
 module.exports = {
@@ -12,7 +29,7 @@ module.exports = {
     // "./**/*.{js,ts,jsx,tsx}",
   ],
   safelist: [
-    //anything regex that start with bg-
+    // anything regex that start with bg-
     "bg-",
     {
       pattern: /bg-/,
@@ -83,12 +100,21 @@ module.exports = {
           from: { height: "var(--radix-accordion-content-height)" },
           to: { height: "0" },
         },
+        shimmer: {
+          from: {
+            backgroundPosition: "0 0",
+          },
+          to: {
+            backgroundPosition: "-200% 0",
+          },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
+        shimmer: "shimmer 2s linear infinite",
       },
     },
   },
-  plugins: [require("tailwindcss-animate")],
+  plugins: [require("tailwindcss-animate"), addVariablesForColors],
 };
