@@ -651,6 +651,53 @@ export type Database = {
           },
         ];
       };
+      payments: {
+        Row: {
+          amount: number | null;
+          canceled_at: string | null;
+          created: string | null;
+          created_at: string;
+          currency: string | null;
+          id: string;
+          metadata: Json | null;
+          owner_id: string | null;
+          status: string | null;
+          updated_at: string | null;
+        };
+        Insert: {
+          amount?: number | null;
+          canceled_at?: string | null;
+          created?: string | null;
+          created_at?: string;
+          currency?: string | null;
+          id: string;
+          metadata?: Json | null;
+          owner_id?: string | null;
+          status?: string | null;
+          updated_at?: string | null;
+        };
+        Update: {
+          amount?: number | null;
+          canceled_at?: string | null;
+          created?: string | null;
+          created_at?: string;
+          currency?: string | null;
+          id?: string;
+          metadata?: Json | null;
+          owner_id?: string | null;
+          status?: string | null;
+          updated_at?: string | null;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "public_payments_owner_id_fkey";
+            columns: ["owner_id"];
+            isOneToOne: false;
+            referencedRelation: "users";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
       projects: {
         Row: {
           created_at: string;
@@ -682,6 +729,71 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "public_projects_owner_id_fkey";
+            columns: ["owner_id"];
+            isOneToOne: false;
+            referencedRelation: "users";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      subscriptions: {
+        Row: {
+          cancel_at: string | null;
+          cancel_at_period_end: boolean | null;
+          canceled_at: string | null;
+          created: string | null;
+          current_period_end: string | null;
+          current_period_start: string | null;
+          customer_id: string | null;
+          ended_at: string | null;
+          id: string;
+          metadata: Json | null;
+          owner_id: string;
+          price_id: string | null;
+          quantity: number | null;
+          status: string;
+          trial_end: string | null;
+          trial_start: string | null;
+        };
+        Insert: {
+          cancel_at?: string | null;
+          cancel_at_period_end?: boolean | null;
+          canceled_at?: string | null;
+          created?: string | null;
+          current_period_end?: string | null;
+          current_period_start?: string | null;
+          customer_id?: string | null;
+          ended_at?: string | null;
+          id: string;
+          metadata?: Json | null;
+          owner_id: string;
+          price_id?: string | null;
+          quantity?: number | null;
+          status: string;
+          trial_end?: string | null;
+          trial_start?: string | null;
+        };
+        Update: {
+          cancel_at?: string | null;
+          cancel_at_period_end?: boolean | null;
+          canceled_at?: string | null;
+          created?: string | null;
+          current_period_end?: string | null;
+          current_period_start?: string | null;
+          customer_id?: string | null;
+          ended_at?: string | null;
+          id?: string;
+          metadata?: Json | null;
+          owner_id?: string;
+          price_id?: string | null;
+          quantity?: number | null;
+          status?: string;
+          trial_end?: string | null;
+          trial_start?: string | null;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "public_subscriptions_owner_id_fkey";
             columns: ["owner_id"];
             isOneToOne: false;
             referencedRelation: "users";
@@ -832,30 +944,39 @@ export type Database = {
       };
       users: {
         Row: {
+          billing_address: Json | null;
           created_at: string;
           email: string;
           first_name: string | null;
           id: string;
           image_url: string | null;
           last_name: string | null;
+          payment_method: Json | null;
+          stripe_customer_id: string | null;
           updated_at: string;
         };
         Insert: {
+          billing_address?: Json | null;
           created_at?: string;
           email: string;
           first_name?: string | null;
           id: string;
           image_url?: string | null;
           last_name?: string | null;
+          payment_method?: Json | null;
+          stripe_customer_id?: string | null;
           updated_at?: string;
         };
         Update: {
+          billing_address?: Json | null;
           created_at?: string;
           email?: string;
           first_name?: string | null;
           id?: string;
           image_url?: string | null;
           last_name?: string | null;
+          payment_method?: Json | null;
+          stripe_customer_id?: string | null;
           updated_at?: string;
         };
         Relationships: [];

@@ -1,9 +1,12 @@
+/* eslint-disable no-case-declarations */
 /* eslint-disable no-console */
 /* eslint-disable no-restricted-syntax */
 import getStripe from "@/utils/get-stripejs";
+import { manageSubscriptionStatusChange } from "@/utils/stripe";
 import { NextApiRequest, NextApiResponse } from "next";
 import { Readable } from "node:stream";
 import Stripe from "stripe";
+import supabase from "../../supabase-server.component";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
 
@@ -59,8 +62,6 @@ export default async function handler(
       return;
     }
 
-    console.log(event.type);
-
     if (relevantEvents.has(event.type)) {
       try {
         switch (event.type) {
@@ -76,9 +77,54 @@ export default async function handler(
           case "customer.subscription.updated":
           case "customer.subscription.deleted":
             console.log("Subscription event!");
+            const subscription = event.data.object as Stripe.Subscription;
+            await manageSubscriptionStatusChange(
+              subscription.id,
+              subscription.customer as string,
+              event.type === "customer.subscription.created"
+            );
             break;
           case "checkout.session.completed":
-            console.log("Checkout session completed!");
+            const checkoutSession = event.data
+              .object as Stripe.Checkout.Session;
+
+            if (checkoutSession.mode === "subscription") {
+              const { data: user, error } = await supabase
+                .from("users")
+                .update({
+                  stripe_customer_id: checkoutSession.customer as string,
+                })
+                .eq("id", checkoutSession.client_reference_id as string)
+                .select("*");
+
+              if (error) {
+                throw error;
+              }
+              const subscriptionId = checkoutSession.subscription;
+              const save = await manageSubscriptionStatusChange(
+                subscriptionId as string,
+                user[0]?.stripe_customer_id as string,
+                true
+              );
+
+              console.log(
+                "%cpages/api/v1/webhooks/stripe.ts:112 save",
+                "color: #007acc;",
+                save
+              );
+            }
+            // } else if (checkoutSession.mode === "payment") {
+            //   const customerId = await createOrRetrieveCustomer({
+            //     uuid: checkoutSession.client_reference_id as string,
+            //     email: checkoutSession.customer_email as string,
+            //   });
+            //   const paymentIntentId = checkoutSession.payment_intent;
+            //   console.log(checkoutSession);
+            //   await upsertPaymentIntentRecord(
+            //     paymentIntentId as string,
+            //     customerId as string
+            //   );
+            // }
             break;
           default:
             throw new Error("Unhandled relevant event!");

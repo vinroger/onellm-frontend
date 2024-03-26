@@ -24,17 +24,10 @@ function ProjectPage() {
     }
     if (res.status === 400) {
       setStatus("ERROR");
-      return;
+      return null;
     }
     return res.data;
   });
-
-  console.log(
-    "%capp/project/invite/[token]/page.tsx:31 status",
-    "color: #007acc;",
-    status
-  );
-
   return (
     <div className="min-h-screen min-w-screen flex justify-center items-center flex-col">
       <h1 className="p-0 m-0 text-lg font-bold mb-5">Join a Project</h1>
