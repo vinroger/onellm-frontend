@@ -13,7 +13,7 @@ import useAsync from "@/utils/hooks/useAsync";
 import useDeleteConfirmationDialog from "@/utils/hooks/useDeleteConfirmationDialog";
 import { UserButton, useUser } from "@clerk/nextjs";
 import axios from "axios";
-import { FolderGit2, Trash2 } from "lucide-react";
+import { Crown, FolderGit2, Trash2 } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
@@ -27,6 +27,9 @@ import {
 } from "@/components/ui/dialog";
 import { toHumanDateString } from "@/utils/functions/date";
 import { Skeleton } from "@/components/ui/skeleton";
+import BorderMagicButton from "@/components/aceternity/bordermagicbutton";
+import ShimmerButton from "@/components/aceternity/shimmerbutton";
+import { toTitleCase } from "@/utils/functions/string";
 
 function ProjectCard({
   projectName,
@@ -34,12 +37,14 @@ function ProjectCard({
   lastEdited,
   projectId,
   refetch,
+  role,
 }: {
   projectName: string | null;
   description: string | null;
   lastEdited: string | null;
   projectId: string;
   refetch: () => void;
+  role?: string;
 }) {
   const router = useRouter();
   const { DialogConfimationCompoment, setOpen } = useDeleteConfirmationDialog();
@@ -77,6 +82,9 @@ function ProjectCard({
         <p className="p-0 m-0 text-xs text-neutral-600">{description}</p>
         <p className="p-0 m-0 mb-2 text-xs text-neutral-600">
           Last Edited at {toHumanDateString(new Date(lastEdited ?? ""))}
+        </p>
+        <p className="p-0 m-0 text-xs text-neutral-600">
+          {toTitleCase(role ?? "Unknown role")}
         </p>
       </div>
 
@@ -244,6 +252,7 @@ const ProjectList = ({
             description={project.description}
             lastEdited={project.updated_at}
             refetch={execute}
+            role={(project as any).role ?? "owner"}
           />
         ))
       )}
@@ -272,27 +281,6 @@ function Workspace() {
 
   return (
     <div>
-      <div className="flex flex-row justify-between">
-        <a
-          className="flex flex-row items-center p-5 ml-2 space-x-3 text-xl font-bold cursor-pointer hover:opacity-50"
-          href={"/workspace"}
-        >
-          <Image
-            src="/onellmlogocropped.png"
-            alt="onellm logo"
-            className="w-10"
-            width={100}
-            height={100}
-          />
-
-          <p className="text-[22px]">OneLLM</p>
-        </a>
-        <div className="flex flex-row items-center space-x-2 min-h-[60px] mr-7">
-          <UserButton />
-        </div>
-      </div>
-      <Separator />
-
       {user?.fullName ? (
         <div className="p-7">
           <div className="flex flex-row items-center justify-between">
@@ -316,34 +304,12 @@ function Workspace() {
         <Skeleton className="w-[200px] h-4 m-8 p-3" />
       )}
 
-      {/* {status === "LOADING" || projectsData === null ? (
-          <>
-            {Array.from({ length: 2 }).map((_, index) => (
-              // eslint-disable-next-line react/no-array-index-key
-              <Card className="p-8" key={index}>
-                <Skeleton className="w-[200px] h-4" />
-              </Card>
-            ))}
-          </>
-        ) : (
-          projectsData.map((project: Project) => (
-            <ProjectCard
-              key={project.id}
-              projectId={project.id}
-              projectName={project.name}
-              description={project.description}
-              lastEdited={project.updated_at}
-              refetch={execute}
-            />
-          ))
-        )} */}
       <ProjectList
         projectsData={projectsData}
         status={status}
         execute={execute}
       />
 
-      <Toaster />
       <CreateNewProjectDialog
         isOpen={isDialogOpen}
         onClose={async () => {

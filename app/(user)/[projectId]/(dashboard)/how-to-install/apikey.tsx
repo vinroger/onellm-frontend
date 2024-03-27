@@ -92,7 +92,7 @@ const TableComponent = ({
                 <div>{sensitizeKey(key.key!, 2, 3, 3)}</div>
                 <CopyButton
                   textToCopy={key.key ?? ""}
-                  className="w-4 h-4 text-green-700"
+                  iconClassName="w-4 h-4 text-green-700"
                   tagStyle={{ transform: "translateX(6rem)" }}
                 />
               </div>

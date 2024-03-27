@@ -4,7 +4,6 @@ export async function getOpenAIKey(projectId: string, userId: string) {
   const { data: apiKeys, error: apiKeyError } = await supabase
     .from("model_provider_api_keys")
     .select("*")
-    .eq("owner_id", userId)
     .eq("project_id", projectId);
 
   const apiKey = apiKeys?.[0]?.api_key;

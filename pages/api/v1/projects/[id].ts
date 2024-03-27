@@ -19,8 +19,7 @@ export default async function handler(
     const { data: projects, error } = await supabase
       .from("projects")
       .select("*")
-      .eq("id", id)
-      .eq("owner_id", userId);
+      .eq("id", id);
     if (error) {
       return res.status(500).json({ error: error.message });
     }
@@ -28,11 +27,7 @@ export default async function handler(
   }
 
   if (req.method === "DELETE") {
-    const { error } = await supabase
-      .from("projects")
-      .delete()
-      .eq("id", id)
-      .eq("owner_id", userId);
+    const { error } = await supabase.from("projects").delete().eq("id", id);
     if (error) {
       return res.status(500).json({ error: error.message });
     }

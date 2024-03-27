@@ -2,6 +2,7 @@ import { ClerkProvider } from "@clerk/nextjs";
 import "@/styles/globals.css";
 import { fontSans } from "@/lib/fonts";
 import { cn } from "@/lib/utils";
+import { Providers } from "./reduxProvider";
 
 export const metadata = {
   title: "OneLLM",
@@ -36,7 +37,9 @@ export default function RootLayout({
             fontSans.variable
           )}
         >
-          <main>{children}</main>
+          <Providers>
+            <main>{children}</main>
+          </Providers>
         </body>
       </ClerkProvider>
     </html>

@@ -98,3 +98,16 @@ export type ProjectUpdate = Database["public"]["Tables"]["projects"]["Update"];
 export type OneLLMFile = Database["public"]["Tables"]["files"]["Row"];
 export type OneLLMFileInsert = Database["public"]["Tables"]["files"]["Insert"];
 export type OneLLMFileUpdate = Database["public"]["Tables"]["files"]["Update"];
+
+export type OneLLMSubscription =
+  Database["public"]["Tables"]["subscriptions"]["Row"];
+export type OneLLMSubscriptionInsert =
+  Database["public"]["Tables"]["subscriptions"]["Insert"];
+export type OneLLMSubscriptionUpdate =
+  Database["public"]["Tables"]["subscriptions"]["Update"];
+
+export type OneLLMPayment = Database["public"]["Tables"]["payments"]["Row"];
+export type OneLLMPaymentInsert =
+  Database["public"]["Tables"]["payments"]["Insert"];
+export type OneLLMPaymentUpdate =
+  Database["public"]["Tables"]["payments"]["Update"];

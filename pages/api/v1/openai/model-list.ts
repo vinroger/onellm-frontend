@@ -36,7 +36,6 @@ export default async function handler(
         const { data: keys, error } = await supabase
           .from("model_provider_api_keys")
           .select("*")
-          .eq("owner_id", userId)
           .eq("project_id", projectId)
           .eq("id", req.body.model_provider_api_key_id);
 
@@ -77,7 +76,6 @@ export default async function handler(
       const { data: apikeys, error } = await supabase
         .from("model_provider_api_keys")
         .select("*")
-        .eq("owner_id", userId)
         .eq("project_id", projectId);
 
       const openAIAPIKey = apikeys?.[0]?.api_key;
@@ -96,11 +94,7 @@ export default async function handler(
 
       // fetch supaabse
       const { data: supabaseModelsData, error: supabaseModelsError } =
-        await supabase
-          .from("models")
-          .select("*")
-          .eq("owner_id", userId)
-          .eq("project_id", projectId);
+        await supabase.from("models").select("*").eq("project_id", projectId);
 
       if (supabaseModelsError) {
         return res.status(500).json({ error: supabaseModelsError.message });

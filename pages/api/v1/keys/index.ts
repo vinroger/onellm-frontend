@@ -23,7 +23,6 @@ export default async function handler(
     const { data: keys, error } = await supabase
       .from("keys")
       .select("*")
-      .eq("owner_id", userId)
       .eq("project_id", projectId);
     if (error) {
       return res.status(500).json({ error: error.message });

@@ -25,7 +25,6 @@ export default async function handler(
         .from("data_points")
         .select("*")
         .eq("dataset_id", datasetId)
-        .eq("owner_id", userId)
         .order("created_at", { ascending: false });
 
       if (error) {

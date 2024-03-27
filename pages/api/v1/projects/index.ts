@@ -16,13 +16,29 @@ export default async function handler(
   }
 
   if (req.method === "GET") {
-    const { data: projects, error } = await supabase
-      .from("projects")
-      .select("*")
-      .eq("owner_id", userId);
+    // const { data: projects, error } = await supabase
+    //   .from("projects")
+    //   .select("*")
+    //   .eq("owner_id", userId);
+
+    const { data, error } = await supabase
+      .from("users_projects_junction")
+      .select(
+        `
+        *,
+        project: projects(*)
+        `
+      )
+      .eq("user_id", userId);
+
     if (error) {
       return res.status(500).json({ error: error.message });
     }
+
+    const projects = data.map((d: any) => {
+      return { ...d.project, role: d.role, user_id: d.user_id };
+    });
+
     return res.status(200).json(projects);
   }
 
