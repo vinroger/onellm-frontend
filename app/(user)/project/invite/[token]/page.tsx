@@ -11,11 +11,7 @@ function ProjectPage() {
 
   const [status, setStatus] = React.useState("IDLE");
 
-  const {
-    execute,
-    value,
-    status: fetchStatus,
-  } = useAsync(async () => {
+  const { execute, status: fetchStatus } = useAsync(async () => {
     const res = await axios.post("/api/v1/invite/token", {
       token,
     });

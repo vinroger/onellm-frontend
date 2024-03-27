@@ -1,20 +1,12 @@
 "use client";
 
-import ShimmerButton from "@/components/aceternity/shimmerbutton";
-import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
-import { Skeleton } from "@/components/ui/skeleton";
 import { Toaster } from "@/components/ui/sonner";
 import UpsellButton from "@/components/upsellbutton";
-import { useAppSelector } from "@/store";
-import useAsync from "@/utils/hooks/useAsync";
-import { UserButton, useUser } from "@clerk/nextjs";
+import { UserButton } from "@clerk/nextjs";
 
-import axios from "axios";
-import { Crown } from "lucide-react";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
-import React, { useEffect, useState } from "react";
+import React from "react";
 
 export default function Workspace({ children }: { children: React.ReactNode }) {
   return (

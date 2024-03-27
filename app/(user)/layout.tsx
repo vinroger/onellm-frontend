@@ -1,7 +1,6 @@
 "use client";
 
 import { setUser } from "@/slices/userSlice";
-import useAsync from "@/utils/hooks/useAsync";
 import { useUser } from "@clerk/nextjs";
 import axios from "axios";
 import { useEffect } from "react";

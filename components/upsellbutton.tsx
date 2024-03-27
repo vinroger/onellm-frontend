@@ -1,14 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { useRouter } from "next/navigation";
 import { useAppSelector } from "@/store";
-import axios from "axios";
-import { useUser } from "@clerk/nextjs";
 import { Crown } from "lucide-react";
 import ShimmerButton from "./aceternity/shimmerbutton";
 
 function UpsellButton() {
-  const { user } = useUser();
-
   const router = useRouter();
 
   const oneLLMUser = useAppSelector((state) => state.user);
