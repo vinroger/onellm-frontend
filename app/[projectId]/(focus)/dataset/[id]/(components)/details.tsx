@@ -37,6 +37,10 @@ function MessageRenderer({
   handleDelete: () => void;
 }) {
   const [message, setMessage] = useState(content);
+
+  useEffect(() => {
+    setMessage(content);
+  }, [content]);
   return (
     <div className="flex max-w-full mb-3 space-x-2">
       <div className="flex flex-row max-w-full min-w-full space-x-5">
@@ -83,9 +87,10 @@ function MessageRenderer({
 }
 
 function FormattedDisplay({ datapoint }: { datapoint: DataPoint }) {
-  const { updateDatapoint, setDatapoints } = useDatasetContext();
+  const { updateDatapoint, setDatapoints, activeDatapoint } =
+    useDatasetContext();
 
-  const data = datapoint.data as ChatData;
+  const data = activeDatapoint?.data as ChatData;
 
   const handleNewMessage = async () => {
     const newMessage = {
@@ -136,7 +141,8 @@ function FormattedDisplay({ datapoint }: { datapoint: DataPoint }) {
         data.map((message, index) => {
           return (
             <MessageRenderer
-              key={`${String(index)}msg`}
+              // eslint-disable-next-line react/no-array-index-key
+              key={index}
               role={message.role}
               content={message.content}
               handleChange={(newMessage: { role: string; content: string }) => {

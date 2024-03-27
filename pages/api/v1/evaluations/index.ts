@@ -68,6 +68,7 @@ export default async function handler(
           owner_id: userId,
           id: evaluationId,
           project_id: projectId,
+          dataset_id: datasetId,
         },
       ])
       .select("*");
