@@ -116,6 +116,7 @@ export const manageSubscriptionStatusChange = async (
     trial_end: subscription.trial_end
       ? toDateTime(subscription.trial_end).toISOString()
       : null,
+    product_id: subscription.items.data?.[0]?.plan.product as string,
   };
 
   const { data: upsertResponse, error: upsertError } = await supabase

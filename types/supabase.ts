@@ -760,6 +760,7 @@ export type Database = {
           metadata: Json | null
           owner_id: string
           price_id: string | null
+          product_id: string | null
           quantity: number | null
           status: string
           trial_end: string | null
@@ -778,6 +779,7 @@ export type Database = {
           metadata?: Json | null
           owner_id: string
           price_id?: string | null
+          product_id?: string | null
           quantity?: number | null
           status: string
           trial_end?: string | null
@@ -796,6 +798,7 @@ export type Database = {
           metadata?: Json | null
           owner_id?: string
           price_id?: string | null
+          product_id?: string | null
           quantity?: number | null
           status?: string
           trial_end?: string | null
