@@ -24,6 +24,7 @@ import { ellipsisString, toTitleCase } from "@/utils/functions/string";
 import Image from "next/image";
 import { useProjectContext } from "@/utils/contexts/useProject";
 import { useRef } from "react";
+import UpsellButton from "./upsellbutton";
 
 function NavItem({
   item,
@@ -160,22 +161,27 @@ export function Navbar() {
             />
           ))}
         </div>
-        <div className="flex flex-row items-center w-full space-x-2 min-h-[60px]">
-          <div ref={userButtonRef}>
-            <UserButton />
-          </div>
-          <div
-            className="flex flex-col max-w-full overflow-scroll cursor-pointer hover:opacity-50 "
-            onClick={() => {
-              (document.querySelector(".cl-userButtonTrigger") as any)?.click();
-            }}
-          >
-            <p className="overflow-scroll text-sm font-semibold text-wrap">
-              {user?.fullName}
-            </p>
-            <p className="text-xs text-neutral-500">
-              {user?.primaryEmailAddress?.emailAddress}
-            </p>
+        <div className="flex flex-col max-w-full w-full justify-center items-center">
+          <UpsellButton />
+          <div className="flex flex-row items-center w-full space-x-2 min-h-[60px]">
+            <div ref={userButtonRef}>
+              <UserButton />
+            </div>
+            <div
+              className="flex flex-col max-w-full overflow-scroll cursor-pointer hover:opacity-50 "
+              onClick={() => {
+                (
+                  document.querySelector(".cl-userButtonTrigger") as any
+                )?.click();
+              }}
+            >
+              <p className="overflow-scroll text-sm font-semibold text-wrap">
+                {ellipsisString(user?.fullName ?? "", 20)}
+              </p>
+              <p className="text-xs text-neutral-500">
+                {user?.primaryEmailAddress?.emailAddress}
+              </p>
+            </div>
           </div>
         </div>
       </NavigationMenu>

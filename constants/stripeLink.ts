@@ -30,3 +30,9 @@ export const subscriptionPlans = {
     },
   },
 };
+
+export const customerPortalUrl = {
+  production: "https://billing.stripe.com/p/login/14k01Vgrf69Bbh6eUU",
+  development: "https://billing.stripe.com/p/login/test_00g8Ap5gU9wf8nK288",
+  test: "https://billing.stripe.com/p/login/test_00g8Ap5gU9wf8nK288",
+};
