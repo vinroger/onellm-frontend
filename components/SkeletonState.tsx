@@ -6,7 +6,7 @@ const SkeletonState = ({ patternCount }: { patternCount: number }) => {
   // You might want to dynamically calculate this based on the container's height.
 
   // Generate the pattern
-  const patterns = [];
+  const patterns: JSX.Element[] = [];
   // eslint-disable-next-line no-plusplus
   for (let i = 0; i < patternCount; i++) {
     patterns.push(

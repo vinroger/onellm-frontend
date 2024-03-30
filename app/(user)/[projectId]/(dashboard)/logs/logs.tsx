@@ -15,6 +15,7 @@ import { toHumanDateString } from "@/utils/functions/date";
 import { Log } from "@/types/table";
 
 import { useProjectContext } from "@/utils/contexts/useProject";
+import SkeletonState from "@/components/SkeletonState";
 import { DetailDialog } from "./dialog";
 
 const columns: ColumnDef<Log>[] = [
@@ -40,9 +41,10 @@ const columns: ColumnDef<Log>[] = [
         : "",
   },
   {
-    accessorKey: "api",
-    header: "API",
+    accessorKey: "model_name",
+    header: "Model Name",
   },
+
   {
     accessorKey: "prompt",
     header: "Prompt",
@@ -102,6 +104,10 @@ const columns: ColumnDef<Log>[] = [
     accessorKey: "user_id",
     header: "User ID",
   },
+  {
+    accessorKey: "api",
+    header: "API",
+  },
 ];
 
 const fetchLogs = async (projectId: string) => {
@@ -139,7 +145,13 @@ export default function Logs() {
   }, []);
 
   if (!table || loading) {
-    return <LoaderIcon className="animate-spin" />;
+    return (
+      <div className="p-5">
+        <Card className="p-10">
+          <SkeletonState patternCount={3} />
+        </Card>
+      </div>
+    );
   }
 
   return (
@@ -147,8 +159,15 @@ export default function Logs() {
       <Card className="space-y-4 p-7">
         <div>
           <h1 className="p-0 m-0 text-lg font-bold">Prompt Logs</h1>
-          <p className="p-0 m-0 mb-4 text-sm text-neutral-600">
-            See your usage of LLM here!
+
+          <p className="p-0 m-0 mb-4 text-sm text-neutral-600 flex flex-row">
+            To learn how to start logging your data, visit
+            <a
+              href={`/${projectId}/how-to-install`}
+              className="underline ml-2 cursor-pointer"
+            >
+              here
+            </a>
           </p>
         </div>
         <PaginatedDataTable

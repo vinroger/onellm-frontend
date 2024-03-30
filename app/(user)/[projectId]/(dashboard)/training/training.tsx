@@ -46,11 +46,11 @@ export type FineTuningObject = {
 };
 
 export const BadgeComponent = ({ status }: { status: string }) => {
-  const successKind = ["completed"];
+  const successKind = ["completed", "succeeded"];
   const dangerKind = ["failed"];
   const warningKind = ["in_progress", "queued"];
 
-  if (successKind.includes(status)) {
+  if (successKind.includes(status.toLowerCase())) {
     return (
       <Badge
         variant="default"
@@ -60,7 +60,7 @@ export const BadgeComponent = ({ status }: { status: string }) => {
       </Badge>
     );
   }
-  if (dangerKind.includes(status)) {
+  if (dangerKind.includes(status.toLowerCase())) {
     return (
       <Badge
         variant="secondary"
@@ -70,7 +70,7 @@ export const BadgeComponent = ({ status }: { status: string }) => {
       </Badge>
     );
   }
-  if (warningKind.includes(status)) {
+  if (warningKind.includes(status.toLowerCase())) {
     return (
       <Badge
         variant="default"
@@ -80,7 +80,7 @@ export const BadgeComponent = ({ status }: { status: string }) => {
       </Badge>
     );
   }
-  return <Badge variant="default">{status}</Badge>;
+  return <Badge variant="secondary">{status}</Badge>;
 };
 
 function ModelCard({
@@ -146,7 +146,9 @@ function ModelCard({
       <div className="flex flex-row items-center mt-5">
         <p className="p-0 m-0 mr-2 text-xs font-semibold">Status:</p>
         <BadgeComponent status={status ?? "warning"} />
-        <p className="p-0 m-0 mr-2 text-xs font-semibold">{providerName}</p>
+        <Separator orientation="vertical" className="h-4 w-[1.5px] ml-2 mr-2" />
+        <p className="p-0 m-0 mr-2 text-xs font-semibold">Provider:</p>
+        <Badge variant="secondary">{toTitleCase(providerName)}</Badge>
       </div>
 
       <DialogConfimationCompoment

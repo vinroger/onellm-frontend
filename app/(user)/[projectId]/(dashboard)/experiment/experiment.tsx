@@ -11,14 +11,18 @@ import axios from "axios";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 
-import { DatabaseZap, Trash2 } from "lucide-react";
+import { Trash2 } from "lucide-react";
 
 import { toast } from "sonner";
 import useDeleteConfirmationDialog from "@/utils/hooks/useDeleteConfirmationDialog";
 import { cn } from "@/lib/utils";
 import { useProjectContext } from "@/utils/contexts/useProject";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useHasOpenAIKey } from "@/utils/hooks/useHasOpenAIKey";
+import NonIdealState from "@/components/NonIdealState";
+import LoadingState from "@/components/LoadingState";
 import { CreateNewEvaluationDialog } from "./createnewexperiment";
+import NonIdealStateCard from "@/components/NonIdealStateCard";
 
 function EvaluationCard({
   EvaluationName,
@@ -114,6 +118,7 @@ const fetchEvaluation = async (projectId: string) => {
 };
 
 function Experiment() {
+  const { hasOpenAIKey, loading: openAiLoading } = useHasOpenAIKey();
   const [evaluations, setEvaluations] = useState<Evaluation[]>();
   const [loading, setLoading] = useState(false);
 
@@ -128,63 +133,104 @@ function Experiment() {
     setLoading(false);
   };
 
+  const router = useRouter();
+
   useEffect(() => {
     loadEvaluation();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  return (
-    <div className="p-7">
-      <div className="flex flex-row items-center justify-between">
-        <div>
-          <h1 className="p-0 m-0 text-lg font-bold">Experiments</h1>
-          <p className="p-0 m-0 mb-4 text-sm text-neutral-600">
-            Here you can view and manage your experiments. Try out different
-            models and compare.
-          </p>
-        </div>
-        <div>
-          <Button
-            onClick={() => {
-              setIsDialogOpen(true);
-            }}
-          >
-            + Create New Experiment
-          </Button>
-        </div>
-      </div>
-      <Separator className="mb-5" />
+  if (loading || openAiLoading) {
+    return <LoadingState />;
+  }
 
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-3 lg:grid-cols-4">
-        {evaluations && !loading ? (
-          evaluations.map((item: Evaluation) => (
-            <EvaluationCard
-              key={item.id}
-              EvaluationId={item.id}
-              EvaluationName={item.title}
-              description={item.description}
-              lastEdited={toHumanDateString(new Date(item.updated_at ?? ""))}
-              refetch={loadEvaluation}
-            />
-          ))
-        ) : (
-          <>
-            {Array.from({ length: 2 }).map((_, index) => (
-              // eslint-disable-next-line react/no-array-index-key
-              <Card className="p-8" key={index}>
-                <Skeleton className="w-[200px] h-4" />
-              </Card>
-            ))}
-          </>
+  return (
+    <div>
+      {!hasOpenAIKey && (
+        <div
+          className="absolute z-30"
+          style={{ top: "calc(100% /2.3 )", left: "calc(100%/2.2)" }}
+        >
+          <NonIdealState
+            title={<p className="text-lg font-semibold">No OpenAI API Key</p>}
+            description="Please provide your OpenAI API key to continue"
+            additionalComponent={
+              <div className="mt-5">
+                <Button onClick={() => router.push(`/${projectId}/settings`)}>
+                  Go to Settings →
+                </Button>
+              </div>
+            }
+          />
+        </div>
+      )}
+      <div
+        className={cn(
+          "p-7",
+          !hasOpenAIKey && "blur-md disabled cursor-not-allowed"
         )}
-      </div>
-      <CreateNewEvaluationDialog
-        isOpen={isDialogOpen}
-        onClose={async () => {
-          setIsDialogOpen(false);
-          await loadEvaluation();
+        style={{
+          pointerEvents: !hasOpenAIKey ? "none" : "auto",
         }}
-      />
+      >
+        <div className="flex flex-row items-center justify-between">
+          <div>
+            <h1 className="p-0 m-0 text-lg font-bold">Experiments</h1>
+            <p className="p-0 m-0 mb-4 text-sm text-neutral-600">
+              Here you can view and manage your experiments. Try out different
+              models and compare.
+            </p>
+          </div>
+          <div>
+            <Button
+              onClick={() => {
+                setIsDialogOpen(true);
+              }}
+            >
+              + Create New Experiment
+            </Button>
+          </div>
+        </div>
+        <Separator className="mb-5" />
+
+        {evaluations?.length === 0 && (
+          <NonIdealStateCard
+            title="No experiment found."
+            description="Start creating a new experiment."
+          />
+        )}
+
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-3 lg:grid-cols-4">
+          {evaluations && !loading ? (
+            evaluations.map((item: Evaluation) => (
+              <EvaluationCard
+                key={item.id}
+                EvaluationId={item.id}
+                EvaluationName={item.title}
+                description={item.description}
+                lastEdited={toHumanDateString(new Date(item.updated_at ?? ""))}
+                refetch={loadEvaluation}
+              />
+            ))
+          ) : (
+            <>
+              {Array.from({ length: 2 }).map((_, index) => (
+                // eslint-disable-next-line react/no-array-index-key
+                <Card className="p-8" key={index}>
+                  <Skeleton className="w-[200px] h-4" />
+                </Card>
+              ))}
+            </>
+          )}
+        </div>
+        <CreateNewEvaluationDialog
+          isOpen={isDialogOpen}
+          onClose={async () => {
+            setIsDialogOpen(false);
+            await loadEvaluation();
+          }}
+        />
+      </div>
     </div>
   );
 }

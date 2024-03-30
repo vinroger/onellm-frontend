@@ -1,6 +1,6 @@
 /* eslint-disable camelcase */
 import LoadingState from "@/components/LoadingState";
-import SkeletonState from "@/components/SketeonState";
+import SkeletonState from "@/components/SkeletonState";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import {

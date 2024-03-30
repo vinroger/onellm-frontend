@@ -63,6 +63,15 @@ export default async function handler(
       return res.status(500).json({ error: error.message });
     }
 
+    // update the junction table
+    await supabase.from("users_projects_junction").insert([
+      {
+        user_id: userId,
+        project_id: data[0].id,
+        role: "owner",
+      },
+    ]);
+
     return res.status(201).json(data);
   }
 
