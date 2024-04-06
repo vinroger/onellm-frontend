@@ -1,10 +1,19 @@
 import React from "react";
-import Hero2 from "./hero2";
+import { HeroHighlight, Highlight } from "./hero/hightlight";
+import Hero from "./hero";
+import { MacbookScroll } from "./macbook/components";
+import Navbar from "./navbar";
+import { StickyScroll } from "./features/stickyscroll";
+import Features from "./features";
 
 function Index() {
   return (
     <div>
-      <Hero2 />
+      <Navbar />
+      <Hero />
+      <Features />
+
+      <div className="py-[50rem]">q</div>
     </div>
   );
 }
