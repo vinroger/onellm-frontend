@@ -66,7 +66,7 @@ const featuresContent = [
 
 function Features() {
   return (
-    <div className="py-10">
+    <div className="py-10 mt-20">
       <p className="font-semibold text-md text-center mt-2 mb-1 text-purple-700">
         HOW IT WORKS
       </p>
@@ -75,9 +75,10 @@ function Features() {
         Curate dataset, add API key, run fine-tuning process, compare between
         models and iterate development.
       </p>
+      {/* <div className="h-[0.15rem] w-1/4 self-center bg-faded-gradient" /> */}
       <Separator
         orientation="horizontal"
-        className="w-[200px] mx-auto text-center mb-20 p-[1px]"
+        className="w-[200px] mx-auto text-center mb-10 p-[1px]"
       />
       <StickyScroll content={featuresContent} />
     </div>

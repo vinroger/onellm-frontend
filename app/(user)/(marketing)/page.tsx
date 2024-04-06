@@ -5,6 +5,7 @@ import { MacbookScroll } from "./macbook/components";
 import Navbar from "./navbar";
 import { StickyScroll } from "./features/stickyscroll";
 import Features from "./features";
+import Testimonials from "./testimonials";
 
 function Index() {
   return (
@@ -12,6 +13,7 @@ function Index() {
       <Navbar />
       <Hero />
       <Features />
+      <Testimonials />
 
       <div className="py-[50rem]">q</div>
     </div>
