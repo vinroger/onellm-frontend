@@ -21,7 +21,10 @@ function Hero() {
             muted
             className="rounded-lg shadow-2xl bg-white/5 ring-1 ring-white/10 w-full h-full"
           >
-            <source src={demoVideoMp4} type="video/mp4" />
+            <source
+              src="https://storage.googleapis.com/onellm/overall2.mp4"
+              type="video/mp4"
+            />
             Your browser does not support the video tag.
           </video>
         </div>
