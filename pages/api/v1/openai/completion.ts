@@ -1,5 +1,5 @@
 /* eslint-disable no-restricted-syntax */
-import { ChatData } from "@/app/[projectId]/(focus)/dataset/[id]/(components)/details";
+import { ChatData } from "@/app/(user)/[projectId]/(focus)/dataset/[id]/(components)/details";
 import { getOpenAIKey } from "@/utils/api/apikey";
 import { getAuth } from "@clerk/nextjs/server";
 import { NextApiRequest, NextApiResponse } from "next";

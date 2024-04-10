@@ -6,8 +6,8 @@ export default function NonIdealState({
 
   dark,
 }: {
-  title: React.ReactNode;
-  description: React.ReactNode;
+  title?: React.ReactNode;
+  description?: React.ReactNode;
   icon?: React.ReactNode;
   additionalComponent?: React.ReactNode;
   dark?: boolean;
@@ -20,10 +20,10 @@ export default function NonIdealState({
           dark ? 100 : 900
         }`}
       >
-        {title}
+        {title && title}
       </h3>
       <p className={`mt-1 text-sm text-neutral-${dark ? "400" : "500"}`}>
-        {description}
+        {description && description}
       </p>
       {additionalComponent}
     </div>

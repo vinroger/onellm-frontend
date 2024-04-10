@@ -2,11 +2,13 @@ import { configureStore } from "@reduxjs/toolkit";
 import { useDispatch, useSelector } from "react-redux";
 import type { TypedUseSelectorHook } from "react-redux";
 import userInteractionReducer from "./slices/userInteractionSlice";
+import userReducer from "./slices/userSlice";
 // ...
 
 export const store = configureStore({
   reducer: {
     userInteraction: userInteractionReducer,
+    user: userReducer,
   },
 });
 

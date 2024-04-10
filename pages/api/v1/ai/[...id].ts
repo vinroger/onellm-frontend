@@ -55,7 +55,6 @@ async function processTags(
         .from("tags")
         .select("id")
         .eq("name", tagName)
-        .eq("owner_id", owner_id)
         .single();
 
       // If the tag doesn't exist, create it
@@ -168,6 +167,7 @@ export default async function handler(
         status: openAIResponse.status === 200 ? "success" : "error",
         project_id: projectId,
         model_provider_api_key: req.headers.authorization ?? "N/A",
+        model_name: req.body.model ?? "N/A",
       };
 
       const { data: supabaseResponse, error } = await supabase

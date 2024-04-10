@@ -17,34 +17,35 @@ export default async function handler(
   const { id: evaluationPointId } = req.query as { id: string };
 
   if (req.method === "PUT") {
+    const upsertData = { ...req.body, id: evaluationPointId, owner_id: userId };
+
     const { data: evaluationPoints, error } = await supabase
       .from("evaluation_points")
-      .update({ ...req.body })
-      .eq("id", evaluationPointId)
-      .eq("owner_id", userId)
+      .upsert(upsertData) // Use upsert here
       .select();
 
-    if (
-      !evaluationPoints ||
-      evaluationPoints.length === 0 ||
-      evaluationPoints[0].evaluation_id === null
-    ) {
-      return res.status(404).json({ error: "Not Found" });
+    if (error) {
+      return res.status(500).json({ error: error.message });
+    }
+
+    if (!evaluationPoints || evaluationPoints.length === 0) {
+      return res.status(404).json({ error: "Operation failed" });
     }
 
     const { evaluation_id } = evaluationPoints[0];
+    if (!evaluation_id) {
+      return res.status(404).json({ error: "Not Found" });
+    }
 
-    // update dataset updated_date
-    await supabase
+    const { error: updateError } = await supabase
       .from("evaluations")
       .update({ updated_at: new Date().toISOString() })
-      .eq("id", evaluation_id)
-      .eq("owner_id", userId)
-      .select("*");
+      .eq("id", evaluation_id);
 
-    if (error) {
-      return res.status(500).json({ error: (error as any).message });
+    if (updateError) {
+      return res.status(500).json({ error: updateError.message });
     }
+
     return res.status(200).json(evaluationPoints);
   }
 
@@ -52,8 +53,7 @@ export default async function handler(
     const { data: evaluationPoints, error } = await supabase
       .from("evaluation_points")
       .delete()
-      .eq("id", evaluationPointId)
-      .eq("owner_id", userId);
+      .eq("id", evaluationPointId);
     if (error) {
       return res.status(500).json({ error: error.message });
     }

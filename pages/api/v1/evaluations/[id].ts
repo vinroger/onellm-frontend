@@ -23,7 +23,6 @@ export default async function handler(
       .from("evaluations")
       .select("*")
       .eq("id", evaluationId)
-      .eq("owner_id", userId)
       .order("created_at", { ascending: false });
 
     // get the models associated with this evaluationData
@@ -54,7 +53,6 @@ export default async function handler(
       .from("evaluations")
       .update({ ...fields, updated_at: new Date().toISOString() })
       .eq("id", evaluationId)
-      .eq("owner_id", userId)
       .select();
     if (error) {
       console.error("Error updating dataset:", error);
@@ -69,7 +67,6 @@ export default async function handler(
       .from("evaluations")
       .delete()
       .eq("id", evaluationId)
-      .eq("owner_id", userId)
       .select("*");
     if (error) {
       return res.status(500).json({ error: error.message });

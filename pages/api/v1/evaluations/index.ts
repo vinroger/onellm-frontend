@@ -34,7 +34,6 @@ export default async function handler(
     const { data: datasets, error } = await supabase
       .from("evaluations")
       .select("*")
-      .eq("owner_id", userId)
       .eq("project_id", req.query.projectId as string)
       .order("updated_at", { ascending: false });
     if (error) {
@@ -69,6 +68,7 @@ export default async function handler(
           owner_id: userId,
           id: evaluationId,
           project_id: projectId,
+          dataset_id: datasetId,
         },
       ])
       .select("*");

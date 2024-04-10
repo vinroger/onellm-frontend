@@ -37,6 +37,7 @@ export const CopyButton = ({
   buttonStyle,
   tagStyle,
   className,
+  iconClassName,
 }: {
   textToCopy: string;
   absolutePosition?:
@@ -50,6 +51,7 @@ export const CopyButton = ({
   buttonStyle?: React.CSSProperties;
   tagStyle?: React.CSSProperties;
   className?: string;
+  iconClassName?: string;
 }): JSX.Element => {
   const { copy, status } = useCopyToClipboard();
 
@@ -85,7 +87,7 @@ export const CopyButton = ({
             : { ...buttonStyle }
         }
       >
-        <Copy className={className} />
+        <Copy className={cn(iconClassName)} />
       </button>
     </>
   );

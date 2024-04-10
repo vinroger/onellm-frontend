@@ -45,6 +45,7 @@ const EvaluationContext = createContext<EvaluationContextType>({
     created_at: null,
     updated_at: null,
     models: [],
+    dataset_id: "",
   },
   fetchEvaluation: () => {},
   evaluationPoints: [],
@@ -75,6 +76,7 @@ const EvaluationProvider = ({
     created_at: null,
     updated_at: null,
     models: [],
+    dataset_id: "",
   });
 
   const [evaluationPoints, setEvaluationPoints] = React.useState<
