@@ -1,3 +1,5 @@
+/* eslint-disable quotes */
+
 "use client";
 
 import React, { useEffect, useMemo, useRef, useState } from "react";

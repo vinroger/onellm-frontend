@@ -45,7 +45,8 @@
     "react-hooks/exhaustive-deps": "error", // Checks effect dependencies
     "no-console": ["error", { "allow": ["error", "warn", "dir"] }],
     "no-shadow": "off",
-    "@typescript-eslint/no-shadow": "warn"
+    "@typescript-eslint/no-shadow": "warn",
+    "camelcase": "off"
   },
   "overrides": [
     {
@@ -82,7 +83,8 @@
           {
             "devDependencies": true
           }
-        ]
+        ],
+        "camelcase": "off"
       },
       "settings": {
         "react": { "version": "detect" },

@@ -1,3 +1,5 @@
+/* eslint-disable @next/next/no-img-element */
+
 "use client";
 
 import React from "react";
@@ -7,60 +9,84 @@ import demoVideoMp4 from "../../../../public/landing/dataset.mp4";
 
 const featuresContent = [
   {
-    title: "Feature 1",
-    description: "Description 1",
+    title: "Create Dataset",
+    description:
+      "Create a dataset by writing the chats between user and assistant, all in the browser.",
     content: (
       <div className="p-2 mt-10 rounded-xl text-center bg-gray-900/5 ring-1 ring-inset ring-gray-900/10 lg:rounded-2xl lg:p-4 w-full ">
-        <video
-          controls
-          autoPlay
-          muted
+        <img
+          alt="Dataset"
+          src="/landing/screenshots/dataset.png"
           className="rounded-lg shadow-2xl bg-white/5 ring-1 ring-white/10 w-full h-full"
-        >
-          <source src={demoVideoMp4} type="video/mp4" />
-          Your browser does not support the video tag.
-        </video>
+        />
         <p className="mt-3 text-xs text-neutral-600">Dataset</p>
       </div>
     ),
   },
   {
-    title: "Feature 2",
+    title: "Integrate API Key",
     description:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Nulla facilisi morbi tempus iaculis urna id. Nisl purus in mollis nunc sed id. Ullamcorper dignissim cras tincidunt lobortis feugiat. Sed viverra tellus in hac habitasse platea. Molestie at elementum eu facilisis. Rhoncus mattis rhoncus urna neque. Ipsum a arcu cursus vitae. Dolor sit amet consectetur adipiscing elit duis. Est ullamcorper eget nulla facilisi etiam. Dui faucibus in ornare quam viverra orci. Sed ullamcorper morbi tincidunt ornare massa eget egestas. In mollis nunc sed id. Adipiscing bibendum est ultricies integer quis auctor. Pellentesque sit amet porttitor eget dolor morbi non arcu risus.",
+      "Integrate your OpenAI API key to get access to the fine-tuning process. We support different models (Gemini, Llama, etc) soon.",
     content: (
       <div className="p-2 mt-10 rounded-xl text-center bg-gray-900/5 ring-1 ring-inset ring-gray-900/10 lg:rounded-2xl lg:p-4 w-full ">
-        <video
-          controls
-          autoPlay
-          muted
+        <img
+          alt="API Key"
+          src="/landing/screenshots/openai.png"
           className="rounded-lg shadow-2xl bg-white/5 ring-1 ring-white/10 w-full h-full"
-        >
-          <source src={demoVideoMp4} type="video/mp4" />
-          Your browser does not support the video tag.
-        </video>
-        <p className="mt-3 text-xs text-neutral-600">Training</p>
+        />
+        <p className="mt-3 text-xs text-neutral-600">API Key</p>
       </div>
     ),
   },
   {
-    title: "Feature 3",
+    title: "Fine-tune the Model",
     description:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Nulla facilisi morbi tempus iaculis urna id. Nisl purus in mollis nunc sed id. Ullamcorper dignissim cras tincidunt lobortis feugiat. Sed viverra tellus in hac habitasse platea. Molestie at elementum eu facilisis. Rhoncus mattis rhoncus urna neque. Ipsum a arcu cursus vitae. Dolor sit amet consectetur adipiscing elit duis. Est ullamcorper eget nulla facilisi etiam. Dui faucibus in ornare quam viverra orci. Sed ullamcorper morbi tincidunt ornare massa eget egestas. In mollis nunc sed id. Adipiscing bibendum est ultricies integer quis auctor. Pellentesque sit amet porttitor eget dolor morbi non arcu risus.",
+      " Fine-tune the model with the dataset you created, choose the base model and the hyperparameters.",
     content: (
       <div className="p-2 mt-10 rounded-xl text-center bg-gray-900/5 ring-1 ring-inset ring-gray-900/10 lg:rounded-2xl lg:p-4 w-full ">
-        <video
-          controls
-          autoPlay
-          muted
+        <img
+          alt="Training"
+          src="/landing/screenshots/runtraining.png"
           className="rounded-lg shadow-2xl bg-white/5 ring-1 ring-white/10 w-full h-full"
-        >
-          <source src={demoVideoMp4} type="video/mp4" />
-          Your browser does not support the video tag.
-        </video>
+        />
+        <p className="mt-3 text-xs text-neutral-600">Fine-tune</p>
+      </div>
+    ),
+  },
+  {
+    title: "Evaluate Performance",
+    description:
+      "After the training is done, you can try and run the model. Give the model a score and there will be a auto-generated heatmap that shows how well the fine-tuned model performs agains the base models.",
+    content: (
+      <div className="p-2 mt-10 rounded-xl text-center bg-gray-900/5 ring-1 ring-inset ring-gray-900/10 lg:rounded-2xl lg:p-4 w-full ">
+        <img
+          alt="Training"
+          src="/landing/screenshots/evaluation.png"
+          className="rounded-lg shadow-2xl bg-white/5 ring-1 ring-white/10 w-full h-full"
+        />
         <p className="mt-3 text-xs text-neutral-600">Evaluation</p>
       </div>
     ),
+  },
+  {
+    title: "Deploy and Record the Usage",
+    description:
+      "Use your model out of the box with our SDK. If you are using OpenAI library, you only need to change the baseUrl and no code changes needed. Integrate with OneLLM APIKey to record the usage of the model. Know the usage of the model and the performance of the model.",
+    content: (
+      <div className="p-2 mt-10 rounded-xl text-center bg-gray-900/5 ring-1 ring-inset ring-gray-900/10 lg:rounded-2xl lg:p-4 w-full ">
+        <img
+          alt="Training"
+          src="/landing/screenshots/logs.png"
+          className="rounded-lg shadow-2xl bg-white/5 ring-1 ring-white/10 w-full h-full"
+        />
+        <p className="mt-3 text-xs text-neutral-600">Logs</p>
+      </div>
+    ),
+  },
+  {
+    title: "",
+    description: "",
+    content: <div className="p-10" />,
   },
 ];
 

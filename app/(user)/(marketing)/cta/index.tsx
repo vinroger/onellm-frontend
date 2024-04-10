@@ -1,4 +1,5 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
+
 "use client";
 
 import React from "react";
@@ -68,7 +69,7 @@ export default function Example() {
           <div className="relative mt-16 h-80 lg:mt-8">
             <img
               className="absolute left-0 top-0 w-[57rem] max-w-none rounded-md bg-white/5 ring-1 ring-white/10"
-              src="https://tailwindui.com/img/component-images/dark-project-app-screenshot.png"
+              src="/landing/screenshots/datasetcropped.png"
               alt="App screenshot"
               width={1824}
               height={1080}

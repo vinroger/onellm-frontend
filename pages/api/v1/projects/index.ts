@@ -36,7 +36,7 @@ export default async function handler(
     }
 
     const projects = data.map((d: any) => {
-      return { ...d.project, role: d.role, user_id: d.user_id };
+      return { ...d.project, role: d.role };
     });
 
     return res.status(200).json(projects);

@@ -9,14 +9,14 @@ function Navbar() {
             <span className="sr-only">OneLLM</span>
             <img className="w-auto h-8" src="/onellmlogo.png" alt="" />
           </a>
-          <div>
+          {/* <div>
             <a
               href={"#pricing"}
               className="text-sm font-semibold leading-6 text-gray-900"
             >
               Pricing
             </a>
-          </div>
+          </div> */}
           <a
             href="/workspace"
             className="text-sm font-semibold leading-6 text-gray-900"

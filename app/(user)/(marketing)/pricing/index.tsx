@@ -7,8 +7,8 @@ import { CheckIcon } from "@heroicons/react/20/solid";
 import { RadioGroup } from "@headlessui/react";
 import { subscriptionPlans } from "@/constants/stripeLink";
 import { cn } from "@/lib/utils";
+import { frequencies, tiers } from "@/constants/tierpricing";
 import { CanvasRevealEffect } from "./canvasreveal";
-import { frequencies, tiers } from "../../workspace/billing/page";
 
 const colorsArr = [
   //   [
