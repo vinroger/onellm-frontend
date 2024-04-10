@@ -8,11 +8,11 @@ import { useUser } from "@clerk/nextjs";
 import { useAppSelector } from "@/store";
 import ShimmerButton from "@/components/aceternity/shimmerbutton";
 
-const frequencies = [
+export const frequencies = [
   { value: "monthly", label: "Monthly", priceSuffix: "/month" },
   { value: "annually", label: "Annually", priceSuffix: "/year" },
 ];
-const tiers = [
+export const tiers = [
   {
     name: "Free",
     id: "free",
@@ -59,6 +59,7 @@ const tiers = [
       "Unlimited users",
       "Priority support",
       "HIPAA and SOC 2 compliance",
+      "Support LLaMa 2, Gemini, Mistral, and more models",
     ],
     contactUs: true,
     mostPopular: false,

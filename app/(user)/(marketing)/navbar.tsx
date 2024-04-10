@@ -5,8 +5,8 @@ function Navbar() {
     <div>
       <div className="flex flex-row min-w-full justify-center">
         <nav className="flex flex-row max-w-screen-xl w-full h-14 items-center justify-between px-5">
-          <a href="#" className="-m-1.5 p-1.5">
-            <span className="sr-only">Your Company</span>
+          <a href="/" className="-m-1.5 p-1.5">
+            <span className="sr-only">OneLLM</span>
             <img className="w-auto h-8" src="/onellmlogo.png" alt="" />
           </a>
           <div>

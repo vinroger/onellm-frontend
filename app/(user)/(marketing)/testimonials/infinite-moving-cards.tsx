@@ -1,3 +1,5 @@
+/* eslint-disable react/no-unescaped-entities */
+
 "use client";
 
 import { cn } from "@/lib/utils";

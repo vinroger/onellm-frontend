@@ -6,6 +6,10 @@ import Navbar from "./navbar";
 import { StickyScroll } from "./features/stickyscroll";
 import Features from "./features";
 import Testimonials from "./testimonials";
+import { PricingPage } from "./pricing";
+import CTASection from "./cta";
+import FAQSection from "./faq";
+import Footer from "./footer";
 
 function Index() {
   return (
@@ -14,8 +18,10 @@ function Index() {
       <Hero />
       <Features />
       <Testimonials />
-
-      <div className="py-[50rem]">q</div>
+      <PricingPage />
+      <FAQSection />
+      <CTASection />
+      <Footer />
     </div>
   );
 }
