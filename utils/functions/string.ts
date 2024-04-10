@@ -1,4 +1,7 @@
-export function toTitleCase(input: string): string {
+export function toTitleCase(input: string | undefined | null): string {
+  if (!input) {
+    return "";
+  }
   return input
     .toLowerCase() // First, make the entire string lowercase
     .split(" ") // Split the string into an array of words

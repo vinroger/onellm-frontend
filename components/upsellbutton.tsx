@@ -20,7 +20,7 @@ function UpsellButton() {
           ) : (
             <>
               <Crown className="w-4 h-4 mr-2" />
-              Upgrade to Pro
+              <p className="text-sm">Upgrade to Pro</p>
             </>
           )}
         </ShimmerButton>

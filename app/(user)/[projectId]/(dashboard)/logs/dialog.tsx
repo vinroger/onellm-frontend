@@ -67,7 +67,7 @@ export const DetailDialog = ({
   return (
     <div className="min-w-screen">
       <Dialog open={isOpen} onOpenChange={onClose}>
-        <DialogContent className="w-[850px]">
+        <DialogContent className="w-[850px] max-h-[90vh] overflow-scroll">
           <DialogHeader>
             <DialogTitle>Log Details</DialogTitle>
           </DialogHeader>

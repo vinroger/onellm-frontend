@@ -24,6 +24,7 @@ import useDeleteConfirmationDialog from "@/utils/hooks/useDeleteConfirmationDial
 import { cn } from "@/lib/utils";
 import { useProjectContext } from "@/utils/contexts/useProject";
 import { Skeleton } from "@/components/ui/skeleton";
+import NonIdealStateCard from "@/components/NonIdealStateCard";
 
 function DatasetCard({
   datasetName,
@@ -270,6 +271,13 @@ function Dataset() {
         </div>
       </div>
       <Separator className="mb-5" />
+
+      {datasets?.length === 0 && (
+        <NonIdealStateCard
+          title="No dataset found."
+          description="Start creating a new dataset."
+        />
+      )}
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-3 lg:grid-cols-4">
         {datasets && !loading ? (

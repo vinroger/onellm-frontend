@@ -419,6 +419,7 @@ export type Database = {
           created_at: string | null;
           id: string;
           ip_address: string | null;
+          model_name: string | null;
           model_provider_api_key: string | null;
           onellm_api_key: string | null;
           owner_id: string;
@@ -436,6 +437,7 @@ export type Database = {
           created_at?: string | null;
           id: string;
           ip_address?: string | null;
+          model_name?: string | null;
           model_provider_api_key?: string | null;
           onellm_api_key?: string | null;
           owner_id: string;
@@ -453,6 +455,7 @@ export type Database = {
           created_at?: string | null;
           id?: string;
           ip_address?: string | null;
+          model_name?: string | null;
           model_provider_api_key?: string | null;
           onellm_api_key?: string | null;
           owner_id?: string;

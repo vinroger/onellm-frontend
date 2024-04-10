@@ -36,7 +36,7 @@ export default async function handler(
     }
 
     const projects = data.map((d: any) => {
-      return { ...d.project, role: d.role, user_id: d.user_id };
+      return { ...d.project, role: d.role };
     });
 
     return res.status(200).json(projects);
@@ -62,6 +62,15 @@ export default async function handler(
     if (error) {
       return res.status(500).json({ error: error.message });
     }
+
+    // update the junction table
+    await supabase.from("users_projects_junction").insert([
+      {
+        user_id: userId,
+        project_id: data[0].id,
+        role: "owner",
+      },
+    ]);
 
     return res.status(201).json(data);
   }

@@ -30,6 +30,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import BorderMagicButton from "@/components/aceternity/bordermagicbutton";
 import ShimmerButton from "@/components/aceternity/shimmerbutton";
 import { toTitleCase } from "@/utils/functions/string";
+import NonIdealStateCard from "@/components/NonIdealStateCard";
 
 function ProjectCard({
   projectName,
@@ -222,14 +223,10 @@ const ProjectList = ({
 }) => {
   if (projectsData && projectsData.length === 0) {
     return (
-      <div className="px-7">
-        <div className="flex flex-col items-center justify-center w-full h-full p-5 py-10 rounded-lg bg-neutral-100">
-          <p className="text-lg font-semibold">No projects found</p>
-          <p className="text-md text-neutral-600">
-            Create a new project to get started.
-          </p>
-        </div>
-      </div>
+      <NonIdealStateCard
+        title="No projects found."
+        description="Start creating a new project to continue."
+      />
     );
   }
   return (
