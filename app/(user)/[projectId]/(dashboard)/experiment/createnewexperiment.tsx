@@ -85,8 +85,10 @@ export const CreateNewEvaluationDialog = ({
   const [alertError, setAlertError] = useState<string>("");
 
   const router = useRouter();
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleSubmit = async () => {
+    setIsSubmitting(true);
     const validation = validateData(
       EvaluationData as CreateEvaluationReqBodyType
     );
@@ -112,12 +114,13 @@ export const CreateNewEvaluationDialog = ({
         },
       },
     });
+    setIsSubmitting(false);
   };
 
   const validation = validateData(
     EvaluationData as CreateEvaluationReqBodyType
   );
-  const isSubmitButtonDistabled = !validation.isValid;
+  const isSubmitButtonDistabled = !validation.isValid || isSubmitting;
 
   const {
     value: models,

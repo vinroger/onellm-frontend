@@ -102,8 +102,8 @@ export const CreateNewTrainingDialog = ({
   const [isSubmitLoading, setIsSubmitLoading] = useState(false);
 
   const handleSubmit = async () => {
+    setIsSubmitLoading(true);
     try {
-      setIsSubmitLoading(true);
       const validation = await validateData(trainingData);
       if (validation === false) {
         setIsSubmitLoading(false);

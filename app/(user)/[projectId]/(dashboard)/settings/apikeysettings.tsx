@@ -92,16 +92,21 @@ export default function APIKeySettings() {
     status,
   } = useAsync(() => fetchKeys(projectId));
 
+  const [isSubmitLoading, setIsSubmitLoading] = React.useState(false);
+
   const handleCreateKey = async () => {
+    setIsSubmitLoading(true);
     const isValid = await validateKey(apiKeyInput);
     if (isValid) {
       await saveAPIKey(apiKeyInput, selectedProvider, dialogReqMode, projectId);
       setOpen(false);
       toast.success("API Key updated successfully");
       execute();
+      setIsSubmitLoading(false);
       return;
     }
     toast.error("Invalid API Key");
+    setIsSubmitLoading(false);
   };
 
   useEffect(() => {
@@ -208,7 +213,9 @@ export default function APIKeySettings() {
             />
             <DialogFooter>
               <Button onClick={() => setOpen(false)}>Cancel</Button>
-              <Button onClick={handleCreateKey}>Connect</Button>
+              <Button onClick={handleCreateKey} disabled={isSubmitLoading}>
+                Connect
+              </Button>
             </DialogFooter>
           </DialogContent>
         </Dialog>

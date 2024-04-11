@@ -131,9 +131,12 @@ export const CreateNewProjectDialog = ({
     owner_id: "",
   });
 
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
   const router = useRouter();
 
   const handleSubmit = async () => {
+    setIsSubmitting(true);
     const response: any = await axios.post("/api/v1/projects/", ProjectData);
 
     setProjectData({
@@ -152,10 +155,13 @@ export const CreateNewProjectDialog = ({
         },
       },
     });
+    setIsSubmitting(false);
   };
 
   const isSubmitButtonDistabled =
-    ProjectData.name?.length === 0 || ProjectData.description?.length === 0;
+    ProjectData.name?.length === 0 ||
+    ProjectData.description?.length === 0 ||
+    isSubmitting;
 
   return (
     <div className="min-w-screen">
