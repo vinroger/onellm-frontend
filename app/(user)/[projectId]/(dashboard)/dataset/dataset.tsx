@@ -127,8 +127,10 @@ export const CreateNewDatasetDialog = ({
   });
 
   const router = useRouter();
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleSubmit = async () => {
+    setIsSubmitting(true);
     const response: any = await axios.post("/api/v1/datasets/", {
       ...datasetData,
       project_id: projectId,
@@ -151,10 +153,13 @@ export const CreateNewDatasetDialog = ({
         },
       },
     });
+    setIsSubmitting(false);
   };
 
   const isSubmitButtonDistabled =
-    datasetData.name?.length === 0 || datasetData.description?.length === 0;
+    datasetData.name?.length === 0 ||
+    datasetData.description?.length === 0 ||
+    isSubmitting;
 
   return (
     <div className="min-w-screen">

@@ -38,7 +38,7 @@ function InviteMembersPage() {
     value: ownerBilling,
     status,
   } = useAsync(async () => {
-    const res = await axios.get(`/api/v1/userBilling/${owner_id}`);
+    const res = await axios.get(`/api/v1/user-billing/${owner_id}`);
     return res.data;
   });
 
