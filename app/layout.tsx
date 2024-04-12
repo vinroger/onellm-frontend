@@ -31,6 +31,10 @@ export default function RootLayout({
   return (
     <html lang="en">
       <ClerkProvider>
+        <script
+          src="https://embed.tawk.to/6618d36da0c6737bd12af63d/1hr8fjp61"
+          async
+        />
         <body
           className={cn(
             "relative flex min-h-screen w-full flex-col scroll-smooth font-sans antialiased",

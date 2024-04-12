@@ -6,32 +6,12 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { cn } from "@/lib/utils";
-import Image from "next/image";
-import React, { useEffect } from "react";
-import {
-  Dialog,
-  DialogContent,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import axios from "axios";
-import { toast } from "sonner";
-import useAsync from "@/utils/hooks/useAsync";
-import LoadingState from "@/components/LoadingState";
-import { sensitizeKey } from "@/utils/functions/string";
-import { ModelProviderApiKey } from "@/types/table";
-import { Pencil } from "lucide-react";
-import { useProjectContext } from "@/utils/contexts/useProject";
+import React from "react";
 import APIKeySettings from "./apikeysettings";
 import InviteMembersPage from "./invitemembers";
+import GeneralSettings from "./generalsettings";
 
 // TODO ADD ANTROPIC, GEMINI, LLaMa 2, search openai
-
-function GeneralSettings() {
-  return <div>General</div>;
-}
 
 const MainComponent = ({ selectedTab }: { selectedTab: string }) => {
   if (selectedTab === "general") {
@@ -85,7 +65,7 @@ function MenuCard({
           )}
           onClick={() => setSelectedTab("apikeys")}
         >
-          API Keys
+          3rd Party API Keys
         </Button>
         <Button
           variant="ghost"
