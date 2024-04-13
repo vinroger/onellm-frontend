@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 
@@ -13,6 +14,7 @@ import {
   AreaChart,
   MonitorDown,
   FlaskConical,
+  MessageSquareMore,
 } from "lucide-react";
 import {
   NavigationMenu,
@@ -24,7 +26,9 @@ import { ellipsisString, toTitleCase } from "@/utils/functions/string";
 import Image from "next/image";
 import { useProjectContext } from "@/utils/contexts/useProject";
 import { useRef } from "react";
+import { CANNY_URL, DISCORD_COMMUNITY_URL } from "@/constants/socialmedia";
 import UpsellButton from "./upsellbutton";
+import { Separator } from "./ui/separator";
 
 function NavItem({
   item,
@@ -160,7 +164,35 @@ export function Navbar() {
               icon={item.icon}
             />
           ))}
+          <Separator orientation="horizontal" className="mt-5 mb-3 w-full" />
+
+          <a
+            className="flex flex-row w-full items-center cursor-pointer rounded-lg hover:bg-neutral-100 px-3 py-2 mx-1"
+            href={DISCORD_COMMUNITY_URL}
+            target="_blank"
+          >
+            <img
+              src="/discord.png"
+              className="w-4 h-3 mr-1.5"
+              alt="discord logo"
+            />
+            <p className="text-sm">Join our Discord ↗</p>
+          </a>
+          <a
+            className="flex flex-row w-full items-center cursor-pointer rounded-lg hover:bg-neutral-100 px-3 py-2 mx-1"
+            href={CANNY_URL}
+            target="_blank"
+          >
+            {/* <img
+              src="/discord.png"
+              className="w-4 h-3 mr-1.5"
+              alt="discord logo"
+            /> */}
+            <MessageSquareMore className="w-4 mr-1.5" />
+            <p className="text-sm">Feature Requests ↗</p>
+          </a>
         </div>
+
         <div className="flex flex-col max-w-full w-full justify-center items-center">
           <UpsellButton />
           <div className="flex flex-row items-center w-full space-x-2 min-h-[60px]">

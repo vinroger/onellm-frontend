@@ -5,7 +5,6 @@
 import React from "react";
 import { Separator } from "@/components/ui/separator";
 import { StickyScroll } from "./stickyscroll";
-import demoVideoMp4 from "../../../../public/landing/dataset.mp4";
 
 const featuresContent = [
   {

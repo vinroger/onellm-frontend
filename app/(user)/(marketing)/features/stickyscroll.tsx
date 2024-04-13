@@ -49,48 +49,53 @@ export const StickyScroll = ({
     "linear-gradient(to bottom right, var(--orange-500), var(--yellow-500))",
   ];
   return (
-    <motion.div
-      animate={{
-        backgroundColor: backgroundColors[activeCard % backgroundColors.length],
-      }}
-      className="h-[37rem] overflow-y-auto flex justify-center relative space-x-10 rounded-md p-5"
-      ref={ref}
-    >
-      <div className="div relative flex items-start px-4">
-        <div className="max-w-lg">
-          {content.map((item, index) => (
-            <div key={item.title + index} className="my-20">
-              <motion.h2
-                initial={{
-                  opacity: 0,
-                }}
-                animate={{
-                  opacity: activeCard === index ? 1 : 0.3,
-                }}
-                className="text-2xl font-bold text-neutral-800"
-              >
-                {item.title}
-              </motion.h2>
-              <motion.p
-                initial={{
-                  opacity: 0,
-                }}
-                animate={{
-                  opacity: activeCard === index ? 1 : 0.3,
-                }}
-                className={cn(
-                  "text-kg text-neutral-800 w-full mt-10",
-                  index === content.length - 1 && "mb-20"
-                )}
-              >
-                {item.description}
-              </motion.p>
-            </div>
-          ))}
-          <div className="h-60" />
-        </div>
+    <>
+      <div className="lg:hidden w-screen  rounded-md bg-white sticky top-1 mb-20 text-center flex justify-center z-30">
+        <div className="max-w-xl">{content[activeCard].content ?? null}</div>
       </div>
-      {/* <motion.div
+      <motion.div
+        animate={{
+          backgroundColor:
+            backgroundColors[activeCard % backgroundColors.length],
+        }}
+        className="h-[37rem] overflow-y-auto flex justify-center relative md:space-x-10 rounded-md p-5"
+        ref={ref}
+      >
+        <div className="div relative flex items-start px-4">
+          <div className="max-w-lg">
+            {content.map((item, index) => (
+              <div key={item.title + index} className="my-20">
+                <motion.h2
+                  initial={{
+                    opacity: 0,
+                  }}
+                  animate={{
+                    opacity: activeCard === index ? 1 : 0.3,
+                  }}
+                  className="text-2xl font-bold text-neutral-800"
+                >
+                  {item.title}
+                </motion.h2>
+                <motion.p
+                  initial={{
+                    opacity: 0,
+                  }}
+                  animate={{
+                    opacity: activeCard === index ? 1 : 0.3,
+                  }}
+                  className={cn(
+                    "text-kg text-neutral-800 w-full mt-10",
+                    index === content.length - 1 && "mb-20"
+                  )}
+                >
+                  {item.description}
+                </motion.p>
+              </div>
+            ))}
+            <div className="h-60" />
+          </div>
+        </div>
+        {/* <motion.div
         animate={{
           background: linearGradients[activeCard % linearGradients.length],
         }}
@@ -99,10 +104,11 @@ export const StickyScroll = ({
           contentClassName
         )}
       > */}
-      <div className="hidden lg:block w-2/5 rounded-md bg-white sticky top-1 overflow-hidden">
-        {content[activeCard].content ?? null}
-      </div>
-      {/* </motion.div> */}
-    </motion.div>
+        <div className="hidden lg:block w-full md:w-2/5 rounded-md bg-white sticky top-1 ">
+          {content[activeCard].content ?? null}
+        </div>
+        {/* </motion.div> */}
+      </motion.div>
+    </>
   );
 };
