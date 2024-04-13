@@ -7,19 +7,19 @@ import { InfiniteMovingCards } from "./infinite-moving-cards";
 const items = [
   {
     quote:
-      "UImagine uses LLM to generate front-end components for our users. Sometimes, the output's messy and unrenderable. OneLLM.co allows me to train LLM to have structure on those responses. Now our generated code is clean, reducing errors like 80%. Huge time-saver without writing a single line of code.",
+      "UImagine uses LLM to generate front-end components for our users. Sometimes, the output's messy and unrenderable. OneLLM.co allows us to train LLM to have structure on those responses. Now our generated code is clean, reducing errors like 80%. Huge time-saver without writing a single line of code.",
     name: "Daniel Kurniadi",
-    title: "Founder, UImagine",
+    title: "Founder, UImagine.io",
   },
   {
     quote:
-      "Before OneLLM.co, fine-tuning our smaller customer service model was time consuming. Now we can make datasets, plug in our API key, and boom – our chatbot performance has increased! Customers are happier, and our team has time to innovate.",
+      "Before OneLLM.co, fine-tuning our smaller customer service model was time consuming. Now we can make datasets, plug in our API key, and boom – training run & our chatbot performance has increased! Customers are happier, and our team has time to innovate.",
     name: "Sarah Nguyen",
     title: "Lead AI Engineer, HelpDesk Inc.",
   },
   {
     quote:
-      "I was constantly switching between Notion and spreadsheets to organize my data, and do all the tedious coding to integrate my system w/ OpenAI, LLaMa in GCP etc. Now, everything is SO MUCH easier and integrated in one place. THX ONELLM ILY ❤️",
+      "I was constantly switching between Notion and spreadsheets to organize my data, and do all the tedious coding to integrate my system w/ OpenAI, LLaMa in GCP etc. Now, everything is SO MUCH easier and integrated in one place.",
     name: "Chris Lee",
     title: "Founder and CTO, Stealth Startup",
   },
