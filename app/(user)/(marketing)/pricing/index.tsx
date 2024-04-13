@@ -39,7 +39,7 @@ function PricingCard({
     <div
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
-      className="h-[40rem] flex flex-col lg:flex-row overflow-hidden  bg-black w-[20rem]  p-7 relative rounded-lg"
+      className="flex flex-col lg:flex-row overflow-hidden bg-black w-full sm:w-[25rem] md:w-[30rem] lg:w-[20rem] p-4 sm:p-7 relative rounded-lg"
     >
       <div className="flex flex-col min-w-full w-full h-full min-h-full z-10">
         <p className="md:text-xl text-xl font-regular text-neutral-200 relative z-20 max-w-2xl">
@@ -55,7 +55,7 @@ function PricingCard({
             </p>
           )}
         </div>
-        <ul className="mt-8 space-y-3 text-sm leading-6 text-neutral-200 xl:mt-10">
+        <ul className="mt-7 space-y-3 text-sm leading-6 text-neutral-200 xl:mt-10">
           {features.map((feature: any) => (
             <li key={feature} className="flex gap-x-3">
               <CheckIcon
@@ -129,7 +129,7 @@ export function PricingPage() {
           ))}
         </RadioGroup>
       </div>
-      <div className="flex flex-row max-w-screen-xl space-x-3">
+      <div className="flex flex-col md:flex-row justify-center items-center space-y-4 md:space-y-0 md:space-x-3 max-w-screen-xl px-4">
         {tiers.map((tier, idx) => (
           <PricingCard
             key={tier.id}
