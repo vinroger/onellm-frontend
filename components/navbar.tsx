@@ -14,6 +14,7 @@ import {
   AreaChart,
   MonitorDown,
   FlaskConical,
+  MessageSquareMore,
 } from "lucide-react";
 import {
   NavigationMenu,
@@ -25,7 +26,7 @@ import { ellipsisString, toTitleCase } from "@/utils/functions/string";
 import Image from "next/image";
 import { useProjectContext } from "@/utils/contexts/useProject";
 import { useRef } from "react";
-import { DISCORD_COMMUNITY_URL } from "@/constants/socialmedia";
+import { CANNY_URL, DISCORD_COMMUNITY_URL } from "@/constants/socialmedia";
 import UpsellButton from "./upsellbutton";
 import { Separator } from "./ui/separator";
 
@@ -176,6 +177,19 @@ export function Navbar() {
               alt="discord logo"
             />
             <p className="text-sm">Join our Discord ↗</p>
+          </a>
+          <a
+            className="flex flex-row w-full items-center cursor-pointer rounded-lg hover:bg-neutral-100 px-3 py-2 mx-1"
+            href={CANNY_URL}
+            target="_blank"
+          >
+            {/* <img
+              src="/discord.png"
+              className="w-4 h-3 mr-1.5"
+              alt="discord logo"
+            /> */}
+            <MessageSquareMore className="w-4 mr-1.5" />
+            <p className="text-sm">Feature Requests ↗</p>
           </a>
         </div>
 
