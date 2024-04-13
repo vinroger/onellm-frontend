@@ -13,12 +13,6 @@ function GeneralSettings() {
 
   const [loading, setLoading] = React.useState(false);
 
-  console.log(
-    "%capp/(user)/[projectId]/(dashboard)/settings/generalsettings.tsx:16 description",
-    "color: #007acc;",
-    description
-  );
-
   const handleUpdate = async () => {
     setLoading(true);
     const res = await axios.put(`/api/v1/projects/${projectId}`, {
