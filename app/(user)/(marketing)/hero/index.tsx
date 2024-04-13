@@ -4,7 +4,7 @@ import demoVideoMp4 from "../../../../public/landing/overall2.mp4";
 
 function Hero() {
   return (
-    <div>
+    <div className="w-full">
       <HeroHighlight className="flex justify-center flex-col items-center">
         <div className="text-center">
           <div className="font-bold text-[40px]">
@@ -14,7 +14,7 @@ function Hero() {
             <Highlight>All without code.</Highlight>
           </div>
         </div>
-        <div className="p-2 mt-10 rounded-xl text-center bg-gray-900/5 ring-1 ring-inset ring-gray-900/10 lg:rounded-2xl lg:p-4 w-[67rem] ">
+        <div className="p-2 mt-10 rounded-xl text-center bg-gray-900/5 ring-1 ring-inset ring-gray-900/10 md:rounded-2xl md:p-4 w-full md:w-[50rem] lg:w-[67rem]">
           <video
             controls
             autoPlay
