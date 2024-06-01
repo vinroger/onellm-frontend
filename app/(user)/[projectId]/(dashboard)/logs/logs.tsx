@@ -4,7 +4,6 @@
 import { ColumnDef, Row } from "@tanstack/react-table";
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { LoaderIcon } from "lucide-react";
 import {
   DataTablePagination,
   usePaginatedDataTable,
@@ -16,6 +15,7 @@ import { Log } from "@/types/table";
 
 import { useProjectContext } from "@/utils/contexts/useProject";
 import SkeletonState from "@/components/SkeletonState";
+import { ellipsisString } from "@/utils/functions/string";
 import { DetailDialog } from "./dialog";
 
 const columns: ColumnDef<Log>[] = [
@@ -44,7 +44,6 @@ const columns: ColumnDef<Log>[] = [
     accessorKey: "model_name",
     header: "Model Name",
   },
-
   {
     accessorKey: "prompt",
     header: "Prompt",
@@ -54,11 +53,16 @@ const columns: ColumnDef<Log>[] = [
       if (!chat) return "N/A";
       const prompt = chat.find((c: any) => c.role === "user");
       if (!prompt) return "N/A";
-      const { content } = prompt;
-      if (!content) return "N/A";
-      return content.length > maxLength
-        ? `${content.substring(0, maxLength - 3)}...`
-        : content;
+      if (typeof prompt.content === "string") {
+        return ellipsisString(prompt.content, maxLength);
+      }
+
+      // if content is an array.
+      const textContent = prompt.content.find((c: any) => c.type === "text");
+      if (textContent) {
+        return ellipsisString(textContent.text, maxLength);
+      }
+      return "N/A";
     },
   },
   {
@@ -70,11 +74,16 @@ const columns: ColumnDef<Log>[] = [
       if (!chat) return "N/A";
       const prompt = chat.find((c: any) => c.role === "assistant");
       if (!prompt) return "N/A";
-      const { content } = prompt;
-      if (!content) return "N/A";
-      return content.length > maxLength
-        ? `${content.substring(0, maxLength - 3)}...`
-        : content;
+      if (typeof prompt.content === "string") {
+        return ellipsisString(prompt.content, maxLength);
+      }
+
+      // if content is an array.
+      const textContent = prompt.content.find((c: any) => c.type === "text");
+      if (textContent) {
+        return ellipsisString(textContent.value, maxLength);
+      }
+      return "N/A";
     },
   },
   {
