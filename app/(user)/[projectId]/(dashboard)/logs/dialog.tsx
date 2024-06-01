@@ -6,17 +6,52 @@ import { Chat, Log } from "@/types/table";
 import {
   Dialog,
   DialogContent,
-  DialogDescription,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { toTitleCase } from "@/utils/functions/string";
 
-const CodeRenderer = ({ value }: { value: string }) => {
+const CodeRenderer = ({
+  value,
+}: {
+  value:
+    | string
+    | {
+        type: string;
+        text?: string;
+        image_url?: {
+          url: string;
+        };
+      }[];
+}) => {
+  if (typeof value === "string") {
+    return (
+      <pre className="p-4 overflow-scroll text-sm text-left whitespace-pre-wrap bg-gray-100 rounded-lg text-muted-foreground">
+        <code>{value}</code>
+      </pre>
+    );
+  }
+
   return (
     <pre className="p-4 overflow-scroll text-sm text-left whitespace-pre-wrap bg-gray-100 rounded-lg text-muted-foreground">
-      <code>{value}</code>
+      {value.map((item, index) => {
+        if (item.type === "text") {
+          return <code key={index}>{item.text}</code>;
+        }
+        if (item.type === "image_url") {
+          return (
+            // eslint-disable-next-line jsx-a11y/img-redundant-alt, @next/next/no-img-element
+            <img
+              key={index}
+              src={item.image_url?.url}
+              alt="image"
+              className="h-24 rounded-sm"
+            />
+          );
+        }
+        return null;
+      })}
     </pre>
   );
 };
@@ -71,7 +106,7 @@ export const DetailDialog = ({
           <DialogHeader>
             <DialogTitle>Log Details</DialogTitle>
           </DialogHeader>
-          <DialogDescription>
+          <div className="text-sm">
             <table className="detail-table">
               <tbody>
                 {log !== null &&
@@ -96,7 +131,7 @@ export const DetailDialog = ({
                   })}
               </tbody>
             </table>
-          </DialogDescription>
+          </div>
           <MenubarComponent chat={log?.chat as Chat} />
         </DialogContent>
       </Dialog>
